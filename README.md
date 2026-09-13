@@ -13,9 +13,10 @@ Every skill enters the marketplace through the same loop. The pipeline is the
 reviewer of record: a merge request cannot merge until the skill's own evaluation
 cases score at or above the team threshold.
 
-[![Team workflow: create skill, design cases with Claude or Codex, open a merge request, pipeline evaluation, score gate, then merge or return to the author](docs/assets/team-workflow.png)](docs/assets/team-workflow.mp4)
+![Team workflow: create skill, design cases with Claude or Codex, open a merge request, pipeline evaluation, score gate, then merge or return to the author](docs/assets/team-workflow.webp)
 
-[Watch the animated walkthrough (MP4, 12.5 s)](docs/assets/team-workflow.mp4). The
+The animation loops every 12.5 s. Open the [MP4 version](docs/assets/team-workflow.mp4)
+to pause or step through it, or the [still PNG](docs/assets/team-workflow.png). The
 diagram source is `docs/assets/team-workflow.spec.json`; re-render it with the
 visual-flow-webp skill after editing.
 

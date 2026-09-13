@@ -11,9 +11,10 @@
 每个技能都通过同一条闭环进入 marketplace。流水线是正式的评审者：技能自带的评估用例
 达到团队阈值之前，merge request 不能合并。
 
-[![团队协作流程：创建技能、用 Claude 或 Codex 设计用例、提交 merge request、流水线评估、分数门禁，然后合并或退回作者](docs/assets/team-workflow.png)](docs/assets/team-workflow.mp4)
+![团队协作流程：创建技能、用 Claude 或 Codex 设计用例、提交 merge request、流水线评估、分数门禁，然后合并或退回作者](docs/assets/team-workflow.webp)
 
-[观看动画演示（MP4，12.5 秒）](docs/assets/team-workflow.mp4)。图的源文件是
+动画每 12.5 秒循环一次。需要暂停或逐步查看时打开 [MP4 版本](docs/assets/team-workflow.mp4)，
+静态图见 [PNG](docs/assets/team-workflow.png)。图的源文件是
 `docs/assets/team-workflow.spec.json`，修改后用 visual-flow-webp 技能重新渲染。
 
 | 步骤 | 角色 | 通过条件 |
