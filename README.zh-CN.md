@@ -11,16 +11,10 @@
 每个技能都通过同一条闭环进入 marketplace。流水线是正式的评审者：技能自带的评估用例
 达到团队阈值之前，merge request 不能合并。
 
-```mermaid
-flowchart TD
-    A["1. 创建技能<br/>skills/&lt;name&gt;/SKILL.md + 脚本"] --> B["2. 用 Claude 或 Codex 设计用例与评估<br/>描述技能应做到什么，由 agent<br/>编写用例并在本地运行评估"]
-    B --> C["3. 提交 merge request<br/>GitHub pull request 或 GitLab MR"]
-    C --> D["4. 流水线评估变更的技能<br/>lint → 安全扫描 → skill-eval run"]
-    D --> E{"5. 总分 ≥ 0.90<br/>且所有门禁项通过？"}
-    E -- "否" --> F["6. 禁止合并<br/>dashboard 与证据返回作者"]
-    F -. "改进技能或用例" .-> B
-    E -- "是" --> G["7. 合并并发布<br/>把已审阅的报告接受为新基线"]
-```
+[![团队协作流程：创建技能、用 Claude 或 Codex 设计用例、提交 merge request、流水线评估、分数门禁，然后合并或退回作者](docs/assets/team-workflow.png)](docs/assets/team-workflow.mp4)
+
+[观看动画演示（MP4，12.5 秒）](docs/assets/team-workflow.mp4)。图的源文件是
+`docs/assets/team-workflow.spec.json`，修改后用 visual-flow-webp 技能重新渲染。
 
 | 步骤 | 角色 | 通过条件 |
 |---|---|---|

@@ -1,0 +1,250 @@
+{
+  "canvas": {
+    "width": 1600,
+    "height": 1000,
+    "fps": 20
+  },
+  "theme": {
+    "name": "light"
+  },
+  "title": {
+    "text": "Team workflow",
+    "highlight": "the pipeline decides",
+    "subtitle": "From a new skill to a merged one. A merge request passes only when its own eval cases score 0.90 or more."
+  },
+  "nodes": [
+    {
+      "id": "create",
+      "type": "box",
+      "label": "1  Create skill",
+      "body": "SKILL.md and scripts\nunder skills/<name>/",
+      "x": 60,
+      "y": 400,
+      "w": 240,
+      "h": 150,
+      "color": "blue"
+    },
+    {
+      "id": "design",
+      "type": "box",
+      "label": "2  Design cases",
+      "body": "With Claude or Codex\ncases and local eval",
+      "x": 360,
+      "y": 400,
+      "w": 240,
+      "h": 150,
+      "color": "blue"
+    },
+    {
+      "id": "mr",
+      "type": "box",
+      "label": "3  Merge request",
+      "body": "GitHub pull request\nor GitLab MR",
+      "x": 660,
+      "y": 400,
+      "w": 240,
+      "h": 150,
+      "color": "blue"
+    },
+    {
+      "id": "pipeline",
+      "type": "box",
+      "label": "4  Pipeline eval",
+      "body": "Lint, security scan\nskill-eval run",
+      "x": 960,
+      "y": 400,
+      "w": 240,
+      "h": 150,
+      "color": "purple"
+    },
+    {
+      "id": "gate",
+      "type": "diamond",
+      "label": "5  Score gate",
+      "body": "0.90 or more\nall gates pass",
+      "x": 1260,
+      "y": 370,
+      "w": 280,
+      "h": 210,
+      "color": "purple"
+    },
+    {
+      "id": "merge",
+      "type": "box",
+      "label": "7  Merge and release",
+      "body": "Accept the report\nas the new baseline",
+      "x": 1280,
+      "y": 160,
+      "w": 240,
+      "h": 150,
+      "color": "green"
+    },
+    {
+      "id": "blocked",
+      "type": "box",
+      "label": "6  Merge blocked",
+      "body": "Dashboard and evidence\nback to the author",
+      "x": 1280,
+      "y": 660,
+      "w": 240,
+      "h": 150,
+      "color": "red"
+    },
+    {
+      "id": "author-label",
+      "type": "label",
+      "label": "Author",
+      "x": 60,
+      "y": 570,
+      "w": 840,
+      "h": 30,
+      "size": 22
+    },
+    {
+      "id": "ci-label",
+      "type": "label",
+      "label": "CI pipeline",
+      "x": 960,
+      "y": 570,
+      "w": 240,
+      "h": 30,
+      "size": 22
+    },
+    {
+      "id": "reviewer-label",
+      "type": "label",
+      "label": "Reviewer",
+      "x": 1280,
+      "y": 120,
+      "w": 240,
+      "h": 30,
+      "size": 22
+    }
+  ],
+  "edges": [
+    {
+      "from": "create",
+      "to": "design"
+    },
+    {
+      "from": "design",
+      "to": "mr"
+    },
+    {
+      "from": "mr",
+      "to": "pipeline"
+    },
+    {
+      "from": "pipeline",
+      "to": "gate"
+    },
+    {
+      "from": "gate",
+      "to": "blocked",
+      "label": "fail",
+      "points": [
+        [
+          1400,
+          580
+        ],
+        [
+          1400,
+          660
+        ]
+      ]
+    },
+    {
+      "from": "blocked",
+      "to": "design",
+      "label": "improve and resubmit",
+      "points": [
+        [
+          1400,
+          810
+        ],
+        [
+          1400,
+          900
+        ],
+        [
+          480,
+          900
+        ],
+        [
+          480,
+          550
+        ]
+      ]
+    },
+    {
+      "from": "gate",
+      "to": "merge",
+      "label": "pass",
+      "points": [
+        [
+          1400,
+          370
+        ],
+        [
+          1400,
+          310
+        ]
+      ]
+    }
+  ],
+  "animation": {
+    "step_seconds": 1.5,
+    "hold_seconds": 2.0,
+    "steps": [
+      {
+        "edges": [
+          0
+        ],
+        "pulse": "design",
+        "label": "Author creates the skill"
+      },
+      {
+        "edges": [
+          1
+        ],
+        "pulse": "mr",
+        "label": "Claude or Codex drafts the cases and runs the local eval"
+      },
+      {
+        "edges": [
+          2
+        ],
+        "pulse": "pipeline",
+        "label": "Open the merge request"
+      },
+      {
+        "edges": [
+          3
+        ],
+        "pulse": "gate",
+        "label": "Pipeline lints, scans and evaluates the changed skills"
+      },
+      {
+        "edges": [
+          4
+        ],
+        "pulse": "blocked",
+        "label": "Below the bar: merge blocked, evidence returned"
+      },
+      {
+        "edges": [
+          5
+        ],
+        "pulse": "design",
+        "label": "Author improves the skill or the cases"
+      },
+      {
+        "edges": [
+          6
+        ],
+        "pulse": "merge",
+        "label": "At or above 0.90: merge and release"
+      }
+    ]
+  }
+}

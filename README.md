@@ -13,16 +13,11 @@ Every skill enters the marketplace through the same loop. The pipeline is the
 reviewer of record: a merge request cannot merge until the skill's own evaluation
 cases score at or above the team threshold.
 
-```mermaid
-flowchart TD
-    A["1. Create the skill<br/>skills/&lt;name&gt;/SKILL.md + scripts"] --> B["2. Design cases and eval with Claude or Codex<br/>describe what the skill must do; the agent<br/>writes the cases and runs the local eval"]
-    B --> C["3. Open a merge request<br/>GitHub pull request or GitLab MR"]
-    C --> D["4. Pipeline evaluates the changed skills<br/>lint → security scan → skill-eval run"]
-    D --> E{"5. Overall score ≥ 0.90<br/>and every gate row passes?"}
-    E -- "No" --> F["6. Merge blocked<br/>dashboard and evidence returned to the author"]
-    F -. "improve skill or cases" .-> B
-    E -- "Yes" --> G["7. Merge and release<br/>accept the reviewed report as the new baseline"]
-```
+[![Team workflow: create skill, design cases with Claude or Codex, open a merge request, pipeline evaluation, score gate, then merge or return to the author](docs/assets/team-workflow.png)](docs/assets/team-workflow.mp4)
+
+[Watch the animated walkthrough (MP4, 12.5 s)](docs/assets/team-workflow.mp4). The
+diagram source is `docs/assets/team-workflow.spec.json`; re-render it with the
+visual-flow-webp skill after editing.
 
 | Step | Who | What passes it |
 |---|---|---|
