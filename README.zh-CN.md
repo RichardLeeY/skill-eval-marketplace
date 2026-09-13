@@ -13,7 +13,7 @@
 
 ```mermaid
 flowchart TD
-    A["1. 创建技能<br/>skills/&lt;name&gt;/SKILL.md + 脚本"] --> B["2. 设计用例与评估<br/>eval/dataset.jsonl，可选 eval/plugin.py<br/>本地运行 skill-eval check / run"]
+    A["1. 创建技能<br/>skills/&lt;name&gt;/SKILL.md + 脚本"] --> B["2. 用 Claude 或 Codex 设计用例与评估<br/>描述技能应做到什么，由 agent<br/>编写用例并在本地运行评估"]
     B --> C["3. 提交 merge request<br/>GitHub pull request 或 GitLab MR"]
     C --> D["4. 流水线评估变更的技能<br/>lint → 安全扫描 → skill-eval run"]
     D --> E{"5. 总分 ≥ 0.90<br/>且所有门禁项通过？"}
@@ -25,7 +25,7 @@ flowchart TD
 | 步骤 | 角色 | 通过条件 |
 |---|---|---|
 | 1. 创建技能 | 作者 | 一份描述精确的 `SKILL.md`，以及需要的脚本 |
-| 2. 设计用例与评估 | 作者 | `eval/dataset.jsonl` 至少三个用例；本地 `skill-eval check` 与 `skill-eval run` 通过 |
+| 2. 设计用例与评估 | 作者 + Claude 或 Codex | 告诉 agent 技能应做到什么、什么算好结果；由它在 `eval/` 下起草至少三个用例并在本地跑通评估 |
 | 3. 提交 merge request | 作者 | 推送分支，向 `main` 发起请求 |
 | 4. 流水线评估 | CI | `repo-check` 与 `security-scan` 通过后，`eval` 只运行受影响的技能 |
 | 5. 分数门禁 | CI | 每个用例总分不低于 0.90，且没有门禁断言失败 |

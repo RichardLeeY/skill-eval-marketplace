@@ -15,7 +15,7 @@ cases score at or above the team threshold.
 
 ```mermaid
 flowchart TD
-    A["1. Create the skill<br/>skills/&lt;name&gt;/SKILL.md + scripts"] --> B["2. Design eval cases<br/>eval/dataset.jsonl, optional eval/plugin.py<br/>run skill-eval check / run locally"]
+    A["1. Create the skill<br/>skills/&lt;name&gt;/SKILL.md + scripts"] --> B["2. Design cases and eval with Claude or Codex<br/>describe what the skill must do; the agent<br/>writes the cases and runs the local eval"]
     B --> C["3. Open a merge request<br/>GitHub pull request or GitLab MR"]
     C --> D["4. Pipeline evaluates the changed skills<br/>lint → security scan → skill-eval run"]
     D --> E{"5. Overall score ≥ 0.90<br/>and every gate row passes?"}
@@ -27,7 +27,7 @@ flowchart TD
 | Step | Who | What passes it |
 |---|---|---|
 | 1. Create the skill | Author | A `SKILL.md` with a precise description, plus any scripts it needs |
-| 2. Design cases and eval | Author | At least three cases in `eval/dataset.jsonl`; `skill-eval check` and a local `skill-eval run` are green |
+| 2. Design cases and eval | Author with Claude or Codex | Tell the agent what the skill must do and what a good result looks like; it drafts at least three cases under `eval/` and runs the local evaluation until they pass |
 | 3. Create the merge request | Author | Branch pushed, request opened against `main` |
 | 4. Pipeline evaluation | CI | `repo-check` and `security-scan` pass, then `eval` runs only the affected skills |
 | 5. Score gate | CI | Every case's overall score is at least 0.90 and no gating assertion fails |
