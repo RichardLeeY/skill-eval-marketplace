@@ -1,0 +1,1817 @@
+Bedrock AgentCore
+DevOps Agent
+Security Agent
+a1 instance
+a1_instance
+access analyzer
+access_analyzer
+action
+activate
+actuator
+ad connector
+ad_connector
+addon
+agent
+agent2
+alarm
+alert
+alexa enabled device
+alexa for business
+alexa skill
+alexa smart home skill
+alexa voice service
+alexa_enabled_device
+alexa_for_business
+alexa_skill
+alexa_smart_home_skill
+alexa_voice_service
+all products
+all_products
+ami
+amplify
+amplify aws amplify studio
+amplify_aws_amplify_studio
+analytics
+apache mxnet on aws
+apache_mxnet_on_aws
+api gateway
+api_gateway
+app config
+app mesh
+app runner
+app studio
+app wizard
+app_config
+app_mesh
+app_runner
+app_studio
+app_wizard
+appfabric
+appflow
+application
+application auto scaling
+application composer
+application cost profiler
+application discovery service
+application discovery service aws agentless collector
+application discovery service aws discovery agent
+application discovery service migration evaluator collector
+application integration
+application load balancer
+application recovery controller
+application_auto_scaling
+application_composer
+application_cost_profiler
+application_discovery_service
+application_discovery_service_aws_agentless_collector
+application_discovery_service_aws_discovery_agent
+application_discovery_service_migration_evaluator_collector
+application_integration
+application_load_balancer
+application_recovery_controller
+apps
+appstream 20
+appstream_20
+appsync
+ar vr
+ar_vr
+archive
+artifact
+athena
+athena data source connectors
+athena_data_source_connectors
+attribute
+attributes
+audit manager
+audit_manager
+augmented ai
+augmented_ai
+aurora
+aurora instance
+aurora instance alt
+aurora_instance
+aurora_instance_alt
+authenticated user
+authenticated_user
+auto scaling
+auto scaling2
+auto scaling3
+auto_scaling
+auto_scaling2
+auto_scaling3
+automation
+autoscaling
+aws backup for aws cloudformation
+aws backup legal hold
+aws backup support for amazon fsx for netapp ontap
+aws backup vault lock
+aws backup virtual machine monitor
+aws cloud
+aws glue data quality
+aws glue for ray
+aws user notifications
+aws_backup_for_aws_cloudformation
+aws_backup_legal_hold
+aws_backup_support_for_amazon_fsx_for_netapp_ontap
+aws_backup_vault_lock
+aws_backup_virtual_machine_monitor
+aws_cloud
+aws_glue_data_quality
+aws_glue_for_ray
+aws_user_notifications
+b2b data interchange
+b2b_data_interchange
+backint agent
+backint_agent
+backup
+backup audit manager
+backup aws backup support for amazon s3
+backup aws backup support for vmware workloads
+backup backup plan
+backup backup restore
+backup compliance reporting
+backup compute
+backup database
+backup gateway
+backup plan
+backup recovery point objective
+backup recovery time objective
+backup restore
+backup storage
+backup vault
+backup virtual machine
+backup virtual machine monitor
+backup_audit_manager
+backup_aws_backup_support_for_amazon_s3
+backup_aws_backup_support_for_vmware_workloads
+backup_backup_plan
+backup_backup_restore
+backup_compliance_reporting
+backup_compute
+backup_database
+backup_gateway
+backup_plan
+backup_recovery_point_objective
+backup_recovery_time_objective
+backup_restore
+backup_storage
+backup_vault
+backup_virtual_machine
+backup_virtual_machine_monitor
+bank
+batch
+bedrock
+bedrock_agentcore
+blockchain
+blockchain resource
+blockchain_resource
+bottlerocket
+braket
+braket chandelier
+braket chip
+braket embedded simulator
+braket managed simulator
+braket noise simulator
+braket qpu
+braket simulator
+braket simulator 1
+braket simulator 2
+braket simulator 3
+braket simulator 4
+braket state vector
+braket tensor network
+braket_chandelier
+braket_chip
+braket_embedded_simulator
+braket_managed_simulator
+braket_noise_simulator
+braket_qpu
+braket_simulator
+braket_simulator_1
+braket_simulator_2
+braket_simulator_3
+braket_simulator_4
+braket_state_vector
+braket_tensor_network
+bucket
+bucket with objects
+bucket_with_objects
+budgets
+budgets 2
+budgets_2
+business application
+business_application
+bycicle
+c4 instance
+c4_instance
+c5 instance
+c5_instance
+c5a
+c5ad
+c5d
+c5n instance
+c5n_instance
+c6g instance
+c6g_instance
+c6gd
+cache node
+cache_node
+cached volume
+cached_volume
+camera
+camera2
+car
+cart
+certificate manager
+certificate manager 2
+certificate manager 3
+certificate_manager
+certificate_manager_2
+certificate_manager_3
+change set
+change_set
+chat
+chatbot
+checklist
+checklist cost
+checklist fault tolerant
+checklist performance
+checklist security
+checklist_cost
+checklist_fault_tolerant
+checklist_performance
+checklist_security
+chime
+chime sdk
+chime_sdk
+classic load balancer
+classic_load_balancer
+clean rooms
+clean_rooms
+client
+client vpn
+client_vpn
+cloud control api
+cloud development kit
+cloud digital interface
+cloud directory
+cloud extension ros
+cloud map
+cloud map resource
+cloud wan
+cloud wan segment network
+cloud wan transit gateway route table attachment
+cloud wan virtual pop
+cloud9
+cloud_control_api
+cloud_development_kit
+cloud_digital_interface
+cloud_directory
+cloud_extension_ros
+cloud_map
+cloud_map_resource
+cloud_wan
+cloud_wan_segment_network
+cloud_wan_transit_gateway_route_table_attachment
+cloud_wan_virtual_pop
+cloudendure disaster recovery
+cloudendure migration
+cloudendure_disaster_recovery
+cloudendure_migration
+cloudformation
+cloudfront
+cloudfront functions
+cloudfront_functions
+cloudhsm
+cloudsearch
+cloudsearch2
+cloudshell
+cloudtrail
+cloudtrail cloudtrail lake
+cloudtrail_cloudtrail_lake
+cloudwatch
+cloudwatch 2
+cloudwatch cross account observability
+cloudwatch data protection
+cloudwatch evidently
+cloudwatch logs
+cloudwatch metrics insights
+cloudwatch rum
+cloudwatch synthetics
+cloudwatch_2
+cloudwatch_cross_account_observability
+cloudwatch_data_protection
+cloudwatch_evidently
+cloudwatch_logs
+cloudwatch_metrics_insights
+cloudwatch_rum
+cloudwatch_synthetics
+cluster
+codeartifact
+codebuild
+codecatalyst
+codecommit
+codedeploy
+codeguru
+codeguru 2
+codeguru_2
+codepipeline
+codestar
+codewhisperer
+coffee pot
+coffee_pot
+cognito
+cold storage
+cold_storage
+command line interface
+command_line_interface
+comprehend
+comprehend medical
+comprehend_medical
+compute
+compute optimizer
+compute_optimizer
+config
+connect
+connector
+contact center
+contact_center
+container 1
+container 2
+container 3
+container registry image
+container_1
+container_2
+container_3
+container_registry_image
+containers
+control tower
+control_tower
+corporate data center
+corporate data center2
+corporate_data_center
+corporate_data_center2
+corretto
+cost and usage report
+cost explorer
+cost management
+cost_and_usage_report
+cost_explorer
+cost_management
+credentials
+custom billing manager
+custom event bus resource
+custom_billing_manager
+custom_event_bus_resource
+customer enablement
+customer engagement
+customer gateway
+customer_enablement
+customer_engagement
+customer_gateway
+d2 instance
+d2_instance
+d3 instance
+d3_instance
+d3en instance
+d3en_instance
+data encryption key
+data exchange
+data exchange for apis
+data lake resource icon
+data pipeline
+data set
+data stream
+data table
+data transfer terminal
+data_encryption_key
+data_exchange
+data_exchange_for_apis
+data_lake_resource_icon
+data_pipeline
+data_set
+data_stream
+data_table
+data_transfer_terminal
+database
+database migration service
+database migration workflow job
+database_migration_service
+database_migration_workflow_job
+datasync
+datasync discovery
+datasync_discovery
+datazone
+datazone business data catalog
+datazone data portal
+datazone data projects
+datazone_business_data_catalog
+datazone_data_portal
+datazone_data_projects
+db instance
+db instance read replica
+db instance standby
+db on instance
+db on instance2
+db_instance
+db_instance_read_replica
+db_instance_standby
+db_on_instance
+db_on_instance2
+deadline cloud
+deadline_cloud
+deep learning amis
+deep learning containers
+deep_learning_amis
+deep_learning_containers
+deepcomposer
+deeplens
+deepracer
+default event bus resource
+default_event_bus_resource
+dense compute node
+dense storage node
+dense_compute_node
+dense_storage_node
+deployment
+deployments
+desired state
+desired_state
+desktop and app streaming
+desktop_and_app_streaming
+detective
+developer tools
+developer_tools
+development environment
+development_environment
+device farm
+device_farm
+devops guru
+devops guru insights
+devops_agent
+devops_guru
+devops_guru_insights
+direct connect
+direct_connect
+directory service
+directory_service
+disk
+distro for opentelemetry
+distro_for_opentelemetry
+document
+documentdb elastic clusters
+documentdb with mongodb compatibility
+documentdb_elastic_clusters
+documentdb_with_mongodb_compatibility
+documents
+documents2
+documents3
+door lock
+door_lock
+download distribution
+download_distribution
+dynamodb
+dynamodb dax
+dynamodb standard access table class
+dynamodb standard infrequent access table class
+dynamodb stream
+dynamodb_dax
+dynamodb_standard_access_table_class
+dynamodb_standard_infrequent_access_table_class
+dynamodb_stream
+ec2
+ec2 aws microservice extractor for net
+ec2 c6a instance
+ec2 c6gn instance
+ec2 c6i instance
+ec2 c6in instance
+ec2 c7g instance
+ec2 c7gn instance
+ec2 dl1 instance
+ec2 g5 instance
+ec2 g5g instance
+ec2 hpc6a instance
+ec2 hpc6id instance
+ec2 i4i instance
+ec2 im4gn instance
+ec2 image builder
+ec2 inf2 instance
+ec2 instance contents
+ec2 is4gen instance
+ec2 m1 mac instance
+ec2 m6a instance
+ec2 m6i instance
+ec2 m6idn instance
+ec2 m6in instance
+ec2 p4de instance
+ec2 r6a instance
+ec2 r6i instance
+ec2 r6idn instance
+ec2 r6in instance
+ec2 r7iz instance
+ec2 trn1 instance
+ec2 vt1 instance
+ec2 x2gd instance
+ec2 x2idn instance
+ec2 x2iedn instance
+ec2 x2iezn instance
+ec2_aws_microservice_extractor_for_net
+ec2_c6a_instance
+ec2_c6gn_instance
+ec2_c6i_instance
+ec2_c6in_instance
+ec2_c7g_instance
+ec2_c7gn_instance
+ec2_dl1_instance
+ec2_g5_instance
+ec2_g5g_instance
+ec2_hpc6a_instance
+ec2_hpc6id_instance
+ec2_i4i_instance
+ec2_im4gn_instance
+ec2_image_builder
+ec2_inf2_instance
+ec2_instance_contents
+ec2_is4gen_instance
+ec2_m1_mac_instance
+ec2_m6a_instance
+ec2_m6i_instance
+ec2_m6idn_instance
+ec2_m6in_instance
+ec2_p4de_instance
+ec2_r6a_instance
+ec2_r6i_instance
+ec2_r6idn_instance
+ec2_r6in_instance
+ec2_r7iz_instance
+ec2_trn1_instance
+ec2_vt1_instance
+ec2_x2gd_instance
+ec2_x2idn_instance
+ec2_x2iedn_instance
+ec2_x2iezn_instance
+echo
+ecr
+ecs
+ecs anywhere
+ecs copilot cli
+ecs service
+ecs service connect
+ecs task
+ecs_anywhere
+ecs_copilot_cli
+ecs_service
+ecs_service_connect
+ecs_task
+edge location
+edge_location
+efs infrequentaccess
+efs standard
+efs_infrequentaccess
+efs_standard
+eks
+eks anywhere
+eks cloud
+eks distro
+eks on outposts
+eks_anywhere
+eks_cloud
+eks_distro
+eks_on_outposts
+elastic beanstalk
+elastic block store
+elastic block store amazon data lifecycle manager
+elastic block store volume gp3
+elastic fabric adapter
+elastic file system
+elastic file system elastic throughput
+elastic file system infrequent access
+elastic file system intelligent tiering
+elastic file system one zone
+elastic file system one zone infrequent access
+elastic file system one zone standard
+elastic file system standard
+elastic file system standard infrequent access
+elastic inference
+elastic inference 2
+elastic ip address
+elastic load balancing
+elastic network adapter
+elastic network interface
+elastic transcoder
+elastic vmware service
+elastic_beanstalk
+elastic_block_store
+elastic_block_store_amazon_data_lifecycle_manager
+elastic_block_store_volume_gp3
+elastic_fabric_adapter
+elastic_file_system
+elastic_file_system_elastic_throughput
+elastic_file_system_infrequent_access
+elastic_file_system_intelligent_tiering
+elastic_file_system_one_zone
+elastic_file_system_one_zone_infrequent_access
+elastic_file_system_one_zone_standard
+elastic_file_system_standard
+elastic_file_system_standard_infrequent_access
+elastic_inference
+elastic_inference_2
+elastic_ip_address
+elastic_load_balancing
+elastic_network_adapter
+elastic_network_interface
+elastic_transcoder
+elastic_vmware_service
+elasticache
+elasticache for memcached
+elasticache for redis
+elasticache for valkey
+elasticache_for_memcached
+elasticache_for_redis
+elasticache_for_valkey
+elasticsearch service
+elasticsearch_service
+elemental
+elemental link
+elemental mediaconnect
+elemental mediaconvert
+elemental medialive
+elemental mediapackage
+elemental mediastore
+elemental mediatailor
+elemental_link
+elemental_mediaconnect
+elemental_mediaconvert
+elemental_medialive
+elemental_mediapackage
+elemental_mediastore
+elemental_mediatailor
+email
+email 2
+email notification
+email_2
+email_notification
+emr
+emr engine
+emr engine mapr m3
+emr engine mapr m5
+emr engine mapr m7
+emr_engine
+emr_engine_mapr_m3
+emr_engine_mapr_m5
+emr_engine_mapr_m7
+encrypted data
+encrypted_data
+end user messaging
+end_user_messaging
+endpoint
+endpoints
+entity resolution
+entity_resolution
+event
+event event based
+event resource
+event time based
+event_event_based
+event_resource
+event_time_based
+eventbridge
+eventbridge custom event bus resource
+eventbridge default event bus resource
+eventbridge pipes
+eventbridge saas partner event bus resource
+eventbridge scheduler
+eventbridge schema
+eventbridge schema registry
+eventbridge_custom_event_bus_resource
+eventbridge_default_event_bus_resource
+eventbridge_pipes
+eventbridge_saas_partner_event_bus_resource
+eventbridge_scheduler
+eventbridge_schema
+eventbridge_schema_registry
+express workflow
+express_workflow
+external sdk
+external toolkit
+external_sdk
+external_toolkit
+f1 instance
+f1_instance
+factory
+fargate
+fault injection simulator
+fault_injection_simulator
+file cache
+file cache hybrid nfs linked datasets
+file cache on premises nfs linked datasets
+file cache s3 linked datasets
+file gateway
+file system
+file_cache
+file_cache_hybrid_nfs_linked_datasets
+file_cache_on_premises_nfs_linked_datasets
+file_cache_s3_linked_datasets
+file_gateway
+file_system
+filtering rule
+filtering_rule
+finding
+finspace
+firetv
+firetv stick
+firetv_stick
+firewall manager
+firewall_manager
+fleet management
+fleet_management
+flow logs
+flow_logs
+folder
+folders
+forecast
+forums
+fraud detector
+fraud_detector
+freertos
+fsx
+fsx file gateway
+fsx for lustre
+fsx for netapp ontap
+fsx for openzfs
+fsx for windows file server
+fsx_file_gateway
+fsx_for_lustre
+fsx_for_netapp_ontap
+fsx_for_openzfs
+fsx_for_windows_file_server
+g3 instance
+g3_instance
+g4ad instance
+g4ad_instance
+g4dn
+game tech
+game tech2
+game_tech
+game_tech2
+gamekit
+gamelift
+gamelift 2
+gamelift streams
+gamelift_2
+gamelift_streams
+games
+gamesparks
+gateway
+gateway load balancer
+gateway_load_balancer
+gear
+general
+general access points
+general_access_points
+generic
+generic application
+generic database
+generic firewall
+generic_application
+generic_database
+generic_firewall
+genomics cli
+genomics_cli
+git repository
+git_repository
+glacier
+glacier deep archive
+glacier_deep_archive
+global accelerator
+global secondary index
+global_accelerator
+global_secondary_index
+globe
+glue
+glue crawlers
+glue data catalog
+glue databrew
+glue elastic views
+glue_crawlers
+glue_data_catalog
+glue_databrew
+glue_elastic_views
+greengrass
+ground station
+ground_station
+group account
+group auto scaling group
+group availability zone
+group aws cloud
+group aws cloud alt
+group aws step functions workflow
+group corporate data center
+group ec2 instance contents
+group elastic beanstalk
+group elastic load balancing
+group iot greengrass
+group iot greengrass deployment
+group on premise
+group region
+group security group
+group spot fleet
+group subnet
+group vpc
+group vpc2
+group_account
+group_auto_scaling_group
+group_availability_zone
+group_aws_cloud
+group_aws_cloud_alt
+group_aws_step_functions_workflow
+group_corporate_data_center
+group_ec2_instance_contents
+group_elastic_beanstalk
+group_elastic_load_balancing
+group_iot_greengrass
+group_iot_greengrass_deployment
+group_on_premise
+group_region
+group_security_group
+group_spot_fleet
+group_subnet
+group_vpc
+group_vpc2
+guardduty
+h1 instance
+h1_instance
+habana gaudi
+habana_gaudi
+hardware board
+hardware_board
+hdfs cluster
+hdfs_cluster
+healthimaging
+healthlake
+healthscribe
+high memory instance
+high_memory_instance
+honeycode
+hosted zone
+hosted_zone
+house
+http notification
+http protocol
+http2 protocol
+http2_protocol
+http_notification
+http_protocol
+i2
+i3 instance
+i3_instance
+i3en
+identity access management iam roles anywhere
+identity and access management
+identity_access_management_iam_roles_anywhere
+identity_and_access_management
+illustration desktop
+illustration devices
+illustration notification
+illustration office building
+illustration users
+illustration_desktop
+illustration_devices
+illustration_notification
+illustration_office_building
+illustration_users
+import export
+import_export
+inf1
+inferentia
+infrequent access storage class
+infrequent_access_storage_class
+inspector
+instance
+instance with cloudwatch
+instance with cloudwatch2
+instance2
+instance_with_cloudwatch
+instance_with_cloudwatch2
+instances
+instances 2
+instances_2
+intelligent tiering
+intelligent_tiering
+interactive video
+interactive_video
+internet
+internet alt1
+internet alt2
+internet alt22
+internet gateway
+internet of things
+internet_alt1
+internet_alt2
+internet_alt22
+internet_gateway
+internet_of_things
+inventory
+iot 1click
+iot analytics
+iot analytics channel
+iot analytics data store
+iot analytics dataset
+iot analytics pipeline
+iot button
+iot core
+iot core device advisor
+iot core device location
+iot device defender
+iot device defender iot device jobs
+iot device gateway
+iot device jobs resource
+iot device management
+iot device management fleet
+iot device tester
+iot edukit
+iot events
+iot expresslink
+iot fleetwise
+iot greengrass artifact
+iot greengrass component
+iot greengrass component machine learning
+iot greengrass component nucleus
+iot greengrass component private
+iot greengrass component public
+iot greengrass interprocess communication
+iot greengrass protocol
+iot greengrass recipe
+iot greengrass stream manager
+iot lorawan protocol
+iot over the air update
+iot roborunner
+iot sailboat
+iot sitewise
+iot sitewise asset
+iot sitewise asset hierarchy
+iot sitewise asset model
+iot sitewise asset properties
+iot sitewise data streams
+iot thing freertos device
+iot thing humidity sensor
+iot thing industrial pc
+iot thing plc
+iot thing relay
+iot thing stacklight
+iot thing temperature humidity sensor
+iot thing temperature sensor
+iot thing temperature vibration sensor
+iot thing vibration sensor
+iot things graph
+iot twinmaker
+iot_1click
+iot_analytics
+iot_analytics_channel
+iot_analytics_data_store
+iot_analytics_dataset
+iot_analytics_pipeline
+iot_button
+iot_core
+iot_core_device_advisor
+iot_core_device_location
+iot_device_defender
+iot_device_defender_iot_device_jobs
+iot_device_gateway
+iot_device_jobs_resource
+iot_device_management
+iot_device_management_fleet
+iot_device_tester
+iot_edukit
+iot_events
+iot_expresslink
+iot_fleetwise
+iot_greengrass_artifact
+iot_greengrass_component
+iot_greengrass_component_machine_learning
+iot_greengrass_component_nucleus
+iot_greengrass_component_private
+iot_greengrass_component_public
+iot_greengrass_interprocess_communication
+iot_greengrass_protocol
+iot_greengrass_recipe
+iot_greengrass_stream_manager
+iot_lorawan_protocol
+iot_over_the_air_update
+iot_roborunner
+iot_sailboat
+iot_sitewise
+iot_sitewise_asset
+iot_sitewise_asset_hierarchy
+iot_sitewise_asset_model
+iot_sitewise_asset_properties
+iot_sitewise_data_streams
+iot_thing_freertos_device
+iot_thing_humidity_sensor
+iot_thing_industrial_pc
+iot_thing_plc
+iot_thing_relay
+iot_thing_stacklight
+iot_thing_temperature_humidity_sensor
+iot_thing_temperature_sensor
+iot_thing_temperature_vibration_sensor
+iot_thing_vibration_sensor
+iot_things_graph
+iot_twinmaker
+iq
+item
+items
+json script
+json_script
+kendra
+key management service
+key management service external key store
+key_management_service
+key_management_service_external_key_store
+keyspaces
+kinesis
+kinesis data analytics
+kinesis data firehose
+kinesis data streams
+kinesis video streams
+kinesis_data_analytics
+kinesis_data_firehose
+kinesis_data_streams
+kinesis_video_streams
+lake formation
+lake_formation
+lambda
+lambda function
+lambda_function
+layers
+lex
+license manager
+license manager application discovery
+license manager license blending
+license_manager
+license_manager_application_discovery
+license_manager_license_blending
+lightbulb
+lightsail
+lightsail for research
+lightsail_for_research
+local zones
+local_zones
+location service
+location service geofence
+location service map
+location service place
+location service routes
+location service track
+location_service
+location_service_geofence
+location_service_map
+location_service_place
+location_service_routes
+location_service_track
+logs
+long term security credential
+long_term_security_credential
+lookout for equipment
+lookout for metrics
+lookout for vision
+lookout_for_equipment
+lookout_for_metrics
+lookout_for_vision
+lumberyard
+m4 instance
+m4_instance
+m5 instance
+m5_instance
+m5a instance
+m5a_instance
+m5d instance
+m5d_instance
+m5dn instance
+m5dn_instance
+m5n
+m5n instance
+m5n_instance
+m5zn instance
+m5zn_instance
+m6g instance
+m6g_instance
+m6gd instance
+m6gd_instance
+mac instance
+mac_instance
+machine learning
+machine_learning
+macie
+magnifying glass
+magnifying glass 2
+magnifying_glass
+magnifying_glass_2
+mainframe modernization
+mainframe modernization analyzer
+mainframe modernization compiler
+mainframe modernization converter
+mainframe modernization developer
+mainframe modernization runtime
+mainframe_modernization
+mainframe_modernization_analyzer
+mainframe_modernization_compiler
+mainframe_modernization_converter
+mainframe_modernization_developer
+mainframe_modernization_runtime
+maintenance windows
+maintenance_windows
+managed apache cassandra service
+managed blockchain
+managed ms ad
+managed service for apache flink
+managed service for grafana
+managed service for prometheus
+managed services
+managed streaming for kafka
+managed workflows for apache airflow
+managed_apache_cassandra_service
+managed_blockchain
+managed_ms_ad
+managed_service_for_apache_flink
+managed_service_for_grafana
+managed_service_for_prometheus
+managed_services
+managed_streaming_for_kafka
+managed_workflows_for_apache_airflow
+management and governance
+management console
+management console2
+management_and_governance
+management_console
+management_console2
+marketplace
+media services
+media_services
+mediaconnect gateway
+mediaconnect_gateway
+medical emergency
+medical_emergency
+memorydb for redis
+memorydb_for_redis
+mesh
+message
+metrics
+mfa token
+mfa_token
+migration and transfer
+migration evaluator
+migration hub
+migration hub refactor spaces applications
+migration hub refactor spaces environments
+migration hub refactor spaces services
+migration_and_transfer
+migration_evaluator
+migration_hub
+migration_hub_refactor_spaces_applications
+migration_hub_refactor_spaces_environments
+migration_hub_refactor_spaces_services
+mobile
+mobile application
+mobile client
+mobile hub
+mobile_application
+mobile_client
+mobile_hub
+monitoring
+monitron
+mq
+mq broker
+mq_broker
+mqtt protocol
+mqtt_protocol
+ms sql instance
+ms sql instance alternate
+ms_sql_instance
+ms_sql_instance_alternate
+msk amazon msk connect
+msk_amazon_msk_connect
+multimedia
+multiple volumes resource
+multiple_volumes_resource
+mysql db instance
+mysql db instance alternate
+mysql_db_instance
+mysql_db_instance_alternate
+namespace
+nat gateway
+nat_gateway
+neptune
+network access control list
+network firewall
+network firewall endpoints
+network load balancer
+network_access_control_list
+network_firewall
+network_firewall_endpoints
+network_load_balancer
+networking and content delivery
+networking_and_content_delivery
+neuron ml sdk
+neuron_ml_sdk
+nice dcv
+nice enginframe
+nice_dcv
+nice_enginframe
+nimble studio
+nimble_studio
+nitro enclaves
+nitro_enclaves
+non cached volume
+non_cached_volume
+notebook
+nova
+nova2
+object
+office building
+office_building
+omics
+one zone ia
+one_zone_ia
+open 3d engine
+open 3d engine 2
+open_3d_engine
+open_3d_engine_2
+opensearch dashboards
+opensearch ingestion
+opensearch observability
+opensearch service cluster administrator node
+opensearch service data node
+opensearch service index
+opensearch service traces
+opensearch service ultrawarm node
+opensearch_dashboards
+opensearch_ingestion
+opensearch_observability
+opensearch_service_cluster_administrator_node
+opensearch_service_data_node
+opensearch_service_index
+opensearch_service_traces
+opensearch_service_ultrawarm_node
+opsworks
+opsworks apps
+opsworks permissions
+opsworks_apps
+opsworks_permissions
+optimized instance
+optimized_instance
+oracle database at aws
+oracle db instance
+oracle db instance alternate
+oracle_database_at_aws
+oracle_db_instance
+oracle_db_instance_alternate
+organizations
+organizations account
+organizations account2
+organizations management account
+organizations management account2
+organizations organizational unit
+organizations organizational unit2
+organizations_account
+organizations_account2
+organizations_management_account
+organizations_management_account2
+organizations_organizational_unit
+organizations_organizational_unit2
+outposts
+outposts 1u and 2u servers
+outposts family
+outposts_1u_and_2u_servers
+outposts_family
+p2 instance
+p2_instance
+p3 instance
+p3_instance
+p3dn instance
+p3dn_instance
+p4 instance
+p4_instance
+p4d instance
+p4d_instance
+panorama
+parallel cluster
+parallel computing service
+parallel_cluster
+parallel_computing_service
+parameter store
+parameter_store
+partner central
+partner_central
+patch manager
+patch_manager
+payment cryptography
+payment_cryptography
+peering
+permissions
+permissions 2
+permissions_2
+personal health dashboard
+personal_health_dashboard
+personalize
+pinpoint
+pinpoint journey
+pinpoint_journey
+piop
+police emergency
+police_emergency
+policy
+polly
+postgresql instance
+postgresql_instance
+private 5g
+private certificate authority
+private_5g
+private_certificate_authority
+privatelink
+professional services
+professional_services
+programming language
+programming_language
+proton
+q
+quantum ledger database
+quantum technologies
+quantum_ledger_database
+quantum_technologies
+question
+queue
+quick suite
+quick_suite
+quicksight
+quicksight paginated reports
+quicksight_paginated_reports
+r4 instance
+r4_instance
+r5 instance
+r5_instance
+r5a instance
+r5a_instance
+r5ad instance
+r5ad_instance
+r5b instance
+r5b_instance
+r5d instance
+r5d_instance
+r5gd instance
+r5gd_instance
+r5n
+r5n instance
+r5n_instance
+r6g instance
+r6g_instance
+rdn instance
+rdn_instance
+rds
+rds blue green deployments
+rds instance
+rds instance alt
+rds mariadb instance
+rds mariadb instance alt
+rds multi az
+rds multi az db cluster
+rds mysql instance
+rds mysql instance alt
+rds on vmware
+rds optimized writes
+rds oracle instance
+rds oracle instance alt
+rds piop
+rds piops
+rds postgresql instance
+rds postgresql instance alt
+rds proxy
+rds proxy alt
+rds sql server instance
+rds sql server instance alt
+rds trusted language extensions for postgresql
+rds_blue_green_deployments
+rds_instance
+rds_instance_alt
+rds_mariadb_instance
+rds_mariadb_instance_alt
+rds_multi_az
+rds_multi_az_db_cluster
+rds_mysql_instance
+rds_mysql_instance_alt
+rds_on_vmware
+rds_optimized_writes
+rds_oracle_instance
+rds_oracle_instance_alt
+rds_piop
+rds_piops
+rds_postgresql_instance
+rds_postgresql_instance_alt
+rds_proxy
+rds_proxy_alt
+rds_sql_server_instance
+rds_sql_server_instance_alt
+rds_trusted_language_extensions_for_postgresql
+recover
+red hat openshift
+red_hat_openshift
+redshift
+redshift auto copy
+redshift data sharing governance
+redshift ml
+redshift query editor v20 light
+redshift ra3
+redshift streaming ingestion
+redshift_auto_copy
+redshift_data_sharing_governance
+redshift_ml
+redshift_query_editor_v20_light
+redshift_ra3
+redshift_streaming_ingestion
+registry
+rekognition
+rekognition 2
+rekognition image
+rekognition video
+rekognition_2
+rekognition_image
+rekognition_video
+replication
+replication time control
+replication_time_control
+reported state
+reported_state
+repost
+repost private
+repost_private
+rescue
+reserved instance reporting
+reserved_instance_reporting
+resilience hub
+resilience_hub
+resource
+resource access manager
+resource explorer
+resource_access_manager
+resource_explorer
+resources
+robomaker
+robotics
+role
+route 53
+route 53 application recovery controller
+route 53 readiness checks
+route 53 resolver
+route 53 resolver dns firewall
+route 53 resolver query logging
+route 53 routing controls
+route table
+route_53
+route_53_application_recovery_controller
+route_53_readiness_checks
+route_53_resolver
+route_53_resolver_dns_firewall
+route_53_resolver_query_logging
+route_53_routing_controls
+route_table
+router
+rtb fabric
+rtb_fabric
+rule
+rule 2
+rule 3
+rule_2
+rule_3
+run command
+run_command
+s3
+s3 batch operations
+s3 express one zone
+s3 file gateway
+s3 multi region access points
+s3 object lambda
+s3 object lambda access points
+s3 object lock
+s3 on outposts
+s3 on outposts storage
+s3 replication time control
+s3 select
+s3 storage lens
+s3 tables
+s3 vectors
+s3_batch_operations
+s3_express_one_zone
+s3_file_gateway
+s3_multi_region_access_points
+s3_object_lambda
+s3_object_lambda_access_points
+s3_object_lock
+s3_on_outposts
+s3_on_outposts_storage
+s3_replication_time_control
+s3_select
+s3_storage_lens
+s3_tables
+s3_vectors
+saas event bus resource
+saas_event_bus_resource
+sagemaker
+sagemaker 2
+sagemaker canvas
+sagemaker geospatial ml
+sagemaker ground truth
+sagemaker model
+sagemaker notebook
+sagemaker shadow testing
+sagemaker studio lab
+sagemaker train
+sagemaker_2
+sagemaker_canvas
+sagemaker_geospatial_ml
+sagemaker_ground_truth
+sagemaker_model
+sagemaker_notebook
+sagemaker_shadow_testing
+sagemaker_studio_lab
+sagemaker_train
+saml token
+saml_token
+satellite
+savings plans
+savings_plans
+search documents
+search_documents
+secrets manager
+secrets_manager
+security group
+security hub
+security hub finding
+security identity and compliance
+security incident response
+security lake
+security_agent
+security_group
+security_hub
+security_hub_finding
+security_identity_and_compliance
+security_incident_response
+security_lake
+sensor
+server migration service
+server_migration_service
+serverless
+serverless application repository
+serverless_application_repository
+servers
+service
+service catalog
+service management connector
+service_catalog
+service_management_connector
+servo
+shadow
+shield
+shield shield advanced
+shield2
+shield_shield_advanced
+signer
+simple ad
+simple email service
+simple storage service directory bucket
+simple storage service s3 glacier instant retrieval
+simple_ad
+simple_email_service
+simple_storage_service_directory_bucket
+simple_storage_service_s3_glacier_instant_retrieval
+simspace weaver
+simspace_weaver
+simulation
+simulator
+single sign on
+single_sign_on
+site to site vpn
+site_to_site_vpn
+snapshot
+snowball
+snowball edge
+snowball_edge
+snowcone
+snowmobile
+sns
+source code
+source_code
+spot instance
+spot_instance
+sql primary
+sql replica
+sql workbench
+sql_primary
+sql_replica
+sql_workbench
+sqs
+ssl padlock
+ssl_padlock
+stack
+stack2
+standard ia
+standard_ia
+state manager
+state_manager
+step functions
+step_functions
+storage
+storage gateway
+storage_gateway
+streaming distribution
+streaming_distribution
+sts
+sts alternate
+sts_alternate
+sumerian
+supply chain
+supply_chain
+support
+systems manager
+systems manager application manager
+systems manager change calendar
+systems manager change manager
+systems manager compliance
+systems manager distributor
+systems manager incident manager
+systems manager opscenter
+systems manager session manager
+systems_manager
+systems_manager_application_manager
+systems_manager_change_calendar
+systems_manager_change_manager
+systems_manager_compliance
+systems_manager_distributor
+systems_manager_incident_manager
+systems_manager_opscenter
+systems_manager_session_manager
+t2 instance
+t2_instance
+t3 instance
+t3_instance
+t3a instance
+t3a_instance
+t4g instance
+t4g_instance
+table
+tape gateway
+tape storage
+tape_gateway
+tape_storage
+telco network builder
+telco_network_builder
+template
+temporary security credential
+temporary_security_credential
+tensorflow on aws
+tensorflow_on_aws
+textract
+textract analyze lending
+textract_analyze_lending
+thermostat
+thinkbox deadline
+thinkbox draft
+thinkbox frost
+thinkbox krakatoa
+thinkbox sequoia
+thinkbox stoke
+thinkbox xmesh
+thinkbox_deadline
+thinkbox_draft
+thinkbox_frost
+thinkbox_krakatoa
+thinkbox_sequoia
+thinkbox_stoke
+thinkbox_xmesh
+timestream
+tools and sdks
+tools_and_sdks
+topic
+topic 2
+topic_2
+torchserve
+traditional server
+traditional_server
+training certification
+training_certification
+trainium instance
+trainium_instance
+transcribe
+transfer family
+transfer family aws as2
+transfer for ftp resource
+transfer for ftps resource
+transfer for sftp
+transfer for sftp resource
+transfer_family
+transfer_family_aws_as2
+transfer_for_ftp_resource
+transfer_for_ftps_resource
+transfer_for_sftp
+transfer_for_sftp_resource
+transform
+transit gateway
+transit gateway attachment
+transit_gateway
+transit_gateway_attachment
+translate
+travel
+trusted advisor
+trusted_advisor
+user
+user notifications
+user_notifications
+users
+utility
+vault
+verified access
+verified permissions
+verified_access
+verified_permissions
+virtual gateway
+virtual node
+virtual private cloud
+virtual router
+virtual service
+virtual tape library
+virtual_gateway
+virtual_node
+virtual_private_cloud
+virtual_router
+virtual_service
+virtual_tape_library
+vmware cloud on aws
+vmware_cloud_on_aws
+volume
+volume gateway
+volume_gateway
+vpc
+vpc access points
+vpc carrier gateway
+vpc lattice
+vpc network access analyzer
+vpc privatelink
+vpc reachability analyzer
+vpc traffic mirroring
+vpc virtual private cloud vpc
+vpc_access_points
+vpc_carrier_gateway
+vpc_lattice
+vpc_network_access_analyzer
+vpc_privatelink
+vpc_reachability_analyzer
+vpc_traffic_mirroring
+vpc_virtual_private_cloud_vpc
+vpn connection
+vpn gateway
+vpn_connection
+vpn_gateway
+waf
+waf bad bot
+waf bot
+waf bot control
+waf labels
+waf managed rule
+waf rule
+waf_bad_bot
+waf_bot
+waf_bot_control
+waf_labels
+waf_managed_rule
+waf_rule
+wavelength
+well architect tool
+well architected tool
+well_architect_tool
+well_architected_tool
+wickr
+windfarm
+work package
+work_package
+workdocs
+worklink
+workmail
+workspaces
+workspaces family
+workspaces family amazon workspaces
+workspaces family amazon workspaces core
+workspaces thin client
+workspaces workspaces web
+workspaces_family
+workspaces_family_amazon_workspaces
+workspaces_family_amazon_workspaces_core
+workspaces_thin_client
+workspaces_workspaces_web
+x1 instance
+x1 instance2
+x1_instance
+x1_instance2
+x1e instance
+x1e_instance
+xray
+z1d instance
+z1d_instance

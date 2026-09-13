@@ -1,0 +1,249 @@
+{
+  "canvas": {
+    "width": 1400,
+    "height": 720,
+    "fps": 20
+  },
+  "theme": {
+    "name": "dark"
+  },
+  "title": {
+    "text": "Git Webhook",
+    "highlight": "to AWS",
+    "subtitle": "A push to a third-party repo fires a webhook; Lambda clones it and lands the code in S3"
+  },
+  "nodes": [
+    {
+      "id": "cloud",
+      "type": "box",
+      "layer": "background",
+      "label": "AWS Cloud",
+      "body": "",
+      "x": 620,
+      "y": 160,
+      "w": 720,
+      "h": 500,
+      "color": "blue",
+      "label_size": 18,
+      "icon": "aws/aws",
+      "icon_size": 34
+    },
+    {
+      "id": "users",
+      "type": "box",
+      "label": "Git Users",
+      "body": "Developers\ncommit and push",
+      "x": 40,
+      "y": 340,
+      "w": 180,
+      "h": 110,
+      "label_h": 36,
+      "label_size": 21,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "green",
+      "icon": "aws/general/users",
+      "icon_size": 34
+    },
+    {
+      "id": "repo",
+      "type": "box",
+      "label": "Git Repository",
+      "body": "Third-party host\nGitHub, GitLab, Bitbucket",
+      "x": 320,
+      "y": 340,
+      "w": 230,
+      "h": 110,
+      "label_h": 36,
+      "label_size": 21,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "purple",
+      "icon": "onprem/vcs/git",
+      "icon_size": 34
+    },
+    {
+      "id": "lambda",
+      "type": "box",
+      "label": "AWS Lambda",
+      "body": "Receives the webhook\nclones, zips, uploads",
+      "x": 680,
+      "y": 340,
+      "w": 210,
+      "h": 110,
+      "label_h": 36,
+      "label_size": 21,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "blue",
+      "icon": "aws/compute/lambda",
+      "icon_size": 34
+    },
+    {
+      "id": "ssh",
+      "type": "box",
+      "label": "SSH Key Bucket",
+      "body": "Amazon S3\nprivate key for the clone",
+      "x": 1060,
+      "y": 200,
+      "w": 240,
+      "h": 100,
+      "label_h": 34,
+      "label_size": 19,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "purple",
+      "icon": "aws/storage/simple-storage-service-s3-bucket",
+      "icon_size": 34
+    },
+    {
+      "id": "kms",
+      "type": "box",
+      "label": "KMS Key",
+      "body": "AWS KMS\ndecrypts the SSH key",
+      "x": 1060,
+      "y": 345,
+      "w": 240,
+      "h": 100,
+      "label_h": 34,
+      "label_size": 19,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "green",
+      "icon": "aws/security/key-management-service",
+      "icon_size": 34
+    },
+    {
+      "id": "out",
+      "type": "box",
+      "label": "Output Bucket",
+      "body": "Amazon S3\nzipped source per push",
+      "x": 1060,
+      "y": 490,
+      "w": 240,
+      "h": 100,
+      "label_h": 34,
+      "label_size": 19,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "purple",
+      "icon": "aws/storage/simple-storage-service-s3-bucket",
+      "icon_size": 34
+    }
+  ],
+  "edges": [
+    {
+      "from": "users",
+      "to": "repo",
+      "label": "Git push"
+    },
+    {
+      "from": "repo",
+      "to": "lambda",
+      "label": "Git webhook"
+    },
+    {
+      "from": "lambda",
+      "to": "ssh",
+      "points": [
+        [
+          890,
+          395
+        ],
+        [
+          970,
+          395
+        ],
+        [
+          970,
+          250
+        ],
+        [
+          1060,
+          250
+        ]
+      ]
+    },
+    {
+      "from": "lambda",
+      "to": "kms"
+    },
+    {
+      "from": "lambda",
+      "to": "out",
+      "points": [
+        [
+          890,
+          395
+        ],
+        [
+          970,
+          395
+        ],
+        [
+          970,
+          540
+        ],
+        [
+          1060,
+          540
+        ]
+      ]
+    },
+    {
+      "from": "lambda",
+      "to": "repo",
+      "label": "status",
+      "points": [
+        [
+          785,
+          450
+        ],
+        [
+          785,
+          570
+        ],
+        [
+          435,
+          570
+        ],
+        [
+          435,
+          450
+        ]
+      ]
+    }
+  ],
+  "animation": {
+    "step_seconds": 1.2,
+    "hold_seconds": 0.8,
+    "steps": [
+      {
+        "edges": [
+          0
+        ],
+        "label": "git push"
+      },
+      {
+        "edges": [
+          1
+        ],
+        "label": "webhook"
+      },
+      {
+        "edges": [
+          2,
+          3,
+          4
+        ],
+        "label": "three stores at once"
+      },
+      {
+        "edges": [
+          5
+        ],
+        "label": "status back"
+      }
+    ]
+  }
+}

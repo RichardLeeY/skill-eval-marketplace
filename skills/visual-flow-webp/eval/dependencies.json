@@ -1,0 +1,6 @@
+{
+  "case_commands": {
+    "flow-webp-git-webhook-slide-mp4": ["ffmpeg", "ffprobe"],
+    "flow-webp-reference-overlay-mp4": ["ffmpeg", "ffprobe"]
+  }
+}

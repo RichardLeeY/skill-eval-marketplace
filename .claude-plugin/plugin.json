@@ -1,0 +1,10 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "aws-sa-skills",
+  "version": "0.7.0",
+  "description": "AWS Solutions Architect skills: draw.io AWS architecture diagrams, folder-scoped CLAUDE.md / AGENTS.md authoring, and animated flow diagrams as PNG + animated WebP. Every skill ships its own eval cases.",
+  "author": {
+    "name": "Richard Lee"
+  },
+  "homepage": "https://github.com/RichardLeeY/skill-eval-marketplace"
+}

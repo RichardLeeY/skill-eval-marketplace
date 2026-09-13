@@ -1,0 +1,4 @@
+Pillow>=10.0.0
+# Icon set for the spec's `icon` field: the official AWS (and GCP, Azure, k8s,
+# on-prem, generic) architecture icons, installed as package data, not vendored here.
+diagrams>=0.24

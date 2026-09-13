@@ -1,0 +1,94 @@
+# Eval as a build step, on the GitLab instance the repo actually lives on.
+#
+# Two stages, cheapest first, so a broken dataset never buys an agent run:
+#
+#   lint   check_repo.py (dataset schema, ids, seeds, references), bandit and
+#          semgrep on the kit and every skill's eval/ and scripts/. No AWS, no
+#          model. Runs for merge requests and manual pipelines.
+#   eval   skill-eval run --profile core --negative-controls: execute, score
+#          nonvisual checks, then run the available calibration controls.
+#          Needs Bedrock, so it needs credentials: AWS
+#          Credential Vendor assumes AWS_CREDS_TARGET_ROLE for the job. The role
+#          must trust the GitLab runner role (arn:aws:iam::<RUNNER_ACCOUNT_ID>:role/<runner-role>) with a
+#          Condition on GitLab:Group / GitLab:Project (see your GitLab instance's
+#          documentation on vending AWS credentials to CI jobs).
+#          A required eval fails if credentials are missing; it must not silently
+#          disappear from an otherwise green merge request.
+#
+# Image: pulled from Public ECR, not Docker Hub (shared runners hit the Hub rate
+# limit). node:22-bookworm carries python3 too, which the skills with a
+# package.json need alongside their Python renderers.
+
+stages: [lint, eval]
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - when: never
+
+default:
+  image: public.ecr.aws/docker/library/node:22-bookworm
+  tags: [arch:amd64, size:medium]
+  interruptible: true
+  before_script:
+    - python3 --version && node --version
+    # The Node image lacks pip and ensurepip. Standalone uv creates the venv itself.
+    - curl --fail --silent --show-error --location "https://astral.sh/uv/${UV_VERSION}/install.sh" --output /tmp/uv-install.sh
+    - UV_UNMANAGED_INSTALL="$CI_PROJECT_DIR/.uv-bin" sh /tmp/uv-install.sh
+    - export PATH="$CI_PROJECT_DIR/.uv-bin:$PATH"
+    - uv --version
+    - uv sync --locked --python /usr/bin/python3
+
+variables:
+  UV_VERSION: "0.11.1"
+  AWS_DEFAULT_REGION: us-east-1
+  # Compare the entire MR against its diff base, including earlier commits.
+  GIT_DEPTH: "0"
+
+repo-check:
+  stage: lint
+  # Jobs without rules are excluded from MR pipelines by GitLab's defaults.
+  rules:
+    - when: on_success
+  script:
+    - uv run --locked skill-eval check
+    - .venv/bin/python -m evalkit.gitlab_ci --plan-only
+    - command -v ffmpeg >/dev/null || (apt-get update -qq && apt-get install -y -qq ffmpeg)
+    - uv run --locked --extra visual python -m unittest discover -s tests -v
+
+security-scan:
+  stage: lint
+  rules:
+    - when: on_success
+  script:
+    # The same scanners Probe runs (bandit for Python, semgrep for the rest), so
+    # a critical is caught on the branch instead of after the push to main.
+    - uv run --with bandit bandit -q -r evalkit skills/*/eval skills/*/scripts -ll -ii
+    - uv run --with semgrep semgrep scan --config p/python --config p/javascript --error --severity ERROR evalkit skills
+
+eval:
+  stage: eval
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - skills/**/*
+        - evalkit/**/*
+        - tests/**/*
+        - pyproject.toml
+        - uv.lock
+        - requirements.txt
+        - eval-baseline.json
+        - .gitlab-ci.yml
+        - AGENTS.md
+        - CLAUDE.md
+  script:
+    - .venv/bin/python -m evalkit.gitlab_ci
+  after_script:
+    - python3 -m evalkit.ci_report
+  artifacts:
+    expose_as: "Skill evaluation"
+    when: always
+    expire_in: 2 weeks
+    paths: [.eval/]

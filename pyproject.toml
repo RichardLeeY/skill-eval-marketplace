@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skill-marketplace-eval"
+version = "0.1.0"
+description = "Local execution, scoring and regression checks for marketplace skills"
+requires-python = ">=3.11"
+dependencies = [
+  "bedrock-agentcore>=1.22",
+  "boto3>=1.43.41",
+  "defusedxml>=0.7",
+  "strands-agents>=1.42",
+  "strands-agents-evals>=1.2",
+]
+
+[project.optional-dependencies]
+openai = ["strands-agents[openai]>=1.42"]
+visual = ["Pillow>=10", "diagrams>=0.24"]
+
+[project.scripts]
+skill-eval = "evalkit.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["evalkit"]

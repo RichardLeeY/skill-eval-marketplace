@@ -1,0 +1,49 @@
+name: skill-eval
+
+on:
+  pull_request:
+    paths: ["skills/**", "evalkit/**", "tests/**", "pyproject.toml", "uv.lock", "eval-baseline.json", ".github/workflows/skill-eval.yml"]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install uv
+      - run: uv run --locked skill-eval check
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: uv run --locked --extra visual python -m unittest discover -s tests -v
+
+  eval:
+    needs: check
+    if: ${{ vars.EVAL_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: pip install uv
+      - run: uv run --locked skill-eval setup --with-system-deps
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Grant InvokeModel and InvokeModelWithResponseStream on the model resources.
+          role-to-assume: ${{ secrets.EVAL_ROLE_ARN }}
+          aws-region: us-east-1
+      - run: uv run --locked skill-eval run --profile core --negative-controls
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-output
+          path: .eval/runs/
+          include-hidden-files: true

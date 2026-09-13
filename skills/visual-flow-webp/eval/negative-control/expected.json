@@ -1,0 +1,6 @@
+{
+  "max_score": 0.30,
+  "why": "Produced by the skill's real renderer from a deliberately bad spec, so it is a genuine artifact rather than a hand-corrupted file: four boxes stacked on top of each other, labels that are whole sentences overprinting the body copy under them, no title, every node the same blue, every arrow hidden behind a shape, four fifths of the canvas empty, and animation.paths/pulses both empty so all 48 frames collapse to one. Against FLOW_VISUAL_RUBRIC that is group 1 (legibility) absent and group 2 (the system asked for) absent, and the rubric caps either of those at 0.25. The ceiling here is 0.30, a little above that cap: it is testing whether the ruler still measures, not whether the wording of one clause survived an edit. If a rubric change lifts this above 0.30, the rubric got looser -- the artifact did not get better.",
+  "prompt": "Draw me an animated flow diagram of a nightly ETL job: S3 landing bucket, a Glue crawler, a Glue ETL job that writes Parquet, then Athena on top. If anything fails it alerts SNS and the run is retried once.",
+  "rubric": "FLOW_VISUAL_RUBRIC"
+}

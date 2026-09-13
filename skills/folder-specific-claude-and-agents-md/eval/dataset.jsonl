@@ -1,0 +1,122 @@
+// Layer 1 only, no eval/plugin.py, because everything
+// that matters here is either a literal string the skill prescribes or a shape the
+// skill's own verify.sh already checks. A model judge would add cost and noise
+// without adding a measurement.
+//
+// Both cases seed a folder and grade the file written INTO it. Seeded files are
+// collected as artifacts too -- baseline hashing only covers the skill's own source
+// -- so every `file_glob` here is an exact path rather than a `*CLAUDE.md` glob.
+// Otherwise case 2's regexes would read the seeded ROOT CLAUDE.md and pass on
+// content the agent never wrote.
+//
+// AGENTS.md is deliberately not graded through `file_glob`: it is a symlink, and
+// collect_artifacts skips symlinks (sandbox.py:452). The symlink is proved instead by
+// `validator_pass_regex`, since verify.sh prints PASS only after resolving it --
+// which is also the higher-signal check, because it fails on a copy.
+//
+// Not covered, and known: the Step 1 gate that declines a folder which does not
+// deserve a file. Grading it needs a "no file was produced" grader the kit does not
+// have, and a case whose expected outcome is an empty workspace invites the agent to
+// stall rather than finish. Add it with the grader, not before.
+{
+    "id": "claude-md-ingest-folder",
+    "prompt": "Write a CLAUDE.md for the ingest/ folder so the next agent working in there has the context it needs.",
+    "seed_files": {
+        "ingest/README.md": "# ingest\n\nPulls CloudTrail digest files from the `audit-digests` S3 bucket and normalizes\nthem into Parquet under `s3://audit-lake/cloudtrail/`, partitioned for Athena.\n\nRuns as a Lambda behind a 5-minute EventBridge schedule. Not a service; there is\nno API in front of it.\n",
+        "ingest/handler.py": "\"\"\"Lambda entrypoint for the digest ingest.\"\"\"\n\nimport json\nimport os\n\n# Hard cap. Above 500 records the downstream synchronous invoke exceeds the 6 MB\n# Lambda response limit and fails the whole batch, not just the overflow. Raising\n# this has been tried twice.\nBATCH_SIZE = 500\n\nBUCKET = os.environ[\"DIGEST_BUCKET\"]\n\n\ndef handler(event, context):\n    records = _fetch(event)\n    if len(records) > BATCH_SIZE:\n        records = records[:BATCH_SIZE]\n    return {\"written\": _write(records)}\n\n\ndef _fetch(event):\n    return json.loads(event.get(\"body\") or \"[]\")\n\n\ndef _write(records):\n    # Timestamps stay UTC and ISO-8601. Athena partition projection is configured\n    # for dt=YYYY-MM-DD, so a local-time timestamp lands in the wrong partition\n    # silently instead of raising.\n    return len(records)\n",
+        "ingest/normalize_cloudtrail.py": "\"\"\"CloudTrail-specific field mapping.\n\nOne module per source, named normalize_<source>.py. normalize_vpcflow.py and\nnormalize_alb.py follow the same shape.\n\"\"\"\n\nFIELDS = [\"eventTime\", \"eventName\", \"userIdentity\", \"sourceIPAddress\"]\n\n\ndef normalize(record):\n    # Every new field must be added as nullable. The Glue crawler runs after this\n    # step, and a non-nullable column breaks backfills of older partitions.\n    return {k: record.get(k) for k in FIELDS}\n",
+        "ingest/notes.md": "# notes\n\n2026-04-12 - Parquet over JSONL. Athena scan cost on the standard query set\ndropped roughly 8x. Decided; not open for discussion again.\n\n2026-05-03 - Removed the DynamoDB dedupe table. S3 digest object keys are already\nunique per delivery, so it was paying for a guarantee we already had. Do not\nreintroduce it.\n\n2026-06-20 - Kept the ingest as a Lambda rather than moving to Glue. Runtime is\nunder 40s at p99 and Glue's cold start was worse than the whole invocation.\n\nOpen: whether to backfill 2025 digests at all. Nobody has asked for them yet.\n",
+        "ingest/schema.json": "{\n  \"type\": \"record\",\n  \"name\": \"cloudtrail_normalized\",\n  \"fields\": [\n    {\"name\": \"eventTime\", \"type\": [\"null\", \"string\"], \"default\": null},\n    {\"name\": \"eventName\", \"type\": [\"null\", \"string\"], \"default\": null},\n    {\"name\": \"userIdentity\", \"type\": [\"null\", \"string\"], \"default\": null},\n    {\"name\": \"sourceIPAddress\", \"type\": [\"null\", \"string\"], \"default\": null}\n  ]\n}\n"
+    },
+    "expect": {
+        "skill": "folder-specific-claude-and-agents-md",
+        "file_glob": "ingest/CLAUDE.md",
+        "validator_pass_regex": "PASS: ingest/CLAUDE\\.md",
+        "tools_any_order": [
+            "Skill",
+            "Read",
+            "Write",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Read",
+            "Write",
+            "Bash"
+        ],
+        "artifact_regex": [
+            "\\b500\\b",
+            "(?i)ISO.?8601|\\bUTC\\b",
+            "(?i)dedupe|dynamodb",
+            "(?i)must not|constraint",
+            "(?i)normalize_"
+        ],
+        "artifact_regex_absent": [
+            "[├└│]",
+            "(?i)\\bTODO\\b",
+            "(?i)\\bplaceholder\\b"
+        ],
+        "min_counts": {
+            "(?m)^##\\s+": 3,
+            "(?m)^\\s*[-*]\\s+": 8
+        },
+        "max_tool_calls": 20,
+        "assertions": [
+            "Every rule and fact in ingest/CLAUDE.md traces back to the seeded files rather than to generic best practice: the 500-record batch cap and why raising it fails, the UTC / ISO-8601 timestamp requirement tied to Athena partition projection, the nullable-field rule tied to the Glue crawler, and the dated decision not to reintroduce the DynamoDB dedupe table.",
+            "Hard prohibitions sit in a Constraints (MUST NOT) section, separate from soft 'usually do X' patterns such as the normalize_<source>.py naming convention, which sit in Conventions.",
+            "The file contains no directory tree, no file listing for its own sake, and nothing an agent could derive by running LS or grep in the folder.",
+            "Dated decisions from notes.md are recorded as locked decisions with their dates, and the still-open question about backfilling 2025 digests is not presented as decided.",
+            "Absolute rules carry their exceptions rather than being stated as bare ALWAYS or NEVER."
+        ]
+    }
+}
+{
+    "id": "claude-md-subdir-under-root",
+    "prompt": "platform/eks/ needs its own CLAUDE.md - agents keep bumping the cluster version without reading the runbook first. Write one.",
+    "seed_files": {
+        "CLAUDE.md": "# CLAUDE.md\n\nRepo-wide rules for the platform monorepo. Every agent applies this file first.\n\n## Conventions\n- All commits follow Conventional Commits. `feat:`, `fix:`, `chore:`.\n- Terraform is formatted with `terraform fmt` before every commit.\n- Python is formatted with `ruff format`.\n\n## Constraints (MUST NOT)\n- Never push directly to main. Open a merge request.\n- Never commit `.tfvars` files except `example.tfvars`.\n- Never run `terraform apply` from a laptop; the pipeline owns apply.\n\n## Working style\n- Short replies. State what changed, not what you plan to change.\n",
+        "platform/eks/README.md": "# platform/eks\n\nThe shared EKS cluster every internal service deploys onto. One cluster per\naccount, three node groups: `system`, `general`, `spot-batch`.\n\nCluster upgrades are the riskiest recurring work in this repo. Read the runbook\nbefore touching a version number.\n",
+        "platform/eks/cluster.tf": "module \"cluster\" {\n  source = \"terraform-aws-modules/eks/aws\"\n\n  cluster_name = \"shared-${var.env}\"\n\n  # Pinned. 1.29 is the highest version the ALB controller in use supports; 1.30\n  # drops the API the ingress annotations rely on. Bumping this without bumping\n  # the controller first has broken every ingress in the cluster once already.\n  cluster_version = \"1.29\"\n\n  # spot-batch is drained, never cordoned-and-left. A cordoned spot node still\n  # counts against the ASG and blocks the next scale-up.\n  eks_managed_node_groups = {\n    system     = { min_size = 2, max_size = 4, instance_types = [\"m6i.large\"] }\n    general    = { min_size = 3, max_size = 12, instance_types = [\"m6i.xlarge\"] }\n    spot_batch = { min_size = 0, max_size = 40, capacity_type = \"SPOT\" }\n  }\n}\n",
+        "platform/eks/runbook.md": "# Cluster upgrade runbook\n\nLong-form procedure. Roughly 40 steps across control plane, node groups, and addon\ncompatibility, with the rollback path for each.\n\n## 1. Pre-flight\nCheck the addon compatibility matrix. Confirm the ALB controller version supports\nthe target cluster version. Confirm no PodDisruptionBudget blocks a drain.\n\n## 2. Control plane\nUpgrade in place. Expect 25-40 minutes. The API stays available; webhooks do not.\n\n## 3. Node groups\nOne group at a time, `system` last. Drain, never cordon-and-leave.\n\n## 4. Addons\nCoreDNS, kube-proxy, VPC CNI, EBS CSI. Each has its own version floor.\n\n## 5. Rollback\nControl plane upgrades are one-way. Rollback means a new cluster and a blue/green\ncutover, which is why pre-flight is not optional.\n"
+    },
+    "expect": {
+        "skill": "folder-specific-claude-and-agents-md",
+        "file_glob": "platform/eks/CLAUDE.md",
+        "validator_pass_regex": "PASS: platform/eks/CLAUDE\\.md",
+        "tools_any_order": [
+            "Skill",
+            "Read",
+            "Write",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Read",
+            "Write",
+            "Bash"
+        ],
+        "artifact_regex": [
+            "Apply root CLAUDE\\.md first, then this file\\.",
+            "(?i)\\*\\*read when:?\\*\\*",
+            "@[\\w./-]*runbook\\.md",
+            "1\\.29",
+            "(?i)drain"
+        ],
+        "artifact_regex_absent": [
+            "(?i)conventional commits",
+            "(?i)never push directly to main",
+            "(?i)ruff format",
+            "[├└│]"
+        ],
+        "min_counts": {
+            "(?m)^##\\s+": 2
+        },
+        "max_tool_calls": 20,
+        "assertions": [
+            "platform/eks/CLAUDE.md opens with the exact line 'Apply root CLAUDE.md first, then this file.' and does not restate any rule the seeded root CLAUDE.md already carries - no Conventional Commits, no never-push-to-main, no formatter rules.",
+            "The pinned cluster version 1.29 and the reason it is pinned (the ALB controller in use does not support 1.30) are recorded as a constraint, since that is the mistake the user says agents keep making.",
+            "runbook.md is referenced with @-import syntax and annotated with a **Read when:** trigger rather than being summarized inline or left to load every session.",
+            "The spot-batch drain-never-cordon rule appears as a constraint, traced to cluster.tf rather than stated as generic Kubernetes advice."
+        ]
+    }
+}

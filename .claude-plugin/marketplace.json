@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "skill-marketplace",
+  "description": "AWS SA skills with a shared eval kit. Each skill carries its own eval/dataset.jsonl, so a skill's git sha identifies its scoring standard as well as its behaviour.",
+  "owner": {
+    "name": "Richard Lee"
+  },
+  "plugins": [
+    {
+      "name": "aws-sa-skills",
+      "source": "./",
+      "version": "0.7.0",
+      "description": "draw.io AWS architecture diagrams, folder-scoped CLAUDE.md / AGENTS.md authoring, animated flow diagrams (PNG + animated WebP)."
+    }
+  ]
+}

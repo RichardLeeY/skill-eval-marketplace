@@ -1,0 +1,79 @@
+{
+  "canvas": {
+    "width": 1360,
+    "height": 900,
+    "fps": 20,
+    "frames": 48
+  },
+  "theme": {
+    "name": "light"
+  },
+  "nodes": [
+    {
+      "id": "step1",
+      "type": "box",
+      "label": "The first step of the process where the data arrives from upstream",
+      "body": "this box explains at some length what happens when a file lands, which upstream team owns it, and what the retention policy on the bucket is\nsecond line\nthird line\nfourth line\nfifth line\nsixth line",
+      "x": 40,
+      "y": 60,
+      "w": 200,
+      "h": 90,
+      "color": "blue"
+    },
+    {
+      "id": "step2",
+      "type": "box",
+      "label": "Then the second step happens which is where most of the work is done",
+      "body": "more explanation that will not fit\nanother line\nand another",
+      "x": 150,
+      "y": 100,
+      "w": 200,
+      "h": 90,
+      "color": "blue"
+    },
+    {
+      "id": "step3",
+      "type": "box",
+      "label": "Third step",
+      "body": "output",
+      "x": 260,
+      "y": 140,
+      "w": 200,
+      "h": 90,
+      "color": "blue"
+    },
+    {
+      "id": "step4",
+      "type": "box",
+      "label": "Data Thing",
+      "body": "does the thing",
+      "x": 300,
+      "y": 175,
+      "w": 200,
+      "h": 90,
+      "color": "blue"
+    }
+  ],
+  "edges": [
+    {
+      "from": "step1",
+      "to": "step2"
+    },
+    {
+      "from": "step2",
+      "to": "step3"
+    },
+    {
+      "from": "step3",
+      "to": "step4"
+    },
+    {
+      "from": "step4",
+      "to": "step1"
+    }
+  ],
+  "animation": {
+    "paths": [],
+    "pulses": []
+  }
+}

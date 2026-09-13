@@ -1,0 +1,182 @@
+{
+  "title": "Three-Tier Web Application on AWS",
+  "subtitle": "VPC & Networking",
+  "intent": "This architecture serves a stateless web tier from private subnets across two Availability Zones, so a single zone failure removes capacity rather than availability.",
+  "reviewed": "2026-08-26",
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "AWS Cloud",
+      "kind": "aws_cloud"
+    },
+    {
+      "id": "region",
+      "label": "Region: us-east-1",
+      "kind": "region",
+      "parent": "cloud"
+    },
+    {
+      "id": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "kind": "vpc",
+      "parent": "region"
+    },
+    {
+      "id": "az1",
+      "label": "Availability Zone A",
+      "kind": "az",
+      "parent": "vpc"
+    },
+    {
+      "id": "pub1",
+      "label": "Public Subnet",
+      "kind": "subnet_public",
+      "parent": "az1"
+    },
+    {
+      "id": "priv1",
+      "label": "Private Subnet",
+      "kind": "subnet_private",
+      "parent": "az1"
+    },
+    {
+      "id": "az2",
+      "label": "Availability Zone B",
+      "kind": "az",
+      "parent": "vpc"
+    },
+    {
+      "id": "pub2",
+      "label": "Public Subnet",
+      "kind": "subnet_public",
+      "parent": "az2"
+    },
+    {
+      "id": "priv2",
+      "label": "Private Subnet",
+      "kind": "subnet_private",
+      "parent": "az2"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "users",
+      "label": "web users",
+      "type": "user",
+      "external": true
+    },
+    {
+      "id": "cf",
+      "label": "Amazon CloudFront",
+      "type": "cloudfront",
+      "group": "region"
+    },
+    {
+      "id": "alb",
+      "label": "Elastic Load Balancing",
+      "type": "elastic_load_balancing",
+      "group": "pub1"
+    },
+    {
+      "id": "nat1",
+      "label": "NAT Gateway",
+      "type": "nat_gateway",
+      "group": "pub1"
+    },
+    {
+      "id": "ecs1",
+      "label": "AWS Fargate",
+      "type": "fargate",
+      "group": "priv1"
+    },
+    {
+      "id": "rds",
+      "label": "Amazon RDS",
+      "type": "rds",
+      "group": "priv1"
+    },
+    {
+      "id": "alb2",
+      "label": "NAT Gateway",
+      "type": "nat_gateway",
+      "group": "pub2"
+    },
+    {
+      "id": "ecs2",
+      "label": "AWS Fargate",
+      "type": "fargate",
+      "group": "priv2"
+    },
+    {
+      "id": "rds_standby",
+      "label": "Amazon RDS (standby)",
+      "type": "rds",
+      "group": "priv2"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users",
+      "target": "cf"
+    },
+    {
+      "source": "cf",
+      "target": "alb"
+    },
+    {
+      "source": "alb",
+      "target": "ecs1"
+    },
+    {
+      "source": "alb",
+      "target": "ecs2"
+    },
+    {
+      "source": "ecs1",
+      "target": "nat1",
+      "label": "egress",
+      "dashed": true
+    },
+    {
+      "source": "ecs1",
+      "target": "rds"
+    },
+    {
+      "source": "ecs2",
+      "target": "rds"
+    },
+    {
+      "source": "rds",
+      "target": "rds_standby",
+      "label": "sync replication",
+      "dashed": true
+    }
+  ],
+  "annotations": [
+    {
+      "n": 1,
+      "target": "cf",
+      "text": "<b>Amazon CloudFront</b> terminates TLS at the edge and absorbs cacheable traffic before it reaches the origin. <b>AWS WAF</b> can be attached here rather than at the load balancer, which stops malicious requests before they consume origin capacity."
+    },
+    {
+      "n": 2,
+      "target": "alb",
+      "text": "The load balancer is the only component in a public subnet. Everything that holds application state or data sits in private subnets with no route to the internet gateway."
+    },
+    {
+      "n": 3,
+      "target": "ecs1",
+      "text": "<b>AWS Fargate</b> is used so there are no instances to patch. The same task definition runs on <b>Amazon EC2</b> capacity instead where a workload needs GPUs or a longer-lived host."
+    },
+    {
+      "n": 4,
+      "target": "az2",
+      "text": "Two Availability Zones are drawn, but the architecture extends to three without change. Zone count is a cost and quorum decision, not a structural one."
+    },
+    {
+      "n": 5,
+      "target": "rds_standby",
+      "text": "The standby is a Multi-AZ replica promoted automatically on failure of the primary; it does not serve reads. Add read replicas where read capacity, rather than availability, is the constraint."
+    }
+  ]
+}

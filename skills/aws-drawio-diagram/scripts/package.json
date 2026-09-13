@@ -1,0 +1,16 @@
+{
+  "name": "aws-drawio-diagram-scripts",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "TypeScript scripts for the aws-drawio-diagram skill: spec -> Drawio XML, plus AWS-style validation.",
+  "scripts": {
+    "generate": "tsx src/generate.ts",
+    "validate": "tsx src/validate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

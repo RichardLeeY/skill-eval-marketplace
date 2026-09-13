@@ -1,0 +1,274 @@
+{
+  "title": "Coinbase Low-Latency Trading Platform (AWS)",
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "AWS Cloud",
+      "kind": "aws_cloud"
+    },
+    {
+      "id": "region",
+      "label": "Region: us-east-1",
+      "kind": "region",
+      "parent": "cloud"
+    },
+    {
+      "id": "vpc",
+      "label": "VPC 10.0.0.0/16",
+      "kind": "vpc",
+      "parent": "region"
+    },
+    {
+      "id": "az",
+      "label": "Availability Zone us-east-1a",
+      "kind": "az",
+      "parent": "vpc"
+    },
+    {
+      "id": "pub",
+      "label": "Public Subnet",
+      "kind": "subnet_public",
+      "parent": "az"
+    },
+    {
+      "id": "trade",
+      "label": "Trading Tier (cluster placement group)",
+      "kind": "subnet_private",
+      "parent": "az"
+    },
+    {
+      "id": "svc",
+      "label": "Services Tier",
+      "kind": "subnet_private",
+      "parent": "az"
+    },
+    {
+      "id": "data",
+      "label": "Data & Streaming",
+      "kind": "generic",
+      "parent": "vpc"
+    },
+    {
+      "id": "ops",
+      "label": "Observability & Security",
+      "kind": "generic",
+      "parent": "vpc"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "trader",
+      "label": "traders (web / mobile / API)",
+      "type": "users",
+      "external": true
+    },
+    {
+      "id": "route53",
+      "label": "Amazon Route 53",
+      "type": "route_53",
+      "group": "region"
+    },
+    {
+      "id": "ga",
+      "label": "AWS Global Accelerator",
+      "type": "global_accelerator",
+      "group": "region"
+    },
+    {
+      "id": "cf",
+      "label": "Amazon CloudFront",
+      "type": "cloudfront",
+      "group": "region"
+    },
+    {
+      "id": "waf",
+      "label": "AWS WAF and AWS Shield",
+      "type": "waf",
+      "group": "region"
+    },
+    {
+      "id": "cognito",
+      "label": "Amazon Cognito",
+      "type": "cognito",
+      "group": "region"
+    },
+    {
+      "id": "nlb",
+      "label": "Elastic Load Balancing (Network Load Balancer)",
+      "type": "elastic_load_balancing",
+      "group": "pub"
+    },
+    {
+      "id": "engine",
+      "label": "Amazon EC2 matching engine",
+      "type": "ec2",
+      "group": "trade"
+    },
+    {
+      "id": "redis",
+      "label": "Amazon ElastiCache for Redis",
+      "type": "elasticache",
+      "group": "trade"
+    },
+    {
+      "id": "eks",
+      "label": "Amazon Elastic Kubernetes Service",
+      "type": "elastic_kubernetes_service",
+      "group": "svc"
+    },
+    {
+      "id": "msk",
+      "label": "Amazon Managed Streaming for Apache Kafka",
+      "type": "msk",
+      "group": "svc"
+    },
+    {
+      "id": "ddb",
+      "label": "Amazon DynamoDB",
+      "type": "dynamodb",
+      "group": "data"
+    },
+    {
+      "id": "aurora",
+      "label": "Amazon Aurora",
+      "type": "aurora",
+      "group": "data"
+    },
+    {
+      "id": "kinesis",
+      "label": "Amazon Kinesis Data Streams",
+      "type": "kinesis",
+      "group": "data"
+    },
+    {
+      "id": "s3",
+      "label": "Amazon Simple Storage Service (S3)",
+      "type": "s3",
+      "group": "data"
+    },
+    {
+      "id": "cw",
+      "label": "Amazon CloudWatch",
+      "type": "cloudwatch",
+      "group": "ops"
+    },
+    {
+      "id": "kms",
+      "label": "AWS KMS",
+      "type": "kms",
+      "group": "ops"
+    },
+    {
+      "id": "secrets",
+      "label": "AWS Secrets Manager",
+      "type": "secrets_manager",
+      "group": "ops"
+    }
+  ],
+  "edges": [
+    {
+      "source": "trader",
+      "target": "route53"
+    },
+    {
+      "source": "trader",
+      "target": "ga"
+    },
+    {
+      "source": "trader",
+      "target": "cognito"
+    },
+    {
+      "source": "route53",
+      "target": "cf"
+    },
+    {
+      "source": "cf",
+      "target": "s3"
+    },
+    {
+      "source": "ga",
+      "target": "nlb"
+    },
+    {
+      "source": "nlb",
+      "target": "engine"
+    },
+    {
+      "source": "nlb",
+      "target": "eks"
+    },
+    {
+      "source": "engine",
+      "target": "redis"
+    },
+    {
+      "source": "engine",
+      "target": "ddb"
+    },
+    {
+      "source": "engine",
+      "target": "msk",
+      "label": "trade events"
+    },
+    {
+      "source": "eks",
+      "target": "aurora"
+    },
+    {
+      "source": "msk",
+      "target": "kinesis",
+      "label": "market data"
+    },
+    {
+      "source": "secrets",
+      "target": "eks",
+      "dashed": true
+    },
+    {
+      "source": "kms",
+      "target": "ddb",
+      "dashed": true
+    },
+    {
+      "source": "engine",
+      "target": "cw",
+      "dashed": true
+    }
+  ],
+  "subtitle": "Low-latency trading path",
+  "intent": "Order matching is kept on a single-AZ EC2 instance beside an in-memory order book so the latency-critical path never crosses a zone boundary, while everything durable is replicated across zones behind it.",
+  "reviewed": "2026-08-26",
+  "annotations": [
+    {
+      "n": 1,
+      "target": "route53",
+      "text": "<b>Amazon Route 53</b> latency-based records send each client to the nearest entry point. <b>AWS Global Accelerator</b> sits behind it to hold a stable anycast IP, which matters for API clients that pin addresses and cannot follow a DNS change quickly."
+    },
+    {
+      "n": 2,
+      "target": "waf",
+      "text": "<b>AWS WAF</b> and <b>AWS Shield</b> are attached at the edge rather than at the load balancer, so abusive traffic is dropped before it consumes matching-engine capacity."
+    },
+    {
+      "n": 3,
+      "target": "engine",
+      "text": "The matching engine runs on <b>Amazon EC2</b> rather than a container service: the hot path needs pinned cores, placement-group locality and kernel tuning that a managed scheduler will not guarantee."
+    },
+    {
+      "n": 4,
+      "target": "redis",
+      "text": "The live order book is held in <b>Amazon ElastiCache</b> in the same Availability Zone as the engine. A cross-zone hop costs more than the entire matching budget, so this pair is deliberately not spread for availability."
+    },
+    {
+      "n": 5,
+      "target": "msk",
+      "text": "<b>Amazon MSK</b> decouples matching from settlement, reporting and market data. Consumers can be slow or restarted without applying back pressure to the trading path."
+    },
+    {
+      "n": 6,
+      "target": "data",
+      "text": "Everything durable sits behind the hot path: <b>Amazon DynamoDB</b> for trade state, <b>Amazon Aurora</b> for accounts, <b>Amazon S3</b> for the archive. This layer is replicated across zones; the engine is not."
+    }
+  ]
+}

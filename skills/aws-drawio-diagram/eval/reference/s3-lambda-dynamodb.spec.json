@@ -1,0 +1,48 @@
+{
+  "title": "Serverless Object Processing",
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "AWS Cloud",
+      "kind": "aws_cloud"
+    },
+    {
+      "id": "region",
+      "label": "Region: us-east-1",
+      "kind": "region",
+      "parent": "cloud"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "bucket",
+      "label": "S3 Bucket",
+      "type": "s3",
+      "group": "region"
+    },
+    {
+      "id": "fn",
+      "label": "Lambda",
+      "type": "lambda",
+      "group": "region"
+    },
+    {
+      "id": "table",
+      "label": "DynamoDB Table",
+      "type": "dynamodb",
+      "group": "region"
+    }
+  ],
+  "edges": [
+    {
+      "source": "bucket",
+      "target": "fn",
+      "label": "event"
+    },
+    {
+      "source": "fn",
+      "target": "table",
+      "label": "PutItem"
+    }
+  ]
+}

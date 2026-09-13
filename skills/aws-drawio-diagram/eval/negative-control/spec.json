@@ -1,0 +1,58 @@
+{
+  "title": "Event-Driven Architecture on AWS",
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "AWS Cloud",
+      "kind": "aws_cloud"
+    },
+    {
+      "id": "region1",
+      "label": "us-east-1",
+      "kind": "region",
+      "parent": "cloud"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "user",
+      "label": "User",
+      "type": "user"
+    },
+    {
+      "id": "s3",
+      "label": "S3",
+      "type": "s3",
+      "group": "region1"
+    },
+    {
+      "id": "fn",
+      "label": "Lambda",
+      "type": "lambda",
+      "group": "region1"
+    },
+    {
+      "id": "ddb",
+      "label": "DynamoDB",
+      "type": "dynamodb",
+      "group": "region1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "user",
+      "target": "s3",
+      "label": "upload"
+    },
+    {
+      "source": "s3",
+      "target": "fn",
+      "label": "event"
+    },
+    {
+      "source": "fn",
+      "target": "ddb",
+      "label": "write"
+    }
+  ]
+}

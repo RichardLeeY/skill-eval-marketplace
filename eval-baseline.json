@@ -1,0 +1,40 @@
+{
+  "_comment": "Last accepted overall_score per case. Updated only via run_strands_eval.py --update-baseline after a reviewed run; the run fails if a case drops more than --tolerance below it.",
+  "cases": {
+    "flow-webp-git-webhook-dark": {
+      "overall_score": 0.9529,
+      "skill": "visual-flow-webp",
+      "judge_model": "global.anthropic.claude-sonnet-4-6",
+      "rubric_hash": "01b551b99c7c",
+      "recorded": "2026-09-07"
+    },
+    "flow-webp-git-webhook-extend": {
+      "overall_score": 0.9571,
+      "skill": "visual-flow-webp",
+      "judge_model": "global.anthropic.claude-sonnet-4-6",
+      "rubric_hash": "01b551b99c7c",
+      "recorded": "2026-09-07"
+    },
+    "flow-webp-git-webhook-from-readme": {
+      "overall_score": 0.9829,
+      "skill": "visual-flow-webp",
+      "judge_model": "global.anthropic.claude-sonnet-4-6",
+      "rubric_hash": "01b551b99c7c",
+      "recorded": "2026-09-07"
+    },
+    "flow-webp-git-webhook-slide-mp4": {
+      "overall_score": 0.9329,
+      "skill": "visual-flow-webp",
+      "judge_model": "global.anthropic.claude-sonnet-4-6",
+      "rubric_hash": "ed59bb4aabaf",
+      "recorded": "2026-09-08"
+    },
+    "flow-webp-git-webhook-stepwise": {
+      "overall_score": 0.9529,
+      "skill": "visual-flow-webp",
+      "judge_model": "global.anthropic.claude-sonnet-4-6",
+      "rubric_hash": "01b551b99c7c",
+      "recorded": "2026-09-07"
+    }
+  }
+}

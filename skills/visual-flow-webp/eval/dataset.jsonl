@@ -1,0 +1,245 @@
+// Layer 1 + a layer-2 plugin, because the deliverable is a picture and almost
+// nothing about it is checkable as text.
+//
+// Every case here is a variation on one target: `reference/git-webhook-target.png`,
+// a frame of an AWS-style animated architecture diagram the maintainer supplied.
+// Git users push to a third-party repository; a webhook fires AWS Lambda inside an
+// "AWS Cloud" boundary; Lambda fans out to three stores (an S3 bucket holding the
+// SSH key, a KMS key, an S3 output bucket) and reports back to the repository. Its
+// animation is one glow that walks the flow in time order: push, webhook, then all
+// three branches at once, then the return edge. `reference/git-webhook.spec.json`
+// is that picture re-authored in this skill's own renderer, and its PNG is the
+// `reference_image` for the case whose request describes the system directly.
+//
+// The four cases pull on four different things the target demands, and each one
+// also carries a second ask that used to be its own case, because a run is the
+// expensive unit here and two asks in one prompt cost the same as one:
+//
+//   git-webhook-dark          the system as described, dark, with a boundary box,
+//                             scored against a hand-authored reference render; plus
+//                             a request the renderer cannot honour (official AWS
+//                             icons), so the reply has to say so
+//   git-webhook-from-readme   the same system read out of a README, light by default,
+//                             with arrow directions the README states and the target
+//                             picture does not, and the `Reading:` block that shows
+//                             the source was read
+//   git-webhook-stepwise      the target's actual animation: dots that appear one
+//                             step at a time, the three branches in one step, at a
+//                             pace a viewer can follow -- `animation.steps`, and the
+//                             renderer's `steps_confined` check proving it on the file
+//   git-webhook-extend        a follow-up edit to an existing spec -- one new step,
+//                             and "too fast, slow it down" -- which is the reason the
+//                             spec is a required deliverable at all: both edits must
+//                             leave every existing node where it was, and the
+//                             slowdown must come from longer steps, not a lower fps
+//   git-webhook-slide-mp4     the container as a decision rather than a flag the user
+//                             pressed: the request names a PowerPoint slide and pausing
+//                             on one step, and never names a format, so the run has to
+//                             reach `--format mp4` from the destination. It also has to
+//                             say the MP4 does not loop by itself, which is the single
+//                             way an MP4 is worse than the WebP it replaces -- a run
+//                             that calls it a looping animation is wrong about the file
+//                             it just handed over
+//
+// Stepwise and the pacing half of extend were written from a user's reaction to a
+// real render: "slow it down, and make the dots appear step by step". Before them
+// the renderer had neither knob: every edge animated at once for a 2.4 s loop and
+// each highlight held for a third of a second.
+//
+// The animated WebP is binary and over a megabyte, so artifact collection copies
+// it aside and records size and hash; `artifact_regex`, `min_counts` and
+// `handwrite_marker` are therefore absent -- there is no artifact text to match --
+// and eval/plugin.py judges the delivered picture, or re-renders it from the spec
+// when the copy did not survive. So the spec JSON is the load-bearing artifact,
+// which is why SKILL.md makes it a required deliverable rather than an optional
+// convenience: it is the only input from which the layout can be checked exactly.
+//
+// `validator_pass_regex` carries the weight `handwrite_marker` carries elsewhere.
+// A file named `flow.webp` can be hand-written with `Write` and will satisfy
+// `file_glob`; only the renderer prints the PASS line, and it prints it only after
+// its own checks pass on the file it just wrote.
+//
+// `expected_theme` is this skill's own expect key, read by eval/plugin.py. Light is
+// the default and dark is on request, so a case that asks for one and gets the
+// other is wrong in a way no generic grader can see.
+{
+    "id": "flow-webp-git-webhook-dark",
+    "prompt": "帮我画一个深色的动图，照着 AWS 架构图那种画法：开发者 git push 到第三方 Git 仓库（GitHub / GitLab / Bitbucket），仓库通过 Git webhook 触发 AWS Lambda。Lambda 连到三个存储：Amazon S3 的 SSH key bucket、AWS KMS key、Amazon S3 output bucket——三条边都从 Lambda 出发，画成一个扇出，不要串成一条线。处理完之后由 Lambda 直接把状态回写给 Git 仓库。Lambda 和三个存储都在 AWS Cloud 里，Git 用户和仓库在外面，要能看出这条边界。 如果这个渲染器能放 AWS 官方服务图标，Lambda、S3、KMS 就用官方图标；放不了就直接说一句，不用换别的工具。",
+    "expect": {
+        "skill": "visual-flow-webp",
+        "file_glob": "*.webp",
+        "validator_pass_regex": "✓ PASS",
+        "tools_any_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "max_tool_calls": 25,
+        "text_artifacts": [
+            ".json"
+        ],
+        "expected_theme": "dark",
+        "reference_image": "reference/git-webhook.png",
+        "assertions": [
+            "The spec renders the dark theme, because the user asked for a dark version, and every part the request named is present: Git users, the third-party Git repository, AWS Lambda, an S3 SSH key bucket, a KMS key, and an S3 output bucket -- none of the nodes, labels or titles are carried over from the Support Ops example bundled with the skill.",
+            "An 'AWS Cloud' boundary is drawn as a `layer: \"background\"` container that encloses Lambda and the three stores and does not enclose the Git users or the repository.",
+            "The spec has three edges whose `from` is the Lambda node, one to each of the three stores, and one edge from Lambda back to the repository -- the fan-out and the return edge the request asked for, rather than a chain that threads the stores one after another.",
+            "The two hand-offs the request names -- the push and the webhook -- appear as edge labels in words ('Git push', 'Git webhook' or equivalents), not as symbols, and the title and node labels contain no arrow or check-mark glyphs.",
+            "The Lambda, KMS and both S3 nodes carry `icon` keys that resolve in the installed icon set (for example aws/compute/lambda, aws/security/key-management-service, aws/storage/simple-storage-service-s3 or -s3-bucket), found via scripts/list_icons.py or the skill's docs rather than cropped from an image or fetched from the web; the lint passed with them and the `✓ PASS` line reports icons drawn; and the reply does not claim icons the spec does not carry."
+        ]
+    }
+}
+{
+    "id": "flow-webp-git-webhook-from-readme",
+    "prompt": "Turn the README into an animated flow diagram for the top of the project page.",
+    "seed_files": {
+        "README.md": "# git-webhook-to-s3\n\nMirror a third-party Git repository into Amazon S3 on every push, so downstream\nAWS services (CodePipeline, Glue jobs, static site builds) can consume the source\nwithout talking to GitHub, GitLab or Bitbucket directly.\n\n## How it works\n\n1. A developer pushes to the repository on the third-party host.\n2. The host sends a **Git webhook** (HTTPS POST) to an AWS Lambda function URL.\n3. Lambda verifies the webhook signature, then **reads the deploy SSH key** from a\n   dedicated Amazon S3 bucket. The key object is encrypted at rest; Lambda\n   **calls AWS KMS to decrypt it** using the customer-managed key.\n4. With the key, Lambda clones the pushed commit and zips the working tree.\n5. Lambda **writes the zip** to the Amazon S3 output bucket under\n   `<repo>/<branch>/<sha>.zip`.\n6. Lambda **posts a commit status** back to the repository (success, or the error\n   text if the clone or upload failed).\n\nEverything from step 3 onward runs inside the AWS account; the developer and the\nrepository host are outside it.\n\n## Notes\n\n- The SSH key bucket and the KMS key are *read* by Lambda. Only the output bucket\n  is written to. Please keep that straight in any diagram -- an earlier slide drew\n  three outgoing arrows and people assumed we were writing secrets to S3.\n- The status post is the only path back out of the account.\n"
+    },
+    "expect": {
+        "skill": "visual-flow-webp",
+        "file_glob": "*.webp",
+        "validator_pass_regex": "✓ PASS",
+        "tools_any_order": [
+            "Skill",
+            "Read",
+            "Write",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "max_tool_calls": 25,
+        "text_artifacts": [
+            ".json"
+        ],
+        "expected_theme": "light",
+        "assertions": [
+            "The spec renders the light theme -- the README does not ask for dark, and the skill defaults to light -- and it describes the system in README.md: developer, third-party repository, Lambda, SSH key bucket, KMS key, output bucket, and a status post back to the repository.",
+            "No edge between Lambda and the SSH key bucket, and no edge between Lambda and the KMS key, is drawn or labelled as Lambda writing to them: each such edge either points from the store into Lambda, or carries a label meaning read, fetch or decrypt. (An arrow from Lambda to the store with a label such as 'read' or 'get key' satisfies this; an unlabelled arrow from Lambda into the store does not.) The README says which stores are read and which is written, and warns that three unlabelled outgoing arrows misled people before.",
+            "The AWS account boundary the README describes ('everything from step 3 onward runs inside the AWS account') is drawn as a container that holds Lambda and the three stores and excludes the developer and the repository host.",
+            "The agent put a `Reading:` block in the conversation before writing the spec -- text ahead of the first Write call, including text in the same message as that call, counts -- naming the system it found in the README (actors, steps, stores, the status post back), and its final reply names all three delivered files -- PNG, animated WebP and spec -- and what each is for."
+        ]
+    }
+}
+{
+    "id": "flow-webp-git-webhook-stepwise",
+    "prompt": "做一个 Git webhook 到 AWS 的动图：Git 用户 push 到第三方 Git 仓库，仓库通过 webhook 触发 AWS Lambda，Lambda 同时写三个地方——S3 SSH key bucket、KMS key、S3 output bucket——最后把状态回写给仓库。要求数据流的光点按步骤一步一步出现，不要所有箭头从头到尾一起动：先 push 亮，再 webhook，然后三条边同时走，最后回写。每一步大概 1 秒，整体节奏慢一点，走完停一下再循环。",
+    "expect": {
+        "skill": "visual-flow-webp",
+        "file_glob": "*.webp",
+        "validator_pass_regex": "✓ PASS.*\\(4 steps\\)",
+        "tools_any_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "max_tool_calls": 25,
+        "text_artifacts": [
+            ".json"
+        ],
+        "expected_theme": "light",
+        "assertions": [
+            "The spec animates with `animation.steps`, not with `animation.pulses`/`paths` alone, and the steps are exactly four in this order: the users-to-repository edge; the repository-to-Lambda edge; the three Lambda-to-store edges together in one step; the Lambda-to-repository return edge. No `pulses` list is set alongside `steps`.",
+            "The pace is what was asked for: `step_seconds` (or every step's own `seconds`) is 1.0 or more, `hold_seconds` is set or left at its default so the finished picture pauses before looping, `canvas.fps` is 12 or higher, and `canvas.frames` is not hand-set to pace the animation -- the spec slows down by longer steps, not by a lower frame rate or fewer frames.",
+            "The agent ran `lint_spec.py` before rendering and rendered with `--verify --check`; the renderer's `✓ PASS` line reports 4 steps and a loop length, and the reply quotes that loop length (in seconds) rather than describing the pace impressionistically. Nothing in the reply claims a step order or timing beyond what the lint, the `✓ PASS` line and the `steps_confined` check established.",
+            "The agent put a `Reading:` block in the conversation before writing the spec -- text ahead of the first Write call, including text in the same message as that call, counts; a block that only appears after the spec was written does not -- and the block lists the four beats in the user's order and names the pace it chose (about 1 s per step, with a hold), so the user could correct the schedule before anything was rendered."
+        ]
+    }
+}
+{
+    "id": "flow-webp-git-webhook-extend",
+    "prompt": "We already have git-webhook.spec.json in this folder from last time. Two changes: (1) add one more step -- after Lambda writes the output bucket, the bucket event starts AWS CodePipeline; (2) the animation is too fast, slow it to about half speed and hold a bit longer at the end before it loops. Keep everything else as it is and re-render.",
+    "seed_files": {
+        "git-webhook.spec.json": "{\n  \"canvas\": {\n    \"width\": 1400,\n    \"height\": 720,\n    \"fps\": 20\n  },\n  \"theme\": {\n    \"name\": \"dark\"\n  },\n  \"title\": {\n    \"text\": \"Git Webhook\",\n    \"highlight\": \"to AWS\",\n    \"subtitle\": \"A push to a third-party repo fires a webhook; Lambda clones it and lands the code in S3\"\n  },\n  \"nodes\": [\n    {\n      \"id\": \"cloud\",\n      \"type\": \"box\",\n      \"layer\": \"background\",\n      \"label\": \"AWS Cloud\",\n      \"body\": \"\",\n      \"x\": 620,\n      \"y\": 160,\n      \"w\": 720,\n      \"h\": 500,\n      \"color\": \"blue\",\n      \"label_size\": 18\n    },\n    {\n      \"id\": \"users\",\n      \"type\": \"box\",\n      \"label\": \"Git Users\",\n      \"body\": \"Developers\\ncommit and push\",\n      \"x\": 40,\n      \"y\": 340,\n      \"w\": 180,\n      \"h\": 110,\n      \"label_h\": 36,\n      \"label_size\": 21,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"green\"\n    },\n    {\n      \"id\": \"repo\",\n      \"type\": \"box\",\n      \"label\": \"Git Repository\",\n      \"body\": \"Third-party host\\nGitHub, GitLab, Bitbucket\",\n      \"x\": 320,\n      \"y\": 340,\n      \"w\": 230,\n      \"h\": 110,\n      \"label_h\": 36,\n      \"label_size\": 21,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"purple\"\n    },\n    {\n      \"id\": \"lambda\",\n      \"type\": \"box\",\n      \"label\": \"AWS Lambda\",\n      \"body\": \"Receives the webhook\\nclones, zips, uploads\",\n      \"x\": 680,\n      \"y\": 340,\n      \"w\": 210,\n      \"h\": 110,\n      \"label_h\": 36,\n      \"label_size\": 21,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"blue\"\n    },\n    {\n      \"id\": \"ssh\",\n      \"type\": \"box\",\n      \"label\": \"SSH Key Bucket\",\n      \"body\": \"Amazon S3\\nprivate key for the clone\",\n      \"x\": 1060,\n      \"y\": 200,\n      \"w\": 240,\n      \"h\": 100,\n      \"label_h\": 34,\n      \"label_size\": 19,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"purple\"\n    },\n    {\n      \"id\": \"kms\",\n      \"type\": \"box\",\n      \"label\": \"KMS Key\",\n      \"body\": \"AWS KMS\\ndecrypts the SSH key\",\n      \"x\": 1060,\n      \"y\": 345,\n      \"w\": 240,\n      \"h\": 100,\n      \"label_h\": 34,\n      \"label_size\": 19,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"green\"\n    },\n    {\n      \"id\": \"out\",\n      \"type\": \"box\",\n      \"label\": \"Output Bucket\",\n      \"body\": \"Amazon S3\\nzipped source per push\",\n      \"x\": 1060,\n      \"y\": 490,\n      \"w\": 240,\n      \"h\": 100,\n      \"label_h\": 34,\n      \"label_size\": 19,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"purple\"\n    }\n  ],\n  \"edges\": [\n    {\n      \"from\": \"users\",\n      \"to\": \"repo\",\n      \"label\": \"Git push\"\n    },\n    {\n      \"from\": \"repo\",\n      \"to\": \"lambda\",\n      \"label\": \"Git webhook\"\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"ssh\",\n      \"points\": [\n        [\n          890,\n          395\n        ],\n        [\n          970,\n          395\n        ],\n        [\n          970,\n          250\n        ],\n        [\n          1060,\n          250\n        ]\n      ]\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"kms\"\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"out\",\n      \"points\": [\n        [\n          890,\n          395\n        ],\n        [\n          970,\n          395\n        ],\n        [\n          970,\n          540\n        ],\n        [\n          1060,\n          540\n        ]\n      ]\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"repo\",\n      \"label\": \"status\",\n      \"points\": [\n        [\n          785,\n          450\n        ],\n        [\n          785,\n          570\n        ],\n        [\n          435,\n          570\n        ],\n        [\n          435,\n          450\n        ]\n      ]\n    }\n  ],\n  \"animation\": {\n    \"step_seconds\": 1.2,\n    \"hold_seconds\": 0.8,\n    \"steps\": [\n      {\n        \"edges\": [\n          0\n        ],\n        \"label\": \"git push\"\n      },\n      {\n        \"edges\": [\n          1\n        ],\n        \"label\": \"webhook\"\n      },\n      {\n        \"edges\": [\n          2,\n          3,\n          4\n        ],\n        \"label\": \"three stores at once\"\n      },\n      {\n        \"edges\": [\n          5\n        ],\n        \"label\": \"status back\"\n      }\n    ]\n  }\n}\n"
+    },
+    "expect": {
+        "skill": "visual-flow-webp",
+        "file_glob": "*.webp",
+        "validator_pass_regex": "✓ PASS.*\\(5 steps\\)",
+        "tools_any_order": [
+            "Skill",
+            "Read",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Bash"
+        ],
+        "max_tool_calls": 20,
+        "text_artifacts": [
+            ".json"
+        ],
+        "expected_theme": "dark",
+        "assertions": [
+            "The agent read the existing git-webhook.spec.json and edited it rather than writing a new spec from scratch: the original node ids (users, repo, lambda, ssh, kms, out, cloud), the coordinates of the six foreground nodes, the dark theme and the title are unchanged in the delivered spec, and the seed's four steps still travel the same edges in the same order. Growing the canvas and the `cloud` container to make room for the new node is fine; moving the existing nodes is not. Reading the skill's bundled asset specs was not needed and is not held against the run either way.",
+            "A CodePipeline node was added inside the AWS Cloud container, connected by an edge from the output bucket to it -- not from Lambda -- because the request says the bucket event starts the pipeline; and that edge travels in a step placed after the step that reaches the output bucket (a fifth step, so the `✓ PASS` line reports 5 steps), not in the fan-out step and not left out of `animation.steps`.",
+            "The slowdown is done with time, not frame rate: `step_seconds` (or each step's `seconds`) is at least 2.0 -- about double the seed's 1.2 -- `hold_seconds` is larger than the seed's 0.8, `canvas.fps` is not lowered below 12, and `canvas.frames` was not hand-set (it is derived in steps mode).",
+            "The new node does not overlap any existing node or sit outside the canvas; `lint_spec.py` was run on the edited spec before rendering; and the reply states the new loop length in seconds as read from the `✓ PASS` line -- roughly double the seed's 5.6 s plus the new step -- rather than saying it 'feels slower'."
+        ]
+    }
+}
+{
+    "id": "flow-webp-git-webhook-slide-mp4",
+    "prompt": "同一套 Git webhook 到 AWS 的流程，画成动图：Git 用户 push 到第三方 Git 仓库，仓库通过 webhook 触发 AWS Lambda，Lambda 扇出到三个存储——S3 SSH key bucket、KMS key、S3 output bucket——最后把状态回写给仓库。光点要一步一步走，不要所有箭头一起动。这个是要放到下周给客户讲的 PowerPoint 里的，讲到某一步我需要停在那里讲两句，所以必须能暂停、能拖回去重看。",
+    "expect": {
+        "skill": "visual-flow-webp",
+        "file_glob": "*.mp4",
+        "validator_pass_regex": "✓ PASS.*\\.mp4",
+        "tools_any_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "tools_in_order": [
+            "Skill",
+            "Write",
+            "Bash"
+        ],
+        "max_tool_calls": 25,
+        "text_artifacts": [
+            ".json"
+        ],
+        "artifact_regex_absent": [
+            "\"format\"\\s*:"
+        ],
+        "expected_theme": "light",
+        "assertions": [
+            "The delivered animation is an MP4, and the run chose it from what the user said the file is for -- a PowerPoint slide, and pausing and scrubbing on a particular step -- rather than because the user named a format. The user never said 'mp4', 'video' or 'H.264'.",
+            "The reply states that the MP4 does not loop on its own and names the setting that makes it loop (PowerPoint's 'Loop until Stopped', or `loop` on an HTML video tag). A run that hands over an MP4 while describing it as a looping animation is wrong about the file it just delivered.",
+            "The spec animates with `animation.steps`, not `pulses`, and the steps are the four beats in the user's order: the users-to-repository edge; the repository-to-Lambda edge; the three Lambda-to-store edges together in one step; the Lambda-to-repository return edge. The three fan-out edges are one step, not three.",
+            "The container was chosen with the renderer's `--format` flag and is not a field in the JSON spec -- the spec describes the diagram, not its delivery -- and one spec is what produced whatever was delivered.",
+            "The agent ran `lint_spec.py` before rendering and rendered with `--verify --check`; the `✓ PASS` line names the `.mp4` file, and the reply quotes the loop length in seconds and the file size read off that line rather than estimating either."
+        ]
+    }
+}
+{
+    "id": "flow-webp-reference-overlay-mp4",
+    "prompt": "请用 visual-flow-webp 目录中 assets/overlay-reference.png 作为我给定的原始架构图，在原图上叠加数据流动画并导出可暂停的 MP4，不重画任何框、文字、图标和箭头。流程为 Client 到 Order API，然后 API 同时写 Database 和 Queue，两段各 1.5 秒，最后停留 1.5 秒。为没有图片查看工具的环境提供精确坐标（无需再问我）：原图960×540，Client框[x=60,y=225,w=160,h=90]，API框[370,225,170,90]，Database框[740,110,160,90]，Queue框[740,350,160,90]。第一条箭头折线[[220,270],[370,270]]，API到Database为[[540,270],[630,270],[630,155],[740,155]]，API到Queue为[[540,270],[630,270],[630,395],[740,395]]。请保留原图上的直角，不留已走过的轨迹；结束时给我视频、静态图、可编辑spec及它需要的背景文件。如果没有图片查看工具，请明确说明是根据我给的坐标做的。",
+    "expect": {
+        "skill": "visual-flow-webp",
+        "file_glob": "*.mp4",
+        "validator_pass_regex": "✓ PASS.*\\.mp4",
+        "tools_any_order": ["Skill", "Read", "Bash", "Write"],
+        "max_tool_calls": 25,
+        "text_artifacts": [".json"],
+        "assertions": [
+            "Before authoring the geometry the agent explains the source using a Reading: block, choosing overlay mode with 1.5 seconds per step and a 1.5 second hold, and uses the supplied reference image instead of generating a replacement diagram.",
+            "The delivered spec has background.image resolving to a companion image beside the spec, canvas 960x540, and four invisible type: anchor nodes at the supplied bounds. The original image bytes are copied, with no redrawn title, boxes, text or icons and no visible static paths.",
+            "All three explicit edge point lists follow the supplied coordinates with exact corners (default radius 0 in overlay mode, or explicit 0). animation.steps first travels client-to-API, then both fan-out edges together, with trail false. The original arrows are neither replaced nor rounded.",
+            "The initializer, lint and renderer were used, the render included --format mp4 --verify --check, and background_pixels_preserved plus background_file_unchanged both passed in the renderer report. The reply reports the 4.5-second duration and names the video, PNG, editable spec and companion background.",
+            "The reply explains that MP4 needs the player's repeat setting to loop. It does not falsely claim visual inspection if no image-viewing tool was available, and in that case states that the supplied coordinates were used."
+        ]
+    }
+}

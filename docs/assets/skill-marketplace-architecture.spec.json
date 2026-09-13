@@ -1,0 +1,281 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 980,
+    "fps": 20
+  },
+  "theme": {
+    "name": "dark",
+    "bg": "#0f172a",
+    "panel": "#152137",
+    "frame": "#324461",
+    "text": "#f1f5f9",
+    "muted": "#adc0d6",
+    "blue": "#38bdf8",
+    "blue_fill": "#132a40",
+    "purple": "#b491f1",
+    "purple_fill": "#22213e",
+    "green": "#34d399",
+    "green_fill": "#112d2d",
+    "red": "#fbbf24",
+    "red_fill": "#312b1c",
+    "dark": "#617794",
+    "highlight": "#142f44",
+    "grain_min": 0,
+    "grain_max": 0,
+    "vignette": 0,
+    "motion": "#fbbf24",
+    "motion_core": "#ffffff"
+  },
+  "title": {
+    "text": "Skill Marketplace",
+    "highlight": "上线前的质量基础",
+    "subtitle": "Skill 是 Agent 的基本元素。框架覆盖本地开发与 CI/CD。"
+  },
+  "nodes": [
+    {
+      "id": "framework-scope",
+      "type": "box",
+      "label": "",
+      "body": "",
+      "x": 65,
+      "y": 310,
+      "w": 1160,
+      "h": 560,
+      "color": "blue",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18,
+      "layer": "background",
+      "fill": "#102134",
+      "stroke": "#38bdf8"
+    },
+    {
+      "id": "production-scope",
+      "type": "box",
+      "label": "",
+      "body": "",
+      "x": 1335,
+      "y": 310,
+      "w": 520,
+      "h": 560,
+      "color": "dark",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18,
+      "layer": "background",
+      "fill": "#151e2c",
+      "stroke": "#596a80"
+    },
+    {
+      "id": "skill",
+      "type": "box",
+      "label": "Skill 构成 Agent",
+      "body": "Agent 的基本能力单元",
+      "x": 100,
+      "y": 170,
+      "w": 470,
+      "h": 120,
+      "color": "blue",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18
+    },
+    {
+      "id": "scope-title",
+      "type": "label",
+      "label": "本框架覆盖",
+      "x": 880,
+      "y": 340,
+      "w": 310,
+      "h": 40,
+      "size": 28,
+      "fill": "#7dd3fc"
+    },
+    {
+      "id": "production-title",
+      "type": "label",
+      "label": "生产系统负责",
+      "x": 1370,
+      "y": 340,
+      "w": 450,
+      "h": 40,
+      "size": 28,
+      "fill": "#adc0d6"
+    },
+    {
+      "id": "development",
+      "type": "box",
+      "label": "01  本地开发",
+      "body": "编写 Skill 与评估用例\n本地执行、评分并改进\n建立初始质量基线",
+      "x": 100,
+      "y": 420,
+      "w": 470,
+      "h": 220,
+      "color": "blue",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18
+    },
+    {
+      "id": "cicd",
+      "type": "box",
+      "label": "02  CI/CD",
+      "body": "复用同一套评估\n回归检查与质量门禁\n为发布审阅提供证据",
+      "x": 720,
+      "y": 420,
+      "w": 470,
+      "h": 220,
+      "color": "purple",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18
+    },
+    {
+      "id": "production",
+      "type": "box",
+      "label": "03  生产",
+      "body": "Skill 组成 Agent\n进入真实业务场景\n观察上线后的使用质量",
+      "x": 1370,
+      "y": 420,
+      "w": 450,
+      "h": 220,
+      "color": "dark",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18,
+      "fill": "#1b2738",
+      "stroke": "#75879f"
+    },
+    {
+      "id": "initial-quality",
+      "type": "box",
+      "label": "上线前：Skill 初始质量",
+      "body": "本框架用于本地开发与 CI/CD，建立并验证初始质量。",
+      "x": 100,
+      "y": 710,
+      "w": 1090,
+      "h": 115,
+      "color": "green",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18
+    },
+    {
+      "id": "runtime-quality",
+      "type": "box",
+      "label": "上线后：运行质量",
+      "body": "真实使用、监控与反馈",
+      "x": 1370,
+      "y": 710,
+      "w": 450,
+      "h": 115,
+      "color": "dark",
+      "label_size": 34,
+      "body_size": 27,
+      "label_h": 52,
+      "radius": 18,
+      "fill": "#1b2738",
+      "stroke": "#75879f"
+    },
+    {
+      "id": "foundation",
+      "type": "label",
+      "label": "Marketplace 管理版本与分发；评估框架提供上线前质量依据。",
+      "x": 100,
+      "y": 900,
+      "w": 1720,
+      "h": 40,
+      "size": 28,
+      "fill": "#adc0d6"
+    }
+  ],
+  "edges": [
+    {
+      "to": "development",
+      "points": [
+        [
+          335,
+          290
+        ],
+        [
+          335,
+          420
+        ]
+      ],
+      "stroke": "#38bdf8",
+      "width": 4,
+      "radius": 16,
+      "from": "skill"
+    },
+    {
+      "to": "cicd",
+      "points": [
+        [
+          570,
+          530
+        ],
+        [
+          720,
+          530
+        ]
+      ],
+      "stroke": "#b491f1",
+      "width": 4,
+      "radius": 16,
+      "from": "development"
+    },
+    {
+      "to": "production",
+      "points": [
+        [
+          1190,
+          530
+        ],
+        [
+          1370,
+          530
+        ]
+      ],
+      "stroke": "#adc0d6",
+      "width": 4,
+      "radius": 16,
+      "from": "cicd"
+    }
+  ],
+  "animation": {
+    "steps": [
+      {
+        "label": "本地开发：技能与用例一起开发，评估并改进",
+        "edges": [
+          0
+        ],
+        "seconds": 3
+      },
+      {
+        "label": "CI/CD：复用评估与回归检查，验证变更质量",
+        "edges": [
+          1
+        ],
+        "seconds": 4
+      },
+      {
+        "label": "生产：进入真实场景，持续观察上线后的质量",
+        "edges": [
+          2
+        ],
+        "seconds": 3
+      }
+    ],
+    "hold_seconds": 2,
+    "trail": false,
+    "motion_color": "#fbbf24"
+  }
+}

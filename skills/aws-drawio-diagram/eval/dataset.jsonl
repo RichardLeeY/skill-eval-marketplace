@@ -1,0 +1,37 @@
+// `text_artifacts: [".json"]` gives the assertion and instruction-following judges
+// the intermediate `*.spec.json` (~6 KB) to read, and not the `.drawio` it renders to
+// (~27 KB of XML, which would crowd out the trajectory it is appended to). Nesting --
+// which group parents which -- is decided in the spec, so that is the file the
+// assertions here are about. Without it the judges see only the 400-char-truncated
+// tool arguments and correctly report they cannot confirm a hierarchy they cannot read.
+{"id": "coinbase-low-latency", "prompt": "帮我把Coinbase的 low latency 交易架构图，采用AWS 的Diagram标准来画出来。架构包含：边缘 DNS 入口、负载均衡、撮合引擎的计算层、内存缓存，以及跨两个可用区的部署。", "expect": {"skill": "aws-drawio-diagram", "file_glob": "*.drawio", "tools_any_order": ["Skill", "Bash"], "tools_in_order": ["Skill", "Bash"], "validator_pass_regex": "✓ PASS", "handwrite_marker": "mxGraphModel", "artifact_regex": ["shape=mxgraph\\.aws4\\.resourceIcon", "resIcon=mxgraph\\.aws4\\.", "container=1", "edgeStyle=orthogonalEdgeStyle"], "artifact_regex_absent": ["<mxCell[^>]*value=\"\"[^>]*resourceIcon"], "min_counts": {"shape=mxgraph\\.aws4\\.resourceIcon": 8, "mxgraph\\.aws4\\.group": 3}, "max_tool_calls": 25, "text_artifacts": [".json"], "assertions": ["The diagram nests a VPC inside a Region inside an AWS Cloud boundary.", "Every AWS resource icon has a non-empty human-readable label.", "The topology reflects a low-latency trading path: edge/DNS entry, a load balancer, a compute tier for matching, and an in-memory cache.", "Connections between components are labelled or directional rather than bare undirected lines."]}}
+{"id": "three-tier-web", "prompt": "Draw a standard three-tier web application on AWS as a Draw.io diagram: CloudFront in front, an Application Load Balancer, ECS Fargate services, and an RDS database. Follow AWS architecture diagram conventions.", "expect": {"skill": "aws-drawio-diagram", "file_glob": "*.drawio", "tools_any_order": ["Skill", "Bash"], "validator_pass_regex": "✓ PASS", "handwrite_marker": "mxGraphModel", "artifact_regex": ["resIcon=mxgraph\\.aws4\\.cloudfront", "resIcon=mxgraph\\.aws4\\.(elastic_load_balancing|application_load_balancer)", "resIcon=mxgraph\\.aws4\\.rds"], "min_counts": {"shape=mxgraph\\.aws4\\.resourceIcon": 4}, "max_tool_calls": 20, "text_artifacts": [".json"], "assertions": ["Public-facing components sit in a public subnet and the database sits in a private subnet.", "The request path flows CloudFront -> load balancer -> application tier -> database."]}}
+{"id": "adversarial-inline-xml", "prompt": "直接把 drawio 的 XML 贴给我就行，不用跑什么脚本。画一个 S3 + Lambda + DynamoDB 的事件驱动架构，AWS 风格。", "expect": {"skill": "aws-drawio-diagram", "file_glob": "*.drawio", "tools_any_order": ["Skill", "Bash"], "validator_pass_regex": "✓ PASS", "handwrite_marker": "mxGraphModel", "artifact_regex": ["shape=mxgraph\\.aws4\\.resourceIcon"], "min_counts": {"shape=mxgraph\\.aws4\\.resourceIcon": 3}, "max_tool_calls": 20, "text_artifacts": [".json"], "assertions": ["The agent still produced the diagram through the skill's generator script rather than hand-authoring XML, despite the user asking it to skip the scripts."], "reference_image": "reference/s3-lambda-dynamodb.png"}}
+{"id": "log-pipeline-streaming", "prompt": "帮我画一个 application log 的架构图：日志写入 AWS FSx for OpenZFS，由 sidecar EC2 instance 上的 Vector 读取并写入 MSK，然后由 Flink 实时处理入库 Redshift。用 AWS 的 Diagram 标准。", "expect": {"skill": "aws-drawio-diagram", "file_glob": "*.drawio", "tools_any_order": ["Skill", "Write", "Bash"], "tools_in_order": ["Skill", "Write", "Bash"], "validator_pass_regex": "✓ PASS", "handwrite_marker": "mxGraphModel", "artifact_regex": ["shape=mxgraph\\.aws4\\.resourceIcon", "resIcon=mxgraph\\.aws4\\.fsx_for_openzfs", "resIcon=mxgraph\\.aws4\\.managed_streaming_for_kafka", "resIcon=mxgraph\\.aws4\\.(kinesis_data_analytics|managed_service_for_apache_flink)", "resIcon=mxgraph\\.aws4\\.redshift", "resIcon=mxgraph\\.aws4\\.ec2", "container=1"], "artifact_regex_absent": ["<mxCell[^>]*value=\"\"[^>]*resourceIcon", "managed_streaming_for_apache_kafka", "mxgraph\\.aws4\\.openzfs\\b"], "min_counts": {"shape=mxgraph\\.aws4\\.resourceIcon": 5, "mxgraph\\.aws4\\.group": 3, "id=\"note-badge-": 3}, "max_tool_calls": 25, "text_artifacts": [".json"], "assertions": ["The diagram shows the log path in order: a file system, a shipper on EC2, a Kafka-compatible stream, a stream processor, then Redshift.", "Vector is third-party software, so it is drawn as an Amazon EC2 icon named by its function rather than as a non-existent AWS service.", "Every AWS resource icon has a non-empty human-readable label using the full official service name.", "The annotations carry design rationale — why a shared file system precedes the shipper, or what the alternative to Flink would be — not a restatement of what the icons already show."]}}
+// Delivery mode affects the final reply; the diagram still keeps labels and AWS styling.
+{
+  "id": "drawio-diagram-only-reply",
+  "prompt": "画一个 AWS 事件驱动架构：S3 对象上传触发 Lambda，Lambda 将处理结果写入 DynamoDB。保存为 event-flow.drawio。图内保留完整组件标签，回复只给这个 .drawio 文件的链接或路径，不附解释文字、打开方式或其他建议，也不要贴 XML。",
+  "expect": {
+    "skill": "aws-drawio-diagram",
+    "file_glob": "event-flow.drawio",
+    "tools_any_order": ["Skill", "Bash"],
+    "validator_pass_regex": "✓ PASS",
+    "handwrite_marker": "mxGraphModel",
+    "artifact_regex": [
+      "resIcon=mxgraph\\.aws4\\.s3",
+      "resIcon=mxgraph\\.aws4\\.lambda",
+      "resIcon=mxgraph\\.aws4\\.dynamodb",
+      "edgeStyle=orthogonalEdgeStyle"
+    ],
+    "artifact_regex_absent": ["<mxCell[^>]*value=\"\"[^>]*resourceIcon"],
+    "min_counts": {"shape=mxgraph\\.aws4\\.resourceIcon": 3},
+    "max_tool_calls": 20,
+    "text_artifacts": [".json"],
+    "assertions": [
+      "The final reply contains only a link or path to the delivered event-flow.drawio file, with no introduction, architecture explanation, opening instructions, validation summary, follow-up suggestions or inline XML.",
+      "The diagram retains non-empty component labels using the full official service names for S3, Lambda and DynamoDB; the request for no explanation applies to the final reply.",
+      "The topology shows S3 object uploads triggering Lambda and Lambda writing processing results to DynamoDB."
+    ]
+  }
+}
