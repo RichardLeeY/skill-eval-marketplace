@@ -12,10 +12,10 @@
 
 ```text
 /plugin marketplace add /absolute/path/to/skill-marketplace
-/plugin install aws-sa-skills@skill-marketplace
+/plugin install my-anycompany-skills@skill-marketplace
 ```
 
-目前 marketplace 分发一个插件 `aws-sa-skills`，包含全部三个技能。仅使用技能无需安装
+目前 marketplace 分发一个插件 `my-anycompany-skills`，包含全部三个技能。仅使用技能无需安装
 Python 评估依赖；技能自己的脚本依赖仍按各自的 `SKILL.md` 安装。
 
 | 技能 | 交付物 | 评估用例 |
@@ -130,19 +130,22 @@ AWS 凭据，`score` 预检只验证 judge 的模型配置。
 上下文技能没有领域插件，仍会运行共享 judge。负对照尚未完整覆盖，目前只有 visual-flow
 提供可执行的负对照。普通 `check` 输出覆盖警告，`check --strict` 会把这些警告也视为失败。
 
-两套 CI 都使用 `skill-eval setup` 与 `skill-eval run --profile core --negative-controls`。
-GitLab 在创建或更新 Merge Request 时触发，按整个 MR 的 diff 选择技能：某个
-`skills/<name>/` 有变更，就评估该技能；共享框架、依赖或 CI 配置变更则跑全量。
-仅修改仓库文档时只跑静态检查；在 GitLab UI 点击 **Run pipeline** 可手动跑全量。
-普通分支 push 不会额外创建一条重复 pipeline。
+两套 CI 都使用 `skill-eval setup` 与 `skill-eval run --profile core --negative-controls`，
+并共用同一套选择规则。在创建或更新 Pull Request / Merge Request 时触发，按整个请求的
+diff 选择技能：某个 `skills/<name>/` 有变更，就评估该技能；共享框架、依赖或 CI 配置变更
+则跑全量。仅修改仓库文档时只跑静态检查；手动触发（GitHub 的 **Run workflow**、GitLab 的
+**Run pipeline**）跑全量。普通分支 push 不会额外创建一条重复 pipeline。
 
-GitLab 的必要评估任务缺少 `AWS_CREDS_TARGET_ROLE` 时会失败，避免跳过评估后误报通过。
-GitHub 仍使用仓库变量 `EVAL_ENABLED=true` 和 secret `EVAL_ROLE_ARN` 来启用评估。
-静态检查及框架单元测试不需要凭据。逐用例视觉评估另行以 full 执行，CI 保留已有负对照检查。
-GitLab 在 MR 的 **Skill evaluation** artifact 入口提供 `.eval/dashboard.html`、
-供通知系统使用的 `.eval/summary.json`、选择记录和包含失败证据的 `.eval/runs/`。
-下载并解压完整 artifact 后打开 dashboard，即可通过相对链接查看证据。
-合并门禁与邮件、agent 分析接入方式见 [GitLab CI 配置说明](docs/gitlab-ci.md)。
+必要评估任务在缺少凭据时会失败而不是跳过：GitHub 通过 OIDC 假设 secret `EVAL_ROLE_ARN`
+指定的角色，GitLab 使用 `AWS_CREDS_TARGET_ROLE`。静态检查及框架单元测试不需要凭据。
+逐用例视觉评估另行以 full 执行，CI 保留已有负对照检查。
+
+两套 CI 在每次评估后都会发布 `.eval/`（包括失败的运行）：`dashboard.html`、供通知系统
+使用的 `summary.json`、选择记录和包含证据的 `runs/`。GitHub 以 **skill-evaluation**
+artifact 上传，并把分数写入任务的 step summary；GitLab 在 MR 的 **Skill evaluation**
+入口提供。下载并解压完整 artifact 后打开 dashboard，即可通过相对链接查看证据。
+角色信任、合并门禁与扩展方式见 [GitHub Actions 配置说明](docs/github-ci.md) 和
+[GitLab CI 配置说明](docs/gitlab-ci.md)。
 
 ```bash
 uv run --locked python -m unittest discover -s tests -v

@@ -1,4 +1,8 @@
-"""Select and evaluate the skills affected by a GitLab merge request."""
+"""Select and evaluate the skills affected by a GitLab merge request.
+
+`select_skills` and `run_selected` are platform-neutral; `evalkit.github_ci` reuses
+them with GitHub's event model. Only `plan` reads GitLab's predefined variables.
+"""
 from __future__ import annotations
 
 import argparse
@@ -13,7 +17,7 @@ import sys
 ROOT = Path(__file__).resolve().parent.parent
 SHARED_FILES = {
     "pyproject.toml", "uv.lock", "requirements.txt", "eval-baseline.json",
-    ".gitlab-ci.yml", "AGENTS.md", "CLAUDE.md",
+    ".gitlab-ci.yml", ".github/workflows/skill-eval.yml", "AGENTS.md", "CLAUDE.md",
 }
 SHARED_DIRS = ("evalkit/", "tests/")
 
@@ -60,15 +64,19 @@ def plan(root: Path, env: dict) -> dict:
     return result
 
 
-def run_selected(root: Path, selection: dict, env: dict) -> int:
+def run_selected(root: Path, selection: dict, env: dict, *,
+                 credential_vars: tuple[str, ...] = ("AWS_CREDS_TARGET_ROLE",)) -> int:
+    """Set up and evaluate the selected skills; `credential_vars` names the environment
+    variables of which at least one must be present for the run to be attempted."""
     if selection["missing_datasets"]:
         raise ValueError("Selected skills need eval/dataset.jsonl: "
                          + ", ".join(selection["missing_datasets"]))
     if not selection["skills"]:
         print("No remaining skill requires evaluation.")
         return 0
-    if not env.get("AWS_CREDS_TARGET_ROLE"):
-        raise ValueError("Required eval cannot run: AWS_CREDS_TARGET_ROLE is unavailable to this job")
+    if not any(env.get(name) for name in credential_vars):
+        raise ValueError("Required eval cannot run: none of "
+                         + ", ".join(credential_vars) + " is available to this job")
     flags = [arg for name in selection["skills"] for arg in ("--skill", name)]
     commands = [[sys.executable, "-m", "evalkit.cli", "setup", "--with-system-deps", *flags]]
     # MP4 rendering and frame extraction need the system binary.

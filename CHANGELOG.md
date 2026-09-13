@@ -5,6 +5,10 @@ commit subjects since the previous release; edit before pushing if they need tid
 
 ## Unreleased
 
+- GitHub Actions: evaluate the skills a pull request touches (`evalkit/github_ci.py`,
+  sharing selection with the GitLab driver), gate eval on the lint jobs and a plan
+  step, assume the Bedrock role through OIDC, and publish the dashboard as an
+  artifact plus a step summary.
 - Add the locked `skill-eval` CLI for selected-skill setup, preflight, execution,
   archived re-scoring and acceptance of reviewed baselines. Both CI workflows use
   it and retain negative-control checks.

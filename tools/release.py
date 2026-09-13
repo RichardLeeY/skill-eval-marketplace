@@ -30,7 +30,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFESTS = (os.path.join(ROOT, ".claude-plugin", "plugin.json"),
              os.path.join(ROOT, ".claude-plugin", "marketplace.json"))
 CHANGELOG = os.path.join(ROOT, "CHANGELOG.md")
-PLUGIN_NAME = "aws-sa-skills"
+PLUGIN_NAME = "my-anycompany-skills"
 
 
 def git(*args: str) -> str:

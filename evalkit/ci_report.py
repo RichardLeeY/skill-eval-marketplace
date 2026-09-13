@@ -1,4 +1,9 @@
-"""Build an offline HTML dashboard and notification-ready JSON from CI artifacts."""
+"""Build an offline HTML dashboard and notification-ready JSON from CI artifacts.
+
+Runs after the eval job on GitLab (`after_script`) or GitHub Actions (an `always()`
+step). GitLab's predefined variables are read first; GitHub's are the fallback. On
+GitHub the same summary is also appended to the job's step summary page.
+"""
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -9,6 +14,21 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def ci_links(env: dict) -> dict:
+    """Pipeline/job/commit identifiers from GitLab, else GitHub, else empty."""
+    run_url = ""
+    if env.get("GITHUB_RUN_ID") and env.get("GITHUB_REPOSITORY"):
+        server = env.get("GITHUB_SERVER_URL", "https://github.com")
+        run_url = f'{server}/{env["GITHUB_REPOSITORY"]}/actions/runs/{env["GITHUB_RUN_ID"]}'
+    return {
+        "pipeline": env.get("CI_PIPELINE_URL") or run_url,
+        "job": env.get("CI_JOB_URL") or run_url,
+        "commit": env.get("CI_COMMIT_SHA") or env.get("GITHUB_SHA", ""),
+        # GitHub has no job-status variable; the workflow passes ${{ job.status }} in.
+        "job_status": env.get("CI_JOB_STATUS") or env.get("JOB_STATUS", ""),
+    }
 
 
 def load(path: Path, default, errors: list[str]):
@@ -77,8 +97,9 @@ def summarize(root: Path, env: dict) -> dict:
             })
     if selection.get("error"):
         errors.append(selection["error"])
+    links = ci_links(env)
     completed = (selection.get("exit_code") == 0 and not selection.get("plan_only")
-                 and not errors and env.get("CI_JOB_STATUS") not in ("failed", "canceled")
+                 and not errors and links["job_status"] not in ("failed", "failure", "canceled", "cancelled")
                  and not any(c["failures"] or c["status"] != "PASS" for c in cases))
     if completed and runs and all(run["passed"] for run in runs):
         status = "PASS"
@@ -88,8 +109,8 @@ def summarize(root: Path, env: dict) -> dict:
         status = "FAIL / INCOMPLETE"
     return {
         "status": status, "generated_at": datetime.now(timezone.utc).isoformat(),
-        "pipeline": env.get("CI_PIPELINE_URL", ""), "job": env.get("CI_JOB_URL", ""),
-        "commit": env.get("CI_COMMIT_SHA", ""), "selection": selection,
+        "pipeline": links["pipeline"], "job": links["job"],
+        "commit": links["commit"], "selection": selection,
         "failed_rows": sum(len(c["failures"]) for c in cases),
         "cases": cases, "runs": runs, "controls": controls, "errors": errors,
     }
@@ -142,7 +163,7 @@ summary{{cursor:pointer;font-weight:600}}pre{{white-space:pre-wrap;overflow-wrap
 .muted{{color:#52657c;overflow-wrap:anywhere}}
 </style>
 <h1>Skill evaluation: {text(summary["status"])}</h1>
-<p class="muted">MR {text(selection.get("merge_request") or "manual")} · Commit {text(summary["commit"])}</p>
+<p class="muted">Change {text(selection.get("merge_request") or "manual")} · Commit {text(summary["commit"])}</p>
 <p class="muted">{text(summary["pipeline"])}<br>{text(summary["generated_at"])}</p>
 <div class="card"><strong>{len(selection.get("skills", []))} selected skills ·
 {len(summary["cases"])} scored cases · {summary["failed_rows"]} failing gate rows</strong>
@@ -154,7 +175,7 @@ Removed skills: {text(", ".join(selection.get("removed_skills", [])) or "none")}
 <p>Overall scores are descriptive. Passing requires all gating rows, complete execution,
 baseline checks and requested negative controls to pass. This report covers this job only.</p>
 {"<h2>Errors</h2><ul>" + errors + "</ul>" if errors else ""}
-{"<p>No scored report was produced. Inspect the GitLab job log for setup or execution errors.</p>" if not rows and summary["status"] != "SKIPPED" else ""}
+{"<p>No scored report was produced. Inspect the CI job log for setup or execution errors.</p>" if not rows and summary["status"] != "SKIPPED" else ""}
 <h2>Cases</h2><div class="scroll"><table><thead><tr><th>Skill</th><th>Case</th><th>Overall</th>
 <th>Gate rows / baseline</th><th>Baseline delta / provenance</th></tr></thead><tbody>
 {"".join(rows)}</tbody></table></div>
@@ -165,12 +186,43 @@ baseline checks and requested negative controls to pass. This report covers this
 No external scripts or services are needed.</p></html>"""
 
 
+def render_markdown(summary: dict) -> str:
+    """Compact Markdown for GitHub's step summary; the HTML dashboard stays the record."""
+    selection = summary["selection"]
+    lines = [f'## Skill evaluation: {summary["status"]}', "",
+             f'Selection: {selection.get("mode", "unavailable")} — '
+             f'{", ".join(selection.get("skills", [])) or "none"} · '
+             f'{len(summary["cases"])} scored cases · {summary["failed_rows"]} failing gate rows', ""]
+    if summary["errors"]:
+        lines += ["**Errors**", ""] + [f"- {error}" for error in summary["errors"]] + [""]
+    if summary["cases"]:
+        lines += ["| Skill | Case | Overall | Status | Baseline |", "| --- | --- | ---: | --- | --- |"]
+        lines += [f'| {c["skill"]} | {c["case"]} | {c["score"]:.3f} | {c["status"]} | {c["baseline"]} |'
+                  for c in summary["cases"]]
+        lines.append("")
+    for case in summary["cases"]:
+        for row in case["failures"]:
+            lines += [f'<details><summary>{case["case"]} — {row["evaluator"]}</summary>', "",
+                      "```", str(row["reason"]), "```", "</details>", ""]
+    if summary["controls"]:
+        lines += ["**Negative controls**", ""] + [
+            f'- {c["skill"]}: {c.get("status", "exit code " + str(c.get("exit_code")))}'
+            for c in summary["controls"]] + [""]
+    lines.append("Download the `skill-evaluation` artifact and open `.eval/dashboard.html` for evidence links.")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> int:
     summary = summarize(ROOT, os.environ)
     directory = ROOT / ".eval"
     directory.mkdir(parents=True, exist_ok=True)
     (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     (directory / "dashboard.html").write_text(render(summary), encoding="utf-8")
+    markdown = render_markdown(summary)
+    (directory / "summary.md").write_text(markdown, encoding="utf-8")
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
+            handle.write(markdown)
     print(f'Evaluation dashboard: .eval/dashboard.html ({summary["status"]})')
     return 0
 

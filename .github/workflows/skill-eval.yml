@@ -1,49 +1,125 @@
+# Eval as a build step, mirroring .gitlab-ci.yml for GitHub Actions.
+#
+# Two stages, cheapest first, so a broken dataset never buys an agent run:
+#
+#   lint   repo-check (dataset schema, ids, seeds, references; selection plan;
+#          unit tests) and security-scan (bandit for Python, semgrep for the rest).
+#          No AWS, no model. Runs for every pull request and manual dispatch.
+#   eval   skill-eval run --profile core --negative-controls on the skills the PR
+#          touched (evalkit/github_ci.py), or on every skill for a manual run.
+#          Needs Bedrock, so it needs credentials: the job assumes
+#          secrets.EVAL_ROLE_ARN through GitHub's OIDC provider. The role's trust
+#          policy must be scoped to this repository (token.actions.githubusercontent.com,
+#          sub: repo:<owner>/<repo>:*). A required eval fails if credentials are
+#          missing; it must not silently disappear from an otherwise green PR.
+#
+# Selection is decided once, in repo-check, and gates the eval job through job
+# outputs: documentation-only PRs skip eval instead of paying for it. Fork PRs
+# cannot read secrets or mint OIDC tokens, so eval is skipped for them explicitly;
+# do not broaden the role's trust to make an unknown fork's eval run.
+
 name: skill-eval
 
 on:
   pull_request:
-    paths: ["skills/**", "evalkit/**", "tests/**", "pyproject.toml", "uv.lock", "eval-baseline.json", ".github/workflows/skill-eval.yml"]
   workflow_dispatch:
 
+# Like GitLab's `interruptible`: a new push to the PR cancels the run in flight.
+concurrency:
+  group: skill-eval-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.11.1"
+  AWS_DEFAULT_REGION: us-east-1
+
+permissions:
+  contents: read
+
 jobs:
-  check:
+  repo-check:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    outputs:
+      eval_required: ${{ steps.plan.outputs.eval_required }}
+      skills: ${{ steps.plan.outputs.skills }}
+      mode: ${{ steps.plan.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Compare the entire PR against its merge base, including earlier commits.
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run --locked skill-eval check
+      - id: plan
+        run: uv run --locked python -m evalkit.github_ci --plan-only
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: uv run --locked --extra visual python -m unittest discover -s tests -v
+
+  security-scan:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - run: pip install uv
-      - run: uv run --locked skill-eval check
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-      - run: uv run --locked --extra visual python -m unittest discover -s tests -v
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --locked
+      # The same scanners GitLab runs, so a critical is caught on the branch
+      # instead of after the merge to main.
+      - run: uv run --with bandit bandit -q -r evalkit skills/*/eval skills/*/scripts -ll -ii
+      - run: uv run --with semgrep semgrep scan --config p/python --config p/javascript --error --severity ERROR evalkit skills
 
   eval:
-    needs: check
-    if: ${{ vars.EVAL_ENABLED == 'true' }}
+    needs: [repo-check, security-scan]
+    # Same-repository PRs with an affected skill, or any manual dispatch.
+    if: >-
+      needs.repo-check.outputs.eval_required == 'true' &&
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - uses: actions/setup-node@v4
         with: {node-version: "22"}
-      - run: pip install uv
-      - run: uv run --locked skill-eval setup --with-system-deps
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --locked
+      # MP4 rendering and frame extraction need the system binary; installing it here
+      # keeps evalkit.github_ci from needing root for apt-get.
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           # Grant InvokeModel and InvokeModelWithResponseStream on the model resources.
           role-to-assume: ${{ secrets.EVAL_ROLE_ARN }}
-          aws-region: us-east-1
-      - run: uv run --locked skill-eval run --profile core --negative-controls
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      - run: uv run --locked python -m evalkit.github_ci
+      - if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: uv run --locked python -m evalkit.ci_report
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eval-output
-          path: .eval/runs/
+          name: skill-evaluation
+          path: .eval/
           include-hidden-files: true
+          retention-days: 14

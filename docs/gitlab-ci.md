@@ -2,14 +2,14 @@
 
 GitLab calls a pull request a **Merge Request (MR)**. The repository pipeline starts
 when an MR is created or receives a new commit, or when someone uses **Run pipeline**
-in the GitLab UI. Ordinary push and tag pipelines are excluded. GitHub's separate
-workflow is unchanged.
+in the GitLab UI. Ordinary push and tag pipelines are excluded. The GitHub Actions
+counterpart is described in [github-ci.md](github-ci.md).
 
 | Change / trigger | Checks | Model evaluation |
 | --- | --- | --- |
 | `skills/visual-flow-webp/**` | Repo validation, unit tests, security scans | visual-flow-webp only |
 | Several skill directories | Same checks | All affected skills |
-| `evalkit/**`, `tests/**`, root dependency files, baseline, `.gitlab-ci.yml`, root `AGENTS.md` / `CLAUDE.md`, files directly under `skills/` | Same checks | All skills |
+| `evalkit/**`, `tests/**`, root dependency files, baseline, either CI file, root `AGENTS.md` / `CLAUDE.md`, files directly under `skills/` | Same checks | All skills |
 | Root README or `docs/**` only | Same checks | None |
 | Manual UI pipeline | Same checks | All skills |
 

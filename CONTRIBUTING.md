@@ -2,7 +2,7 @@
 
 A skill is a directory under `skills/`. To be accepted it needs the skill itself
 plus an `eval/` directory that lets the repo re-check it when its merge request changes.
-GitLab discovers changed skills automatically; no per-skill CI registration is needed.
+Both CI workflows discover changed skills automatically; no per-skill CI registration is needed.
 An affected skill without `eval/dataset.jsonl` fails CI selection.
 
 This file is the checklist. For *why* — what the machinery does with these files,

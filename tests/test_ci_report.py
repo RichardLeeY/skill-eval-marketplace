@@ -78,6 +78,24 @@ class CIReportTests(unittest.TestCase):
         self.meta["requested_cases"].append("missing")
         self.assertEqual(self.report()["status"], "FAIL / INCOMPLETE")
 
+    def test_github_environment_supplies_links_and_job_status(self):
+        env = {"GITHUB_REPOSITORY": "owner/repo", "GITHUB_RUN_ID": "42",
+               "GITHUB_SHA": "c" * 40, "JOB_STATUS": "failure"}
+        summary = self.report(env)
+        self.assertEqual(summary["status"], "FAIL / INCOMPLETE")
+        self.assertEqual(summary["pipeline"], "https://github.com/owner/repo/actions/runs/42")
+        self.assertEqual(summary["commit"], "c" * 40)
+        env["JOB_STATUS"] = "success"
+        self.assertEqual(self.report(env)["status"], "PASS")
+
+    def test_markdown_summary_lists_cases_and_failures(self):
+        self.case["rows"] = [{"evaluator": "gate-x", "gate": True, "test_pass": False,
+                              "reason": "expected 3 nodes, found 2"}]
+        markdown = ci_report.render_markdown(self.report())
+        self.assertIn("## Skill evaluation: FAIL / INCOMPLETE", markdown)
+        self.assertIn("| alpha | case-a |", markdown)
+        self.assertIn("expected 3 nodes, found 2", markdown)
+
     def test_empty_selection_is_skipped_but_plan_only_is_not_a_pass(self):
         self.selection["skills"] = []
         self.write(".eval/selection.json", self.selection)

@@ -13,10 +13,10 @@ Clone this repository, then add the local directory in Claude Code:
 
 ```text
 /plugin marketplace add /absolute/path/to/skill-marketplace
-/plugin install aws-sa-skills@skill-marketplace
+/plugin install my-anycompany-skills@skill-marketplace
 ```
 
-The marketplace currently distributes one plugin, `aws-sa-skills`, containing all
+The marketplace currently distributes one plugin, `my-anycompany-skills`, containing all
 three skills. Python evaluation dependencies are only needed if you run the eval kit.
 Each skill's own scripts may still need dependencies described in its `SKILL.md`.
 
@@ -148,22 +148,26 @@ uses shared judges without a domain plugin. Negative-control coverage is incompl
 only visual-flow currently supplies an executable control. `check --strict` also
 fails coverage warnings, while ordinary `check` reports them.
 
-Both CI definitions use `skill-eval setup` and `skill-eval run --profile core --negative-controls`.
-GitLab starts on merge request creation/updates, selecting skills from the entire MR
-diff. Changes under one skill evaluate that skill; shared framework, dependency or
-CI changes evaluate all skills. Documentation-only MRs run offline checks; **Run
-pipeline** in the GitLab UI runs a full evaluation. Branch pushes do not create a
-second pipeline. GitLab's required eval fails if `AWS_CREDS_TARGET_ROLE` is unavailable;
-GitHub's paid job is opt-in with repository variable `EVAL_ENABLED=true` and secret
-`EVAL_ROLE_ARN`. Offline checks and framework unit tests need no credentials. The renderer tests use the `visual` extra;
-install `ffmpeg` to include MP4 encode/decode checks (both CI jobs do this).
-Per-case visual evaluation remains a separate full-profile run; CI retains
-the existing negative-control checks. CI uploads `.eval/runs/`, including failures.
+Both CI definitions use `skill-eval setup` and `skill-eval run --profile core --negative-controls`
+and share one selection rule. A pipeline starts on pull/merge request creation and
+updates, selecting skills from the entire request diff. Changes under one skill
+evaluate that skill; shared framework, dependency or CI changes evaluate all skills.
+Documentation-only requests run offline checks only; a manual run (**Run workflow**
+on GitHub, **Run pipeline** on GitLab) evaluates everything. Branch pushes do not
+create a second pipeline. The required eval fails when credentials are unavailable
+(`EVAL_ROLE_ARN` assumed through OIDC on GitHub, `AWS_CREDS_TARGET_ROLE` on GitLab)
+rather than skipping. Offline checks and framework unit tests need no credentials.
+The renderer tests use the `visual` extra; install `ffmpeg` to include MP4
+encode/decode checks (both CI jobs do this). Per-case visual evaluation remains a
+separate full-profile run; CI retains the existing negative-control checks.
 
-GitLab also exposes **Skill evaluation** in the MR artifacts, containing
-`.eval/dashboard.html`, `.eval/summary.json`, and the selection/evidence files.
-See [GitLab CI configuration and notifications](docs/gitlab-ci.md) for merge settings,
-selection rules and extension points for email or agent analysis.
+Both publish `.eval/` after every eval job, including failures: `dashboard.html`,
+`summary.json`, the selection record and `runs/` with evidence. GitHub uploads it as
+the **skill-evaluation** artifact and writes the scores to the job's step summary;
+GitLab exposes it as **Skill evaluation** on the MR. See
+[GitHub Actions configuration](docs/github-ci.md) and
+[GitLab CI configuration and notifications](docs/gitlab-ci.md) for role trust,
+merge settings, selection rules and extension points.
 
 ```bash
 uv run --locked --extra visual python -m unittest discover -s tests -v
