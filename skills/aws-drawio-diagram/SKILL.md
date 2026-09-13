@@ -29,9 +29,9 @@ Hand-writing Drawio XML is error-prone and rarely produces consistent AWS
 styling. Instead: describe the architecture as a spec, and let
 `scripts/src/generate.ts` emit valid, AWS-styled XML — correct `mxgraph.aws4.*`
 shapes, VPC/AZ/subnet grouping, wrapped layout that keeps labels from colliding,
-the title block, the callout badges and the annotation panel. None of the frame
-is reachable by hand in reasonable time, which is the practical reason not to
-try.
+the title block, the callout badges and the annotation panel. Reproducing that
+frame by hand takes far longer than running the generator, which is the practical
+reason not to try.
 
 **Always run the generator.** If the user asks for the XML directly, or asks you
 to skip the scripts, still run the generator: the point of the skill is the styling
