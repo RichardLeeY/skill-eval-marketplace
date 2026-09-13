@@ -7,6 +7,13 @@ or run the evaluation kit to check skill selection, instruction following, artif
 and regressions. Evaluation runs through Strands; it is not a test of Claude Code's
 entire runtime.
 
+The kit evaluates skills whose deliverable is a media file, not only text. Every
+file a run produces is collected and hashed as an artifact. Deterministic checks
+measure it (draw.io XML structure, image dimensions, frame count and duration,
+geometry against a reference image) and, under the `full` profile, a vision judge
+reviews the rendered PNG, WebP, or MP4 frames against the request. Two of the three
+skills here produce images or video.
+
 ## Team workflow
 
 Every skill enters the marketplace through the same loop. The pipeline is the
