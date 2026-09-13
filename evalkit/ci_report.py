@@ -95,6 +95,12 @@ def summarize(root: Path, env: dict) -> dict:
                 "agent": case.get("agent_model", ""), "judge": case.get("judge_model", ""),
                 "report": str(report_path.relative_to(directory)),
             })
+    if not (directory / "selection.json").exists():
+        # A local run (`skill-eval run` + `tools/publish_scoreboard.py`) has no CI
+        # selection record; the scored reports define what was requested.
+        selection = {"mode": "local", "source": "local", "exit_code": 0, "plan_only": False,
+                     "skills": sorted({c["skill"] for c in cases if c["skill"]}),
+                     "shared_changes": [], "removed_skills": []}
     if selection.get("error"):
         errors.append(selection["error"])
     links = ci_links(env)

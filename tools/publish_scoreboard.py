@@ -102,7 +102,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Dry run: changes staged in {site}, nothing committed")
         return 0
     git("commit", "-m", f"scoreboard: {head[:7]} (local publish)", cwd=site)
-    git("push", "origin", "gh-pages", cwd=site, capture=False)
+    if subprocess.run(["git", "push", "origin", "gh-pages"], cwd=site).returncode != 0:
+        print(f"Push rejected. The run is committed on gh-pages in {site}; "
+              "resolve the rejection above and run `git push origin gh-pages` there.",
+              file=sys.stderr)
+        return 1
     print(f"Published https://{slug.split('/')[0].lower()}.github.io/{slug.split('/')[1]}/")
     return 0
 

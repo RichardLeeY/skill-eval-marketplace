@@ -39,6 +39,18 @@ class CIReportTests(unittest.TestCase):
         self.run["status"] = "running"
         self.assertEqual(self.report()["status"], "FAIL / INCOMPLETE")
 
+    def test_local_run_without_selection_record_can_pass(self):
+        self.write(".eval/runs/run-a/run.json", self.run)
+        self.write(".eval/runs/run-a/scores/score-a/report.meta.json", self.meta)
+        self.write(".eval/runs/run-a/scores/score-a/report.json", [self.case])
+        summary = ci_report.summarize(self.root, {})
+        self.assertEqual(summary["status"], "PASS")
+        self.assertEqual(summary["selection"]["mode"], "local")
+        self.assertEqual(summary["selection"]["skills"], ["alpha"])
+        # A local run with no scored report is still not green.
+        (self.root / ".eval/runs/run-a/scores/score-a/report.json").unlink()
+        self.assertEqual(ci_report.summarize(self.root, {})["status"], "FAIL / INCOMPLETE")
+
     def test_missing_and_corrupt_reports_are_not_green(self):
         self.write(".eval/selection.json", self.selection)
         self.assertEqual(ci_report.summarize(self.root, {})["status"], "FAIL / INCOMPLETE")
