@@ -9,7 +9,11 @@ commit subjects since the previous release; edit before pushing if they need tid
   the full evaluation on every push to `main` (and weekly), appends the run to the
   `gh-pages` history with `evalkit/pages.py`, and deploys `index.html`, per-run
   dashboards with allowlisted evidence, and shields.io badges per skill. The
-  GitHub driver accepts `push` and `schedule` events as full runs.
+  GitHub driver accepts `push` and `schedule` events as full runs. Pages serves the
+  branch directly; the workflow picks Bedrock (OIDC) or an OpenAI-compatible key
+  from secrets and skips the model run when neither exists, and
+  `tools/publish_scoreboard.py` publishes a local evaluation with no repository
+  secret at all. A pure-openai run no longer requires an AWS variable.
 - GitHub Actions: evaluate the skills a pull request touches (`evalkit/github_ci.py`,
   sharing selection with the GitLab driver), gate eval on the lint jobs and a plan
   step, assume the Bedrock role through OIDC, and publish the dashboard as an

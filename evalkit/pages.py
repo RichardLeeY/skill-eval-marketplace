@@ -1,6 +1,8 @@
 """Build the public marketplace scoreboard published on GitHub Pages.
 
-The site directory is a checkout of the ``gh-pages`` branch. Each publish appends
+The site directory is a checkout of the ``gh-pages`` branch, which GitHub Pages
+serves directly. Output is deterministic for a given history, so rebuilding without
+a new run produces no diff. Each publish appends
 the current ``.eval`` run (as summarised by ``evalkit.ci_report``) to a small
 append-only history and rebuilds the static pages from it:
 
@@ -220,7 +222,6 @@ def render_index(index: list[dict], baseline: dict, skills: list[str], threshold
                     f'dashboard</a>{pipeline}</td></tr>')
     headline = (f'Latest run {text(latest["status"])} · {text(latest["date"][:10])} · commit {text(latest["short"])}'
                 if latest else "No published run yet")
-    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     return f"""<!doctype html>
 <html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 <title>Skill marketplace scoreboard</title>
@@ -234,7 +235,7 @@ td,th{{padding:.6rem;text-align:left;border-bottom:1px solid #d5dde8;vertical-al
 .no,.skipped{{color:#52657c;font-weight:600}}.spark{{display:block}}
 </style>
 <h1>Skill marketplace scoreboard</h1>
-<p class="muted">{headline}. Threshold {threshold:.2f}. Generated {generated}.</p>
+<p class="muted">{headline}. Threshold {threshold:.2f}.</p>
 <div class="card">Every skill in the marketplace ships its own evaluation cases. A pull request cannot
 merge until its skill scores at or above the threshold; this page publishes the result of every
 evaluation of <code>main</code>. <strong>Latest</strong> is the most recent full run.

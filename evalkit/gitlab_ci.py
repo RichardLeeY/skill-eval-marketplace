@@ -74,9 +74,15 @@ def run_selected(root: Path, selection: dict, env: dict, *,
     if not selection["skills"]:
         print("No remaining skill requires evaluation.")
         return 0
-    if not any(env.get(name) for name in credential_vars):
-        raise ValueError("Required eval cannot run: none of "
-                         + ", ".join(credential_vars) + " is available to this job")
+    # AWS credentials gate Bedrock runs only. An OpenAI-compatible provider carries
+    # its own key (evalkit.models validates it at setup), so a pure-openai job may
+    # run without any AWS variable.
+    agent = env.get("MODEL_PROVIDER") or "bedrock"
+    judge = env.get("JUDGE_MODEL_PROVIDER") or agent
+    if not (agent == "openai" and judge == "openai"):
+        if not any(env.get(name) for name in credential_vars):
+            raise ValueError("Required eval cannot run: none of "
+                             + ", ".join(credential_vars) + " is available to this job")
     flags = [arg for name in selection["skills"] for arg in ("--skill", name)]
     commands = [[sys.executable, "-m", "evalkit.cli", "setup", "--with-system-deps", *flags]]
     # MP4 rendering and frame extraction need the system binary.

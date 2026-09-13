@@ -111,6 +111,23 @@ class GitHubCITests(unittest.TestCase):
                                    credential_vars=github_ci.CREDENTIAL_VARS)
         run.assert_not_called()
 
+    def test_pure_openai_provider_needs_no_aws_credentials(self):
+        selection = gitlab_ci.select_skills(self.root, ["skills/alpha/SKILL.md"])
+        with patch.object(gitlab_ci.subprocess, "run") as run, \
+                patch.object(gitlab_ci.shutil, "which", return_value="/usr/bin/ffmpeg"):
+            run.return_value.returncode = 0
+            code = gitlab_ci.run_selected(self.root, selection, {"MODEL_PROVIDER": "openai"},
+                                          credential_vars=github_ci.CREDENTIAL_VARS)
+        self.assertEqual(code, 0)
+        self.assertTrue(run.called)
+        # A Bedrock judge behind an OpenAI agent still needs AWS.
+        with patch.object(gitlab_ci.subprocess, "run") as run, self.assertRaisesRegex(
+                ValueError, "AWS_ACCESS_KEY_ID"):
+            gitlab_ci.run_selected(self.root, selection,
+                                   {"MODEL_PROVIDER": "openai", "JUDGE_MODEL_PROVIDER": "bedrock"},
+                                   credential_vars=github_ci.CREDENTIAL_VARS)
+        run.assert_not_called()
+
     def test_plan_only_writes_selection_and_job_outputs(self):
         output = self.root / "github_output"
         env = {"GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_OUTPUT": str(output)}

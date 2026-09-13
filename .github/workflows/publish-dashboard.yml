@@ -1,24 +1,24 @@
 # Publish the marketplace scoreboard to GitHub Pages.
 #
-# Runs after every push to main, weekly (to catch judge drift on unchanged skills)
-# and on manual dispatch. Two jobs:
+# GitHub Pages serves the gh-pages branch directly (Settings -> Pages -> Deploy from
+# a branch: gh-pages, /). The scoreboard is therefore just files on that branch,
+# and there are two ways to put a run there:
 #
-#   eval      the same full evaluation the PR workflow runs on Run workflow:
-#             skill-eval run --profile core --negative-controls over every skill,
-#             then evalkit.ci_report. Needs Bedrock through the OIDC role in
-#             secrets.EVAL_ROLE_ARN; the role's trust policy must accept
-#             sub: repo:<owner>/<repo>:ref:refs/heads/main.
-#   publish   always runs, even when eval failed, so a red run is recorded on the
-#             public site instead of disappearing. It appends the run to the
-#             gh-pages branch (the site's history store), rebuilds index.html and
-#             the badges with evalkit.pages, pushes gh-pages and deploys it.
+#   1. This workflow. On every push to main, weekly, and on manual dispatch it runs
+#      the full evaluation when the repository holds a model credential, then
+#      appends the run to gh-pages with evalkit.pages. Credentials, checked in
+#      `preflight`:
+#        EVAL_ROLE_ARN                Bedrock through GitHub OIDC (the PR workflow's
+#                                     role; trust must also accept ref:refs/heads/main)
+#        EVAL_OPENAI_API_KEY          any OpenAI-compatible endpoint, optionally with
+#        EVAL_OPENAI_BASE_URL         EVAL_MODEL_ID / EVAL_JUDGE_MODEL_ID variables
+#      With neither, `eval` is skipped and `publish` only rebuilds the site from the
+#      existing history and main's eval-baseline.json. Nothing goes red.
+#   2. tools/publish_scoreboard.py, from a laptop with its own AWS profile. Same
+#      site builder, same branch; no repository secret needed.
 #
 # Only an allowlist of evidence is published (evalkit.pages.allowed): report and
-# run JSON, execute logs, image previews under 2 MB. Video stays in the
-# skill-evaluation artifact. Everything on Pages is public.
-#
-# One-time setup: Settings -> Pages -> Source: GitHub Actions. The configure-pages
-# step also tries to enable it.
+# run JSON, execute logs, image previews under 2 MB. Everything on Pages is public.
 
 name: publish-dashboard
 
@@ -42,11 +42,31 @@ permissions:
   contents: read
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      provider: ${{ steps.pick.outputs.provider }}
+    steps:
+      - id: pick
+        env:
+          HAS_AWS: ${{ secrets.EVAL_ROLE_ARN != '' }}
+          HAS_OPENAI: ${{ secrets.EVAL_OPENAI_API_KEY != '' }}
+        run: |
+          if [ "$HAS_AWS" = "true" ]; then provider=bedrock
+          elif [ "$HAS_OPENAI" = "true" ]; then provider=openai
+          else provider=none; fi
+          echo "provider=$provider" >> "$GITHUB_OUTPUT"
+          echo "Model provider for this run: $provider"
+
   eval:
+    needs: preflight
+    if: needs.preflight.outputs.provider != 'none'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
+    env:
+      MODEL_PROVIDER: ${{ needs.preflight.outputs.provider }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -57,12 +77,25 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
-      - run: uv sync --locked
+      - if: needs.preflight.outputs.provider == 'bedrock'
+        run: uv sync --locked
+      - if: needs.preflight.outputs.provider == 'openai'
+        run: uv sync --locked --extra openai
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-      - uses: aws-actions/configure-aws-credentials@v4
+      - if: needs.preflight.outputs.provider == 'bedrock'
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.EVAL_ROLE_ARN }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      - if: needs.preflight.outputs.provider == 'openai'
+        run: |
+          {
+            echo "OPENAI_API_KEY=${{ secrets.EVAL_OPENAI_API_KEY }}"
+            [ -n "${{ secrets.EVAL_OPENAI_BASE_URL }}" ] && echo "OPENAI_BASE_URL=${{ secrets.EVAL_OPENAI_BASE_URL }}"
+            [ -n "${{ vars.EVAL_MODEL_ID }}" ] && echo "MODEL_ID=${{ vars.EVAL_MODEL_ID }}"
+            [ -n "${{ vars.EVAL_JUDGE_MODEL_ID }}" ] && echo "JUDGE_MODEL_ID=${{ vars.EVAL_JUDGE_MODEL_ID }}"
+            true
+          } >> "$GITHUB_ENV"
       - run: uv run --locked python -m evalkit.github_ci
       - if: always()
         env:
@@ -77,27 +110,20 @@ jobs:
           retention-days: 14
 
   publish:
-    needs: eval
-    if: always()
+    needs: [preflight, eval]
+    if: always() && needs.preflight.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - uses: astral-sh/setup-uv@v6
-        with:
-          version: ${{ env.UV_VERSION }}
-          enable-cache: true
-      - run: uv sync --locked
-      - uses: actions/download-artifact@v4
-        # A lost runner may have produced no artifact; publish still records the gap.
+      - if: needs.eval.result != 'skipped'
+        uses: actions/download-artifact@v4
+        # A lost runner may have produced no artifact; publish still rebuilds the site.
         continue-on-error: true
         with:
           name: skill-evaluation
@@ -106,13 +132,13 @@ jobs:
         run: |
           if git ls-remote --exit-code --heads origin gh-pages >/dev/null; then
             git fetch --depth 1 origin gh-pages
-            git worktree add site origin/gh-pages
-            git -C site checkout -B gh-pages
+            git worktree add -B gh-pages site origin/gh-pages
           else
             git worktree add --orphan -b gh-pages site
           fi
-      - run: uv run --locked python -m evalkit.pages --site site --run .eval
-      - name: Commit the new run to gh-pages
+      # evalkit.pages is standard library only; no project environment needed here.
+      - run: python -m evalkit.pages --site site --run .eval
+      - name: Commit to gh-pages
         run: |
           cd site
           git add -A
@@ -121,14 +147,7 @@ jobs:
           else
             git -c user.name=github-actions[bot] \
                 -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
-                commit -m "scoreboard: ${GITHUB_SHA::7} (${GITHUB_EVENT_NAME})"
+                commit -m "scoreboard: ${GITHUB_SHA::7} (${GITHUB_EVENT_NAME}, provider ${{ needs.preflight.outputs.provider }})"
             git push origin gh-pages
           fi
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-      - id: deploy
-        uses: actions/deploy-pages@v4
+      - run: echo "Scoreboard https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}/" >> "$GITHUB_STEP_SUMMARY"
