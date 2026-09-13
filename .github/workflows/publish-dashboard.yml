@@ -1,0 +1,134 @@
+# Publish the marketplace scoreboard to GitHub Pages.
+#
+# Runs after every push to main, weekly (to catch judge drift on unchanged skills)
+# and on manual dispatch. Two jobs:
+#
+#   eval      the same full evaluation the PR workflow runs on Run workflow:
+#             skill-eval run --profile core --negative-controls over every skill,
+#             then evalkit.ci_report. Needs Bedrock through the OIDC role in
+#             secrets.EVAL_ROLE_ARN; the role's trust policy must accept
+#             sub: repo:<owner>/<repo>:ref:refs/heads/main.
+#   publish   always runs, even when eval failed, so a red run is recorded on the
+#             public site instead of disappearing. It appends the run to the
+#             gh-pages branch (the site's history store), rebuilds index.html and
+#             the badges with evalkit.pages, pushes gh-pages and deploys it.
+#
+# Only an allowlist of evidence is published (evalkit.pages.allowed): report and
+# run JSON, execute logs, image previews under 2 MB. Video stays in the
+# skill-evaluation artifact. Everything on Pages is public.
+#
+# One-time setup: Settings -> Pages -> Source: GitHub Actions. The configure-pages
+# step also tries to enable it.
+
+name: publish-dashboard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+# Publishes append to gh-pages; never run two at once, never cancel one midway.
+concurrency:
+  group: publish-dashboard
+  cancel-in-progress: false
+
+env:
+  UV_VERSION: "0.11.1"
+  AWS_DEFAULT_REGION: us-east-1
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --locked
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.EVAL_ROLE_ARN }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      - run: uv run --locked python -m evalkit.github_ci
+      - if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: uv run --locked python -m evalkit.ci_report
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-evaluation
+          path: .eval/
+          include-hidden-files: true
+          retention-days: 14
+
+  publish:
+    needs: eval
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --locked
+      - uses: actions/download-artifact@v4
+        # A lost runner may have produced no artifact; publish still records the gap.
+        continue-on-error: true
+        with:
+          name: skill-evaluation
+          path: .eval
+      - name: Check out gh-pages as the history store
+        run: |
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null; then
+            git fetch --depth 1 origin gh-pages
+            git worktree add site origin/gh-pages
+            git -C site checkout -B gh-pages
+          else
+            git worktree add --orphan -b gh-pages site
+          fi
+      - run: uv run --locked python -m evalkit.pages --site site --run .eval
+      - name: Commit the new run to gh-pages
+        run: |
+          cd site
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Site unchanged"
+          else
+            git -c user.name=github-actions[bot] \
+                -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+                commit -m "scoreboard: ${GITHUB_SHA::7} (${GITHUB_EVENT_NAME})"
+            git push origin gh-pages
+          fi
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

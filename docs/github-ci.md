@@ -86,6 +86,14 @@ Download and extract the **skill-evaluation** artifact, then open
 `JOB_STATUS` from `${{ job.status }}` so a failed or cancelled job is never shown
 as passing. A runner loss or hard timeout may prevent the report and upload.
 
+## Public scoreboard
+
+A second workflow, `publish-dashboard.yml`, runs the full evaluation on every push
+to `main` and publishes the result to GitHub Pages: skill scores, accepted
+baseline, trend, per-run dashboards and badges. See [dashboard.md](dashboard.md)
+for the site layout, the evidence allowlist and the extra OIDC trust condition
+for `refs/heads/main`.
+
 ## Differences from GitLab
 
 * Credentials: OIDC role assumption through `aws-actions/configure-aws-credentials`

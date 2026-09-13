@@ -2,6 +2,15 @@
 
 *[English](README.md) | 简体中文*
 
+[![skill-eval](https://github.com/RichardLeeY/skill-eval-marketplace/actions/workflows/skill-eval.yml/badge.svg)](https://github.com/RichardLeeY/skill-eval-marketplace/actions/workflows/skill-eval.yml)
+[![scoreboard](https://img.shields.io/endpoint?url=https://richardleey.github.io/skill-eval-marketplace/badge/marketplace.json)](https://richardleey.github.io/skill-eval-marketplace/)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
+
+**在线评分看板：** `main` 分支的每次评估结果都会发布到
+[richardleey.github.io/skill-eval-marketplace](https://richardleey.github.io/skill-eval-marketplace/)，包含每个技能的得分、
+已接受的基线、趋势线，以及每次运行的完整证据看板。
+
 三个 agent skill，和各自的评估用例一起维护。可以直接在 agent 中使用 skill，也可以运行
 评估工具，检查技能选择、指令遵循、交付物和回归。评估通过 Strands 执行，结果反映的是
 这套测试环境下的表现，不等同于对 Claude Code 完整运行环境的测试。
@@ -34,7 +43,8 @@ PNG、WebP 或 MP4 帧。这里的三个技能中有两个输出图片或视频�
 
 报告中的分数是 0–1 区间，阈值即 0.90。用分支保护强制门禁：在 `main` 上要求 `eval`
 检查通过，评估未过就无法绕过合并。各平台的配置见 [docs/github-ci.md](docs/github-ci.md)
-和 [docs/gitlab-ci.md](docs/gitlab-ci.md)。
+和 [docs/gitlab-ci.md](docs/gitlab-ci.md)。在 GitHub 上，每次推送到 `main` 还会运行完整评估，
+并把结果发布到[公开评分看板](https://richardleey.github.io/skill-eval-marketplace/)，见 [docs/dashboard.md](docs/dashboard.md)。
 
 ## 使用技能
 

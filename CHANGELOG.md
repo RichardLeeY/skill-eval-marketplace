@@ -5,6 +5,11 @@ commit subjects since the previous release; edit before pushing if they need tid
 
 ## Unreleased
 
+- Public scoreboard on GitHub Pages: `.github/workflows/publish-dashboard.yml` runs
+  the full evaluation on every push to `main` (and weekly), appends the run to the
+  `gh-pages` history with `evalkit/pages.py`, and deploys `index.html`, per-run
+  dashboards with allowlisted evidence, and shields.io badges per skill. The
+  GitHub driver accepts `push` and `schedule` events as full runs.
 - GitHub Actions: evaluate the skills a pull request touches (`evalkit/github_ci.py`,
   sharing selection with the GitLab driver), gate eval on the lint jobs and a plan
   step, assume the Bedrock role through OIDC, and publish the dashboard as an

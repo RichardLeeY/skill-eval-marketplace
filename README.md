@@ -2,6 +2,15 @@
 
 *English | [简体中文](README.zh-CN.md)*
 
+[![skill-eval](https://github.com/RichardLeeY/skill-eval-marketplace/actions/workflows/skill-eval.yml/badge.svg)](https://github.com/RichardLeeY/skill-eval-marketplace/actions/workflows/skill-eval.yml)
+[![scoreboard](https://img.shields.io/endpoint?url=https://richardleey.github.io/skill-eval-marketplace/badge/marketplace.json)](https://richardleey.github.io/skill-eval-marketplace/)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
+
+**Live scoreboard:** every evaluation of `main` is published at
+[richardleey.github.io/skill-eval-marketplace](https://richardleey.github.io/skill-eval-marketplace/) with per-skill scores,
+the accepted baseline, trend lines and the full evidence dashboard for each run.
+
 Three agent skills packaged with their evaluation cases. Use the skills in your agent,
 or run the evaluation kit to check skill selection, instruction following, artifacts,
 and regressions. Evaluation runs through Strands; it is not a test of Claude Code's
@@ -55,11 +64,14 @@ The marketplace currently distributes one plugin, `my-anycompany-skills`, contai
 three skills. Python evaluation dependencies are only needed if you run the eval kit.
 Each skill's own scripts may still need dependencies described in its `SKILL.md`.
 
-| Skill | Deliverable | Evaluation cases |
-|---|---|---:|
-| [aws-drawio-diagram](skills/aws-drawio-diagram/SKILL.md) | AWS architecture diagrams in draw.io XML | 4 |
-| [folder-specific-claude-and-agents-md](skills/folder-specific-claude-and-agents-md/SKILL.md) | Folder context in `CLAUDE.md` and an `AGENTS.md` symlink | 2 |
-| [visual-flow-webp](skills/visual-flow-webp/SKILL.md) | Generate diagrams or animate data flows over a reference image; PNG + WebP/GIF/MP4 | 6 |
+| Skill | Deliverable | Cases | Latest score |
+|---|---|---:|---|
+| [aws-drawio-diagram](skills/aws-drawio-diagram/SKILL.md) | AWS architecture diagrams in draw.io XML | 4 | [![aws-drawio-diagram eval](https://img.shields.io/endpoint?url=https://richardleey.github.io/skill-eval-marketplace/badge/aws-drawio-diagram.json)](https://richardleey.github.io/skill-eval-marketplace/) |
+| [folder-specific-claude-and-agents-md](skills/folder-specific-claude-and-agents-md/SKILL.md) | Folder context in `CLAUDE.md` and an `AGENTS.md` symlink | 2 | [![folder-specific-claude-and-agents-md eval](https://img.shields.io/endpoint?url=https://richardleey.github.io/skill-eval-marketplace/badge/folder-specific-claude-and-agents-md.json)](https://richardleey.github.io/skill-eval-marketplace/) |
+| [visual-flow-webp](skills/visual-flow-webp/SKILL.md) | Generate diagrams or animate data flows over a reference image; PNG + WebP/GIF/MP4 | 6 | [![visual-flow-webp eval](https://img.shields.io/endpoint?url=https://richardleey.github.io/skill-eval-marketplace/badge/visual-flow-webp.json)](https://richardleey.github.io/skill-eval-marketplace/) |
+
+The score badges read the [live scoreboard](https://richardleey.github.io/skill-eval-marketplace/) and refresh after every
+evaluation of `main`.
 
 ## Evaluate one skill
 
@@ -199,7 +211,10 @@ separate full-profile run; CI retains the existing negative-control checks.
 Both publish `.eval/` after every eval job, including failures: `dashboard.html`,
 `summary.json`, the selection record and `runs/` with evidence. GitHub uploads it as
 the **skill-evaluation** artifact and writes the scores to the job's step summary;
-GitLab exposes it as **Skill evaluation** on the MR. See
+GitLab exposes it as **Skill evaluation** on the MR. On GitHub, every push to `main`
+also runs the full evaluation and publishes the result to the
+[public scoreboard](https://richardleey.github.io/skill-eval-marketplace/) through `.github/workflows/publish-dashboard.yml`;
+see [docs/dashboard.md](docs/dashboard.md). See
 [GitHub Actions configuration](docs/github-ci.md) and
 [GitLab CI configuration and notifications](docs/gitlab-ci.md) for role trust,
 merge settings, selection rules and extension points.

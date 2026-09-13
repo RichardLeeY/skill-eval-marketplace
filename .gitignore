@@ -8,6 +8,8 @@ strands_eval_report.json
 artifacts/
 .venv/
 .eval/
+# gh-pages worktree used by evalkit.pages when publishing the scoreboard locally.
+/site/
 *.egg-info/
 /dist/
 

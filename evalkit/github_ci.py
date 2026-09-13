@@ -8,7 +8,9 @@ this module only translates GitHub's event model:
   the PR head, so target-branch commits present in the merge checkout do not
   select extra skills. `actions/checkout` needs `fetch-depth: 0` for the merge
   base to exist locally; a missing base is an error, not an empty selection.
-* `workflow_dispatch`: evaluate every skill, like GitLab's **Run pipeline**.
+* `workflow_dispatch`, `push` and `schedule`: evaluate every skill, like GitLab's
+  **Run pipeline**. `push` and `schedule` are how the published scoreboard
+  (`evalkit.pages`) evaluates `main` after a merge.
 
 Credentials come from `aws-actions/configure-aws-credentials`, which exports
 static keys into the job environment; the run refuses to start without them so a
@@ -30,6 +32,7 @@ from evalkit.gitlab_ci import ROOT, select_skills
 CREDENTIAL_VARS = ("AWS_ACCESS_KEY_ID", "AWS_WEB_IDENTITY_TOKEN_FILE",
                    "AWS_CONTAINER_CREDENTIALS_FULL_URI")
 SHA = re.compile(r"[0-9a-fA-F]{40,64}")
+FULL_EVENTS = ("workflow_dispatch", "push", "schedule")
 
 
 def _sha(value: str | None, label: str) -> str:
@@ -64,9 +67,9 @@ def plan(root: Path, env: dict) -> dict:
             ["git", "diff", "--name-only", "--no-renames", "-z", base, head_sha, "--"], cwd=root)
         paths = [os.fsdecode(p) for p in raw.split(b"\0") if p]
         head = head_sha
-    elif event != "workflow_dispatch":
-        raise ValueError("Expected a pull_request or workflow_dispatch event")
-    result = select_skills(root, paths, full=event == "workflow_dispatch")
+    elif event not in FULL_EVENTS:
+        raise ValueError("Expected a pull_request, workflow_dispatch, push or schedule event")
+    result = select_skills(root, paths, full=event in FULL_EVENTS)
     result.update(source=event, base_sha=base, head_sha=head,
                   merge_request=number, pull_request=number,
                   repository=env.get("GITHUB_REPOSITORY"), run_id=env.get("GITHUB_RUN_ID"))

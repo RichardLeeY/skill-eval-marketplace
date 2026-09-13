@@ -78,15 +78,19 @@ class GitHubCITests(unittest.TestCase):
         self.assertIn("skills/alpha/SKILL.md", result["changed_paths"])
         self.assertIn("skills/beta/moved.md", result["changed_paths"])
 
-    def test_workflow_dispatch_runs_all(self):
-        with patch.object(github_ci.subprocess, "check_output", return_value="a" * 40):
-            result = github_ci.plan(self.root, {"GITHUB_EVENT_NAME": "workflow_dispatch"})
-        self.assertEqual(result["skills"], ["alpha", "beta"])
-        self.assertEqual(result["mode"], "full")
+    def test_workflow_dispatch_push_and_schedule_run_all(self):
+        for event in ("workflow_dispatch", "push", "schedule"):
+            with self.subTest(event=event), patch.object(
+                    github_ci.subprocess, "check_output", return_value="a" * 40):
+                result = github_ci.plan(self.root, {"GITHUB_EVENT_NAME": event})
+            self.assertEqual(result["skills"], ["alpha", "beta"])
+            self.assertEqual(result["mode"], "full")
+            self.assertEqual(result["source"], event)
 
     def test_wrong_event_or_missing_payload_fails(self):
         with patch.object(github_ci.subprocess, "check_output", return_value="a" * 40):
-            for env in ({"GITHUB_EVENT_NAME": "push"},
+            for env in ({"GITHUB_EVENT_NAME": "release"},
+                        {},
                         {"GITHUB_EVENT_NAME": "pull_request"},
                         {"GITHUB_EVENT_NAME": "pull_request",
                          "GITHUB_EVENT_PATH": str(self.write("event.json", "{}"))}):
@@ -135,7 +139,7 @@ class GitHubCITests(unittest.TestCase):
         self.assertIn("eval_required=false", output.read_text())
 
     def test_selection_failure_is_archived_for_dashboard(self):
-        env = {"GITHUB_EVENT_NAME": "push"}
+        env = {"GITHUB_EVENT_NAME": "release"}
         with patch.object(github_ci, "ROOT", self.root), patch.dict(os.environ, env, clear=True), \
                 patch.object(github_ci.subprocess, "check_output", return_value="a" * 40), \
                 contextlib.redirect_stderr(io.StringIO()):
