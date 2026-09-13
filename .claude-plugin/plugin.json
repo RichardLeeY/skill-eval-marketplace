@@ -6,5 +6,6 @@
   "author": {
     "name": "Richard Lee"
   },
-  "homepage": "https://github.com/RichardLeeY/skill-eval-marketplace"
+  "homepage": "https://github.com/RichardLeeY/skill-eval-marketplace",
+  "license": "MIT"
 }

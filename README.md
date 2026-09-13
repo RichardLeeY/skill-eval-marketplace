@@ -205,3 +205,9 @@ not enforce evaluation success; review and run checks before invoking it. For ma
 pip users, `requirements.txt` installs this project's base dependencies; uv is the
 supported locked workflow. Running `uv sync` without extras may remove dependencies
 installed by setup, so rerun setup afterwards.
+
+## License
+
+[MIT](LICENSE). Two skills were adapted from MIT-licensed upstream projects and keep
+their original notices: `skills/visual-flow-webp/LICENSE-upstream` and
+`skills/folder-specific-claude-and-agents-md/LICENSE-upstream`.

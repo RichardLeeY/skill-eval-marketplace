@@ -7,6 +7,8 @@ name = "skill-marketplace-eval"
 version = "0.1.0"
 description = "Local execution, scoring and regression checks for marketplace skills"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
   "bedrock-agentcore>=1.22",
   "boto3>=1.43.41",

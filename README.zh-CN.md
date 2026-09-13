@@ -178,3 +178,9 @@ uv run --locked python -m unittest discover -s tests -v
 `tools/release.py` 会更新 manifest、changelog、提交并打 tag，但不强制检查评估结果，使用前
 需自行审阅并运行检查。手动使用 pip 时，`requirements.txt` 安装项目基础依赖；推荐使用 uv
 锁定流程。不带 extras 的 `uv sync` 可能移除 setup 安装的技能依赖，之后重新 setup 即可。
+
+## 许可协议
+
+[MIT](LICENSE)。两个技能改编自 MIT 许可的上游项目，并保留其原始声明：
+`skills/visual-flow-webp/LICENSE-upstream` 与
+`skills/folder-specific-claude-and-agents-md/LICENSE-upstream`。
