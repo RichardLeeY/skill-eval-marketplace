@@ -2,9 +2,39 @@
 
 *[English](README.md) | 简体中文*
 
-四个 agent skill，和各自的评估用例一起维护。可以直接在 agent 中使用 skill，也可以运行
+三个 agent skill，和各自的评估用例一起维护。可以直接在 agent 中使用 skill，也可以运行
 评估工具，检查技能选择、指令遵循、交付物和回归。评估通过 Strands 执行，结果反映的是
 这套测试环境下的表现，不等同于对 Claude Code 完整运行环境的测试。
+
+## 团队协作流程
+
+每个技能都通过同一条闭环进入 marketplace。流水线是正式的评审者：技能自带的评估用例
+达到团队阈值之前，merge request 不能合并。
+
+```mermaid
+flowchart TD
+    A["1. 创建技能<br/>skills/&lt;name&gt;/SKILL.md + 脚本"] --> B["2. 设计用例与评估<br/>eval/dataset.jsonl，可选 eval/plugin.py<br/>本地运行 skill-eval check / run"]
+    B --> C["3. 提交 merge request<br/>GitHub pull request 或 GitLab MR"]
+    C --> D["4. 流水线评估变更的技能<br/>lint → 安全扫描 → skill-eval run"]
+    D --> E{"5. 总分 ≥ 0.90<br/>且所有门禁项通过？"}
+    E -- "否" --> F["6. 禁止合并<br/>dashboard 与证据返回作者"]
+    F -. "改进技能或用例" .-> B
+    E -- "是" --> G["7. 合并并发布<br/>把已审阅的报告接受为新基线"]
+```
+
+| 步骤 | 角色 | 通过条件 |
+|---|---|---|
+| 1. 创建技能 | 作者 | 一份描述精确的 `SKILL.md`，以及需要的脚本 |
+| 2. 设计用例与评估 | 作者 | `eval/dataset.jsonl` 至少三个用例；本地 `skill-eval check` 与 `skill-eval run` 通过 |
+| 3. 提交 merge request | 作者 | 推送分支，向 `main` 发起请求 |
+| 4. 流水线评估 | CI | `repo-check` 与 `security-scan` 通过后，`eval` 只运行受影响的技能 |
+| 5. 分数门禁 | CI | 每个用例总分不低于 0.90，且没有门禁断言失败 |
+| 6. 禁止合并 | 作者 | 从运行 artifact 中打开 `.eval/dashboard.html`，修正技能或用例后再次推送 |
+| 7. 合并 | 评审者 | 批准、合并，并用 `skill-eval baseline accept` 接受报告，供后续运行对比 |
+
+报告中的分数是 0–1 区间，阈值即 0.90。用分支保护强制门禁：在 `main` 上要求 `eval`
+检查通过，评估未过就无法绕过合并。各平台的配置见 [docs/github-ci.md](docs/github-ci.md)
+和 [docs/gitlab-ci.md](docs/gitlab-ci.md)。
 
 ## 使用技能
 

@@ -2,10 +2,42 @@
 
 *English | [简体中文](README.zh-CN.md)*
 
-Four agent skills packaged with their evaluation cases. Use the skills in your agent,
+Three agent skills packaged with their evaluation cases. Use the skills in your agent,
 or run the evaluation kit to check skill selection, instruction following, artifacts,
 and regressions. Evaluation runs through Strands; it is not a test of Claude Code's
 entire runtime.
+
+## Team workflow
+
+Every skill enters the marketplace through the same loop. The pipeline is the
+reviewer of record: a merge request cannot merge until the skill's own evaluation
+cases score at or above the team threshold.
+
+```mermaid
+flowchart TD
+    A["1. Create the skill<br/>skills/&lt;name&gt;/SKILL.md + scripts"] --> B["2. Design eval cases<br/>eval/dataset.jsonl, optional eval/plugin.py<br/>run skill-eval check / run locally"]
+    B --> C["3. Open a merge request<br/>GitHub pull request or GitLab MR"]
+    C --> D["4. Pipeline evaluates the changed skills<br/>lint → security scan → skill-eval run"]
+    D --> E{"5. Overall score ≥ 0.90<br/>and every gate row passes?"}
+    E -- "No" --> F["6. Merge blocked<br/>dashboard and evidence returned to the author"]
+    F -. "improve skill or cases" .-> B
+    E -- "Yes" --> G["7. Merge and release<br/>accept the reviewed report as the new baseline"]
+```
+
+| Step | Who | What passes it |
+|---|---|---|
+| 1. Create the skill | Author | A `SKILL.md` with a precise description, plus any scripts it needs |
+| 2. Design cases and eval | Author | At least three cases in `eval/dataset.jsonl`; `skill-eval check` and a local `skill-eval run` are green |
+| 3. Create the merge request | Author | Branch pushed, request opened against `main` |
+| 4. Pipeline evaluation | CI | `repo-check` and `security-scan` pass, then `eval` runs only the affected skills |
+| 5. Score gate | CI | Every case's overall score is at least 0.90 and no gating assertion fails |
+| 6. Blocked | Author | Read `.eval/dashboard.html` from the run artifact, fix the skill or its cases, push again |
+| 7. Merge | Reviewer | Approve, merge, and accept the report with `skill-eval baseline accept` so later runs compare against it |
+
+Scores are reported on a 0–1 scale, so the threshold is 0.90. Branch protection
+enforces the gate: require the `eval` check on `main` so a red evaluation cannot be
+merged around. Setup for each platform is in [docs/github-ci.md](docs/github-ci.md)
+and [docs/gitlab-ci.md](docs/gitlab-ci.md).
 
 ## Use the skills
 
