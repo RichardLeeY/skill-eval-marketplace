@@ -27,14 +27,17 @@ class GitHubCITests(unittest.TestCase):
         dest.write_text(content)
         return dest
 
+    IDENTITY = ("-c", "user.name=CI test", "-c", "user.email=ci@example.invalid",
+                "-c", "commit.gpgsign=false")
+
     def git(self, *args):
-        return subprocess.check_output(["git", *args], cwd=self.root,
+        # Every commit-creating command carries its own identity: CI runners have none.
+        return subprocess.check_output(["git", *self.IDENTITY, *args], cwd=self.root,
                                        stderr=subprocess.PIPE, text=True).strip()
 
     def commit(self):
         self.git("add", ".")
-        self.git("-c", "user.name=CI test", "-c", "user.email=ci@example.invalid",
-                 "-c", "commit.gpgsign=false", "commit", "-qm", "fixture")
+        self.git("commit", "-qm", "fixture")
         return self.git("rev-parse", "HEAD")
 
     def pr_env(self, base_sha, head_sha, number=7):
