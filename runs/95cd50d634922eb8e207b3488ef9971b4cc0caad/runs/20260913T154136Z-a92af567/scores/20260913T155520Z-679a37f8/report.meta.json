@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "gates_passed": false,
+  "scoring_profile": "core",
+  "judge": {
+    "model_provider": "bedrock",
+    "model_id": "global.anthropic.claude-sonnet-4-6"
+  },
+  "negative_controls_requested": true,
+  "controls_complete": true,
+  "requested_cases": [
+    "flow-webp-git-webhook-dark",
+    "flow-webp-git-webhook-from-readme",
+    "flow-webp-git-webhook-stepwise",
+    "flow-webp-git-webhook-extend",
+    "flow-webp-git-webhook-slide-mp4",
+    "flow-webp-reference-overlay-mp4",
+    "coinbase-low-latency",
+    "three-tier-web",
+    "adversarial-inline-xml",
+    "log-pipeline-streaming",
+    "drawio-diagram-only-reply",
+    "claude-md-ingest-folder",
+    "claude-md-subdir-under-root"
+  ],
+  "results_sha256": "13d40fe5d94798c91bc0fda2b8fc390409dc922f30c25a7a5efc41c3606d6a4c",
+  "datasets": {
+    "/Users/oyanli/Documents/myprj/skill-eval-marketplace/.eval/runs/20260913T154136Z-a92af567/cases.json": "4a363618958d5ab79e2cc8c184e97928658b73d632e0617afda0722926c178a0"
+  },
+  "report_sha256": "f350b9d8014aa024d56622f85b4d5cbeb73bc4453d4fcabb74b61e9489b2ae82",
+  "regressed": [],
+  "baseline": "/Users/oyanli/Documents/myprj/skill-eval-marketplace/eval-baseline.json",
+  "tolerance": 0.05,
+  "negative_controls": [
+    {
+      "skill": "aws-drawio-diagram",
+      "status": "not provided"
+    },
+    {
+      "skill": "folder-specific-claude-and-agents-md",
+      "status": "not provided"
+    },
+    {
+      "skill": "visual-flow-webp",
+      "exit_code": 0
+    }
+  ]
+}

@@ -1,5 +1,123 @@
 [
   {
+    "sha": "95cd50d634922eb8e207b3488ef9971b4cc0caad",
+    "short": "95cd50d",
+    "date": "2026-09-13T16:06:06.790250+00:00",
+    "status": "FAIL / INCOMPLETE",
+    "pipeline": "",
+    "commit_url": "https://github.com/RichardLeeY/skill-eval-marketplace/commit/95cd50d634922eb8e207b3488ef9971b4cc0caad",
+    "selection": [
+      "aws-drawio-diagram",
+      "folder-specific-claude-and-agents-md",
+      "visual-flow-webp"
+    ],
+    "skills": {
+      "aws-drawio-diagram": {
+        "cases": 5,
+        "passed": 3,
+        "mean": 0.975,
+        "min": 0.9167,
+        "status": "FAIL"
+      },
+      "folder-specific-claude-and-agents-md": {
+        "cases": 2,
+        "passed": 0,
+        "mean": 0.93,
+        "min": 0.9,
+        "status": "FAIL"
+      },
+      "visual-flow-webp": {
+        "cases": 6,
+        "passed": 4,
+        "mean": 0.9583,
+        "min": 0.9167,
+        "status": "FAIL"
+      }
+    },
+    "cases": [
+      {
+        "case": "flow-webp-git-webhook-dark",
+        "skill": "visual-flow-webp",
+        "score": 0.9583,
+        "status": "PASS"
+      },
+      {
+        "case": "flow-webp-git-webhook-from-readme",
+        "skill": "visual-flow-webp",
+        "score": 0.9583,
+        "status": "PASS"
+      },
+      {
+        "case": "flow-webp-git-webhook-stepwise",
+        "skill": "visual-flow-webp",
+        "score": 0.9167,
+        "status": "FAIL"
+      },
+      {
+        "case": "flow-webp-git-webhook-extend",
+        "skill": "visual-flow-webp",
+        "score": 0.9167,
+        "status": "FAIL"
+      },
+      {
+        "case": "flow-webp-git-webhook-slide-mp4",
+        "skill": "visual-flow-webp",
+        "score": 1.0,
+        "status": "PASS"
+      },
+      {
+        "case": "flow-webp-reference-overlay-mp4",
+        "skill": "visual-flow-webp",
+        "score": 1.0,
+        "status": "PASS"
+      },
+      {
+        "case": "coinbase-low-latency",
+        "skill": "aws-drawio-diagram",
+        "score": 1.0,
+        "status": "PASS"
+      },
+      {
+        "case": "three-tier-web",
+        "skill": "aws-drawio-diagram",
+        "score": 0.9167,
+        "status": "FAIL"
+      },
+      {
+        "case": "adversarial-inline-xml",
+        "skill": "aws-drawio-diagram",
+        "score": 1.0,
+        "status": "PASS"
+      },
+      {
+        "case": "log-pipeline-streaming",
+        "skill": "aws-drawio-diagram",
+        "score": 0.9583,
+        "status": "FAIL"
+      },
+      {
+        "case": "drawio-diagram-only-reply",
+        "skill": "aws-drawio-diagram",
+        "score": 1.0,
+        "status": "PASS"
+      },
+      {
+        "case": "claude-md-ingest-folder",
+        "skill": "folder-specific-claude-and-agents-md",
+        "score": 0.96,
+        "status": "FAIL"
+      },
+      {
+        "case": "claude-md-subdir-under-root",
+        "skill": "folder-specific-claude-and-agents-md",
+        "score": 0.9,
+        "status": "FAIL"
+      }
+    ],
+    "errors": 0,
+    "files": 20
+  },
+  {
     "sha": "b130f015660e55e37b01b389990ed32f9811434b",
     "short": "b130f01",
     "date": "2026-09-13T15:24:59.143913+00:00",
