@@ -67,6 +67,13 @@ from typing import Any
 BEDROCK_AGENT_DEFAULT = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
 BEDROCK_JUDGE_DEFAULT = "global.anthropic.claude-sonnet-4-6"
 
+#: Bedrock's default output cap for Anthropic models is 4096 tokens. A skill that
+#: hands the agent a whole spec JSON or .drawio to `Write` in one tool call needs
+#: more than that; a stronger model, which writes longer specs, hit the cap and
+#: failed with a truncated tool input where a smaller one had squeezed under it.
+#: Override with `MODEL_MAX_TOKENS` / `JUDGE_MODEL_MAX_TOKENS`.
+DEFAULT_MAX_TOKENS = 16384
+
 #: vLLM and friends require the client to send *some* key and then ignore it. The
 #: OpenAI SDK refuses to construct without one, so an unset key against a local
 #: server would fail before a single request went out.
@@ -146,10 +153,16 @@ def bedrock_region() -> str:
     return session_region or "us-east-1"
 
 
-def _bedrock(model_id: str) -> Any:
+def max_tokens(role: str) -> int:
+    prefix = "JUDGE_" if role == "judge" else ""
+    return int(_first(f"{prefix}MODEL_MAX_TOKENS", "MODEL_MAX_TOKENS",
+                      default=str(DEFAULT_MAX_TOKENS)) or DEFAULT_MAX_TOKENS)
+
+
+def _bedrock(model_id: str, role: str) -> Any:
     from strands.models import BedrockModel
 
-    return BedrockModel(model_id=model_id, region_name=bedrock_region())
+    return BedrockModel(model_id=model_id, region_name=bedrock_region(), max_tokens=max_tokens(role))
 
 
 def _openai(model_id: str, role: str) -> Any:
@@ -181,7 +194,8 @@ def _openai(model_id: str, role: str) -> Any:
             "proxied endpoint) or OPENAI_API_KEY (api.openai.com)"
         )
 
-    return OpenAIModel(client_args=client_args, model_id=model_id)
+    return OpenAIModel(client_args=client_args, model_id=model_id,
+                       params={"max_tokens": max_tokens(role)})
 
 
 def build_model(role: str) -> Any:
@@ -197,7 +211,7 @@ def build_model(role: str) -> Any:
     model_id = agent_model_id() if role == "agent" else judge_model_id()
 
     if provider == "bedrock":
-        return _bedrock(model_id)
+        return _bedrock(model_id, role)
     if provider == "openai":
         # The defaults are Bedrock inference profiles. Handing one to a vLLM server
         # gets a 404 on an id that looks legitimate, so refuse instead: forgetting

@@ -157,6 +157,7 @@ by both child processes; they do not need to be exported twice.
 |---|---|---|
 | Provider | `MODEL_PROVIDER`, default `bedrock` | `JUDGE_MODEL_PROVIDER`, then `MODEL_PROVIDER` |
 | Model | `MODEL_ID`, then `BEDROCK_MODEL_ID` | `JUDGE_MODEL_ID` |
+| Max output tokens | `MODEL_MAX_TOKENS`, default `16384` | `JUDGE_MODEL_MAX_TOKENS`, then `MODEL_MAX_TOKENS` |
 | Bedrock default | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` | `global.anthropic.claude-sonnet-4-6` |
 
 Region precedence is `AWS_REGION`, `AWS_DEFAULT_REGION`, AWS profile region, then
