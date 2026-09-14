@@ -132,11 +132,29 @@ def baseline_by_skill(baseline: dict) -> dict:
 
 
 def available_skills(root: Path) -> list[str]:
+    """Skills that take part in evaluation: a SKILL.md *and* an eval dataset.
+
+    A skill with no `eval/dataset.jsonl` never produces a score, so a row for it
+    would read "NO RUN" forever. Withdrawing the dataset (or renaming the directory
+    to `eval.disabled/`) is how a skill leaves the scoreboard.
+    """
     skills = root / "skills"
     if not skills.is_dir():
         return []
     return sorted(p.name for p in skills.iterdir()
-                  if p.is_dir() and not p.name.startswith(".") and (p / "SKILL.md").is_file())
+                  if p.is_dir() and not p.name.startswith(".") and (p / "SKILL.md").is_file()
+                  and (p / "eval" / "dataset.jsonl").is_file())
+
+
+def shown_skills(index: list[dict], baseline: dict, skills: list[str]) -> list[str]:
+    """Rows the scoreboard carries: evaluated now, accepted before, or in the latest run.
+
+    Not every skill that ever appeared in the history. A skill whose evaluation
+    was withdrawn would otherwise keep a row, and a stale badge, from a run
+    nobody can reproduce against the current tree.
+    """
+    latest = index[0] if index else {}
+    return sorted(set(skills) | set(baseline) | set(latest.get("skills", {})))
 
 
 def badge(label: str, score: float | None, status: str | None, threshold: float) -> dict:
@@ -191,8 +209,9 @@ def render_index(index: list[dict], baseline: dict, skills: list[str], threshold
 
     latest = index[0] if index else None
     repo_url = f"{server}/{repo}" if repo else ""
+    shown = shown_skills(index, baseline, skills)
     rows = []
-    for skill in sorted(set(skills) | set(baseline) | {s for e in index for s in e.get("skills", {})}):
+    for skill in shown:
         history = [e["skills"][skill]["mean"] for e in reversed(index) if skill in e.get("skills", {})]
         current = latest["skills"].get(skill) if latest else None
         accepted = baseline.get(skill)
@@ -212,7 +231,8 @@ def render_index(index: list[dict], baseline: dict, skills: list[str], threshold
                     f'<td><a href="{href("badge/" + skill + ".json")}">badge</a></td></tr>')
     runs = []
     for entry in index:
-        per_skill = ", ".join(f'{text(s)} {r["mean"]:.3f}' for s, r in entry.get("skills", {}).items()) or "no scored cases"
+        per_skill = ", ".join(f'{text(s)} {r["mean"]:.3f}' for s, r in entry.get("skills", {}).items()
+                              if s in shown) or "no scored cases"
         commit = (f'<a href="{href(entry["commit_url"])}">{text(entry["short"])}</a>'
                   if entry.get("commit_url") else text(entry["short"]))
         pipeline = f' · <a href="{href(entry["pipeline"])}">CI run</a>' if entry.get("pipeline") else ""
@@ -276,6 +296,12 @@ def build(site: Path, run: Path | None, baseline_path: Path, root: Path, env: di
     baseline = baseline_by_skill(_load_json(baseline_path, {}))
     skills = available_skills(root)
     latest = index[0] if index else None
+    shown = shown_skills(index, baseline, skills)
+    for stale in (site / "badge").glob("*.json"):
+        if stale.stem != "marketplace" and stale.stem not in shown:
+            stale.unlink()
+    # Badge files are named from the tree and the reviewed baseline only; a skill
+    # name that exists nowhere but in a run summary is not trusted as a filename.
     for skill in sorted(set(skills) | set(baseline)):
         current = (latest or {}).get("skills", {}).get(skill)
         data = badge(f"{skill} eval", current["mean"] if current else None,

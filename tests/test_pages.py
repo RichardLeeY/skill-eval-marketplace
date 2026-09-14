@@ -14,15 +14,20 @@ class PagesTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.site = self.root / "site"
         self.run = self.root / ".eval"
-        (self.root / "skills" / "alpha").mkdir(parents=True)
-        (self.root / "skills" / "alpha" / "SKILL.md").write_text("# alpha")
-        (self.root / "skills" / "beta").mkdir()
-        (self.root / "skills" / "beta" / "SKILL.md").write_text("# beta")
+        for name in ("alpha", "beta"):
+            self.add_skill(name)
         self.baseline = self.root / "eval-baseline.json"
         self.baseline.write_text(json.dumps({"cases": {
             "case-a": {"overall_score": 0.95, "skill": "alpha", "recorded": "2026-09-07"},
             "case-b": {"overall_score": 0.91, "skill": "beta", "recorded": "2026-09-08"}}}))
         self.env = {"GITHUB_REPOSITORY": "o/r", "GITHUB_SERVER_URL": "https://github.com"}
+
+    def add_skill(self, name, dataset=True):
+        skill = self.root / "skills" / name
+        (skill / "eval").mkdir(parents=True, exist_ok=True)
+        (skill / "SKILL.md").write_text(f"# {name}")
+        if dataset:
+            (skill / "eval" / "dataset.jsonl").write_text("{}\n")
 
     def write(self, relative, content):
         path = self.run / relative
@@ -116,6 +121,26 @@ class PagesTests(unittest.TestCase):
         self.assertIn("No published run yet", html)
         overall = json.loads((self.site / "badge" / "marketplace.json").read_text())
         self.assertEqual(overall["message"], "no run")
+
+    def test_skill_without_dataset_or_latest_run_leaves_the_scoreboard(self):
+        # gamma was evaluated once (an older run and a stale badge), then its eval was withdrawn.
+        self.add_skill("gamma", dataset=False)
+        cases = self.summary()["cases"] + [{"case": "case-g", "skill": "gamma", "score": 0.97, "status": "PASS"}]
+        self.write("summary.json", self.summary(sha="0" * 40, cases=cases, date="2026-09-12T00:00:00+00:00"))
+        self.build()
+        # A badge left behind by an earlier publish, when gamma still had a dataset.
+        (self.site / "badge" / "gamma.json").write_text("{}")
+        self.write("summary.json", self.summary(sha="1" * 40))
+        self.build()
+        html = (self.site / "index.html").read_text()
+        self.assertNotIn("gamma", html)
+        self.assertFalse((self.site / "badge" / "gamma.json").exists())
+        self.assertTrue((self.site / "badge" / "alpha.json").exists())
+        # The history JSON still records what that older run scored.
+        index = json.loads((self.site / "data" / "index.json").read_text())
+        self.assertIn("gamma", index[1]["skills"])
+        # A skill without a dataset is not listed even before any run mentions it.
+        self.assertEqual(pages.available_skills(self.root), ["alpha", "beta"])
 
     def test_html_escapes_untrusted_names(self):
         cases = [{"case": "<img src=x onerror=alert(1)>", "skill": "<b>alpha</b>", "score": 0.5,
