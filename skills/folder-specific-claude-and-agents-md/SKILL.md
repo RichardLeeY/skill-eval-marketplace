@@ -83,6 +83,14 @@ state in your reply which sections you chose and what you left out.
 - Annotate any heavy reference doc with a `**Read when:**` trigger — e.g.
   `**Read when:** changing the Athena partition layout`. Without it, agents load
   it every session.
+- **Every Constraint and Locked Decision names its source in the same bullet** —
+  the file, and the comment, line or section it came from: `(cluster.tf, comment
+  above eks_managed_node_groups)`, `(notes.md, 2024-06 incident)`, `(user, this
+  request)`. A rule that reads "drain, never cordon" with no source is
+  indistinguishable from generic best practice and gets re-argued or ignored; the
+  same rule with `(cluster.tf, …)` after it tells the next agent where to look
+  before changing it, and lets the audit in [Maintenance](#maintenance) check
+  whether the source still says so.
 
 ## Step 5 — Verify
 
@@ -97,7 +105,8 @@ line. Fix what it reports and run it again until it passes. Report the result.
 ## Rules
 
 - **Never invent content.** Every bullet traces to a file you read or something
-  the user said. Generic best practice that would fit any folder is noise here.
+  the user said, and Constraints and Locked Decisions say which (Step 4). Generic
+  best practice that would fit any folder is noise here.
 - **No file trees, no directory listings, no stack description the code already
   shows.** Anything derivable from `LS` or `grep` rots on the next commit and
   spends tokens saying what the agent can see. Pin decisions, rules and context —
