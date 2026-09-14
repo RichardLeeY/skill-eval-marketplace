@@ -2,7 +2,7 @@
   {
     "sha": "4551bcefde85b363c0c5cb2554c0a9a59741360c",
     "short": "4551bce",
-    "date": "2026-09-14T02:18:46.594286+00:00",
+    "date": "2026-09-14T02:39:35.603671+00:00",
     "status": "FAIL / INCOMPLETE",
     "pipeline": "",
     "commit_url": "https://github.com/RichardLeeY/skill-eval-marketplace/commit/4551bcefde85b363c0c5cb2554c0a9a59741360c",
@@ -14,11 +14,11 @@
     ],
     "skills": {
       "aws-drawio-diagram": {
-        "cases": 10,
-        "passed": 8,
-        "mean": 0.9875,
-        "min": 0.9167,
-        "status": "FAIL"
+        "cases": 5,
+        "passed": 5,
+        "mean": 1.0,
+        "min": 1.0,
+        "status": "PASS"
       },
       "essr-html-report": {
         "cases": 4,
@@ -28,99 +28,21 @@
         "status": "FAIL"
       },
       "folder-specific-claude-and-agents-md": {
-        "cases": 4,
+        "cases": 2,
         "passed": 1,
-        "mean": 0.9525,
-        "min": 0.9,
+        "mean": 0.975,
+        "min": 0.95,
         "status": "FAIL"
       },
       "visual-flow-webp": {
-        "cases": 12,
-        "passed": 10,
-        "mean": 0.9792,
-        "min": 0.9167,
-        "status": "FAIL"
+        "cases": 6,
+        "passed": 6,
+        "mean": 1.0,
+        "min": 1.0,
+        "status": "PASS"
       }
     },
     "cases": [
-      {
-        "case": "flow-webp-git-webhook-dark",
-        "skill": "visual-flow-webp",
-        "score": 0.9583,
-        "status": "PASS"
-      },
-      {
-        "case": "flow-webp-git-webhook-from-readme",
-        "skill": "visual-flow-webp",
-        "score": 0.9583,
-        "status": "PASS"
-      },
-      {
-        "case": "flow-webp-git-webhook-stepwise",
-        "skill": "visual-flow-webp",
-        "score": 0.9167,
-        "status": "FAIL"
-      },
-      {
-        "case": "flow-webp-git-webhook-extend",
-        "skill": "visual-flow-webp",
-        "score": 0.9167,
-        "status": "FAIL"
-      },
-      {
-        "case": "flow-webp-git-webhook-slide-mp4",
-        "skill": "visual-flow-webp",
-        "score": 1.0,
-        "status": "PASS"
-      },
-      {
-        "case": "flow-webp-reference-overlay-mp4",
-        "skill": "visual-flow-webp",
-        "score": 1.0,
-        "status": "PASS"
-      },
-      {
-        "case": "coinbase-low-latency",
-        "skill": "aws-drawio-diagram",
-        "score": 1.0,
-        "status": "PASS"
-      },
-      {
-        "case": "three-tier-web",
-        "skill": "aws-drawio-diagram",
-        "score": 0.9167,
-        "status": "FAIL"
-      },
-      {
-        "case": "adversarial-inline-xml",
-        "skill": "aws-drawio-diagram",
-        "score": 1.0,
-        "status": "PASS"
-      },
-      {
-        "case": "log-pipeline-streaming",
-        "skill": "aws-drawio-diagram",
-        "score": 0.9583,
-        "status": "FAIL"
-      },
-      {
-        "case": "drawio-diagram-only-reply",
-        "skill": "aws-drawio-diagram",
-        "score": 1.0,
-        "status": "PASS"
-      },
-      {
-        "case": "claude-md-ingest-folder",
-        "skill": "folder-specific-claude-and-agents-md",
-        "score": 0.96,
-        "status": "FAIL"
-      },
-      {
-        "case": "claude-md-subdir-under-root",
-        "skill": "folder-specific-claude-and-agents-md",
-        "score": 0.9,
-        "status": "FAIL"
-      },
       {
         "case": "coinbase-low-latency",
         "skill": "aws-drawio-diagram",
@@ -225,7 +147,7 @@
       }
     ],
     "errors": 0,
-    "files": 37
+    "files": 20
   },
   {
     "sha": "95cd50d634922eb8e207b3488ef9971b4cc0caad",
