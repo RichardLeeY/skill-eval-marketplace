@@ -5,6 +5,8 @@
 marketplace's public record: which skills are in it, what each one scored on its
 own cases, what the reviewers accepted as the baseline, and how the scores moved.
 
+![Scoreboard: Skills table with status, latest score, accepted baseline, trend and badge per skill; Runs table with one row per evaluated commit](assets/scoreboard.png)
+
 GitHub Pages serves the `gh-pages` branch directly, so the scoreboard is just
 files on that branch. Two things write to it:
 

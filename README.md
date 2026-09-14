@@ -11,6 +11,8 @@
 [richardleey.github.io/skill-eval-marketplace](https://richardleey.github.io/skill-eval-marketplace/) with per-skill scores,
 the accepted baseline, trend lines and the full evidence dashboard for each run.
 
+[![Scoreboard: three skills at 1.000, latest run PASS, run history with a dashboard link per commit](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
+
 Three agent skills packaged with their evaluation cases. Use the skills in your agent,
 or run the evaluation kit to check skill selection, instruction following, artifacts,
 and regressions. Evaluation runs through Strands; it is not a test of Claude Code's
