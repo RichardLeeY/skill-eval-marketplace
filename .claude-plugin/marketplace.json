@@ -7,7 +7,7 @@
   },
   "plugins": [
     {
-      "name": "aws-sa-skills",
+      "name": "aws-mycompany-skills",
       "source": "./",
       "version": "0.7.0",
       "description": "draw.io AWS architecture diagrams, folder-scoped CLAUDE.md / AGENTS.md authoring, animated flow diagrams (PNG + animated WebP)."

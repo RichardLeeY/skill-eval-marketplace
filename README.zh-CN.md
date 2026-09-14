@@ -12,7 +12,7 @@ LLM judge 按用例打分，低于 0.90 就被 CI 拦下，结果全部公开。
 
 ```text
 /plugin marketplace add RichardLeeY/skill-eval-marketplace
-/plugin install aws-sa-skills@skill-marketplace
+/plugin install aws-mycompany-skills@skill-marketplace
 ```
 
 [![评分看板：三个技能均为 1.000，最新运行 PASS，每次提交一行运行记录并附看板链接](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
@@ -70,11 +70,11 @@ PNG、WebP 或 MP4 帧。这里的三个技能中有两个输出图片或视频�
 
 ```text
 /plugin marketplace add RichardLeeY/skill-eval-marketplace
-/plugin install aws-sa-skills@skill-marketplace
+/plugin install aws-mycompany-skills@skill-marketplace
 ```
 
 本地克隆时，把 `RichardLeeY/skill-eval-marketplace` 换成克隆目录的绝对路径即可。目前
-marketplace 分发一个插件 `aws-sa-skills`，包含全部三个技能。仅使用技能无需安装
+marketplace 分发一个插件 `aws-mycompany-skills`，包含全部三个技能。仅使用技能无需安装
 Python 评估依赖；技能自己的脚本依赖仍按各自的 `SKILL.md` 安装。
 
 | 技能 | 交付物 | 评估用例 |

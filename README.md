@@ -13,7 +13,7 @@ cases. An LLM judge scores each pull request against them, CI blocks the merge b
 
 ```text
 /plugin marketplace add RichardLeeY/skill-eval-marketplace
-/plugin install aws-sa-skills@skill-marketplace
+/plugin install aws-mycompany-skills@skill-marketplace
 ```
 
 [![Scoreboard: three skills at 1.000, latest run PASS, run history with a dashboard link per commit](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
@@ -76,12 +76,12 @@ In Claude Code, add the marketplace from GitHub and install the plugin:
 
 ```text
 /plugin marketplace add RichardLeeY/skill-eval-marketplace
-/plugin install aws-sa-skills@skill-marketplace
+/plugin install aws-mycompany-skills@skill-marketplace
 ```
 
 For a local checkout, use the absolute path of the clone in place of
 `RichardLeeY/skill-eval-marketplace`. The marketplace currently distributes one
-plugin, `aws-sa-skills`, containing all three skills. Python evaluation dependencies are only needed if you run the eval kit.
+plugin, `aws-mycompany-skills`, containing all three skills. Python evaluation dependencies are only needed if you run the eval kit.
 Each skill's own scripts may still need dependencies described in its `SKILL.md`.
 
 | Skill | Deliverable | Cases | Latest score |
