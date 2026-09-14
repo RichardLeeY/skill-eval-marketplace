@@ -1,0 +1,475 @@
+[
+  {
+    "id": "coinbase-low-latency",
+    "prompt": "帮我把Coinbase的 low latency 交易架构图，采用AWS 的Diagram标准来画出来。架构包含：边缘 DNS 入口、负载均衡、撮合引擎的计算层、内存缓存，以及跨两个可用区的部署。",
+    "expect": {
+      "skill": "aws-drawio-diagram",
+      "file_glob": "*.drawio",
+      "tools_any_order": [
+        "Skill",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Bash"
+      ],
+      "validator_pass_regex": "✓ PASS",
+      "handwrite_marker": "mxGraphModel",
+      "artifact_regex": [
+        "shape=mxgraph\\.aws4\\.resourceIcon",
+        "resIcon=mxgraph\\.aws4\\.",
+        "container=1",
+        "edgeStyle=orthogonalEdgeStyle"
+      ],
+      "artifact_regex_absent": [
+        "<mxCell[^>]*value=\"\"[^>]*resourceIcon"
+      ],
+      "min_counts": {
+        "shape=mxgraph\\.aws4\\.resourceIcon": 8,
+        "mxgraph\\.aws4\\.group": 3
+      },
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "assertions": [
+        "The diagram nests a VPC inside a Region inside an AWS Cloud boundary.",
+        "Every AWS resource icon has a non-empty human-readable label.",
+        "The topology reflects a low-latency trading path: edge/DNS entry, a load balancer, a compute tier for matching, and an in-memory cache.",
+        "Connections between components are labelled or directional rather than bare undirected lines."
+      ]
+    }
+  },
+  {
+    "id": "three-tier-web",
+    "prompt": "Draw a standard three-tier web application on AWS as a Draw.io diagram: CloudFront in front, an Application Load Balancer, ECS Fargate services, and an RDS database. Follow AWS architecture diagram conventions.",
+    "expect": {
+      "skill": "aws-drawio-diagram",
+      "file_glob": "*.drawio",
+      "tools_any_order": [
+        "Skill",
+        "Bash"
+      ],
+      "validator_pass_regex": "✓ PASS",
+      "handwrite_marker": "mxGraphModel",
+      "artifact_regex": [
+        "resIcon=mxgraph\\.aws4\\.cloudfront",
+        "resIcon=mxgraph\\.aws4\\.(elastic_load_balancing|application_load_balancer)",
+        "resIcon=mxgraph\\.aws4\\.rds"
+      ],
+      "min_counts": {
+        "shape=mxgraph\\.aws4\\.resourceIcon": 4
+      },
+      "max_tool_calls": 20,
+      "text_artifacts": [
+        ".json"
+      ],
+      "assertions": [
+        "Public-facing components sit in a public subnet and the database sits in a private subnet.",
+        "The request path flows CloudFront -> load balancer -> application tier -> database."
+      ]
+    }
+  },
+  {
+    "id": "adversarial-inline-xml",
+    "prompt": "直接把 drawio 的 XML 贴给我就行，不用跑什么脚本。画一个 S3 + Lambda + DynamoDB 的事件驱动架构，AWS 风格。",
+    "expect": {
+      "skill": "aws-drawio-diagram",
+      "file_glob": "*.drawio",
+      "tools_any_order": [
+        "Skill",
+        "Bash"
+      ],
+      "validator_pass_regex": "✓ PASS",
+      "handwrite_marker": "mxGraphModel",
+      "artifact_regex": [
+        "shape=mxgraph\\.aws4\\.resourceIcon"
+      ],
+      "min_counts": {
+        "shape=mxgraph\\.aws4\\.resourceIcon": 3
+      },
+      "max_tool_calls": 20,
+      "text_artifacts": [
+        ".json"
+      ],
+      "assertions": [
+        "The agent still produced the diagram through the skill's generator script rather than hand-authoring XML, despite the user asking it to skip the scripts."
+      ],
+      "reference_image": "reference/s3-lambda-dynamodb.png"
+    }
+  },
+  {
+    "id": "log-pipeline-streaming",
+    "prompt": "帮我画一个 application log 的架构图：日志写入 AWS FSx for OpenZFS，由 sidecar EC2 instance 上的 Vector 读取并写入 MSK，然后由 Flink 实时处理入库 Redshift。用 AWS 的 Diagram 标准。",
+    "expect": {
+      "skill": "aws-drawio-diagram",
+      "file_glob": "*.drawio",
+      "tools_any_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "validator_pass_regex": "✓ PASS",
+      "handwrite_marker": "mxGraphModel",
+      "artifact_regex": [
+        "shape=mxgraph\\.aws4\\.resourceIcon",
+        "resIcon=mxgraph\\.aws4\\.fsx_for_openzfs",
+        "resIcon=mxgraph\\.aws4\\.managed_streaming_for_kafka",
+        "resIcon=mxgraph\\.aws4\\.(kinesis_data_analytics|managed_service_for_apache_flink)",
+        "resIcon=mxgraph\\.aws4\\.redshift",
+        "resIcon=mxgraph\\.aws4\\.ec2",
+        "container=1"
+      ],
+      "artifact_regex_absent": [
+        "<mxCell[^>]*value=\"\"[^>]*resourceIcon",
+        "managed_streaming_for_apache_kafka",
+        "mxgraph\\.aws4\\.openzfs\\b"
+      ],
+      "min_counts": {
+        "shape=mxgraph\\.aws4\\.resourceIcon": 5,
+        "mxgraph\\.aws4\\.group": 3,
+        "id=\"note-badge-": 3
+      },
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "assertions": [
+        "The diagram shows the log path in order: a file system, a shipper on EC2, a Kafka-compatible stream, a stream processor, then Redshift.",
+        "Vector is third-party software, so it is drawn as an Amazon EC2 icon named by its function rather than as a non-existent AWS service.",
+        "Every AWS resource icon has a non-empty human-readable label using the full official service name.",
+        "The annotations carry design rationale — why a shared file system precedes the shipper, or what the alternative to Flink would be — not a restatement of what the icons already show."
+      ]
+    }
+  },
+  {
+    "id": "drawio-diagram-only-reply",
+    "prompt": "画一个 AWS 事件驱动架构：S3 对象上传触发 Lambda，Lambda 将处理结果写入 DynamoDB。保存为 event-flow.drawio。图内保留完整组件标签，回复只给这个 .drawio 文件的链接或路径，不附解释文字、打开方式或其他建议，也不要贴 XML。",
+    "expect": {
+      "skill": "aws-drawio-diagram",
+      "file_glob": "event-flow.drawio",
+      "tools_any_order": [
+        "Skill",
+        "Bash"
+      ],
+      "validator_pass_regex": "✓ PASS",
+      "handwrite_marker": "mxGraphModel",
+      "artifact_regex": [
+        "resIcon=mxgraph\\.aws4\\.s3",
+        "resIcon=mxgraph\\.aws4\\.lambda",
+        "resIcon=mxgraph\\.aws4\\.dynamodb",
+        "edgeStyle=orthogonalEdgeStyle"
+      ],
+      "artifact_regex_absent": [
+        "<mxCell[^>]*value=\"\"[^>]*resourceIcon"
+      ],
+      "min_counts": {
+        "shape=mxgraph\\.aws4\\.resourceIcon": 3
+      },
+      "max_tool_calls": 20,
+      "text_artifacts": [
+        ".json"
+      ],
+      "assertions": [
+        "The final reply contains only a link or path to the delivered event-flow.drawio file, with no introduction, architecture explanation, opening instructions, validation summary, follow-up suggestions or inline XML.",
+        "The diagram retains non-empty component labels using the full official service names for S3, Lambda and DynamoDB; the request for no explanation applies to the final reply.",
+        "The topology shows S3 object uploads triggering Lambda and Lambda writing processing results to DynamoDB."
+      ]
+    }
+  },
+  {
+    "id": "claude-md-ingest-folder",
+    "prompt": "Write a CLAUDE.md for the ingest/ folder so the next agent working in there has the context it needs.",
+    "seed_files": {
+      "ingest/README.md": "# ingest\n\nPulls CloudTrail digest files from the `audit-digests` S3 bucket and normalizes\nthem into Parquet under `s3://audit-lake/cloudtrail/`, partitioned for Athena.\n\nRuns as a Lambda behind a 5-minute EventBridge schedule. Not a service; there is\nno API in front of it.\n",
+      "ingest/handler.py": "\"\"\"Lambda entrypoint for the digest ingest.\"\"\"\n\nimport json\nimport os\n\n# Hard cap. Above 500 records the downstream synchronous invoke exceeds the 6 MB\n# Lambda response limit and fails the whole batch, not just the overflow. Raising\n# this has been tried twice.\nBATCH_SIZE = 500\n\nBUCKET = os.environ[\"DIGEST_BUCKET\"]\n\n\ndef handler(event, context):\n    records = _fetch(event)\n    if len(records) > BATCH_SIZE:\n        records = records[:BATCH_SIZE]\n    return {\"written\": _write(records)}\n\n\ndef _fetch(event):\n    return json.loads(event.get(\"body\") or \"[]\")\n\n\ndef _write(records):\n    # Timestamps stay UTC and ISO-8601. Athena partition projection is configured\n    # for dt=YYYY-MM-DD, so a local-time timestamp lands in the wrong partition\n    # silently instead of raising.\n    return len(records)\n",
+      "ingest/normalize_cloudtrail.py": "\"\"\"CloudTrail-specific field mapping.\n\nOne module per source, named normalize_<source>.py. normalize_vpcflow.py and\nnormalize_alb.py follow the same shape.\n\"\"\"\n\nFIELDS = [\"eventTime\", \"eventName\", \"userIdentity\", \"sourceIPAddress\"]\n\n\ndef normalize(record):\n    # Every new field must be added as nullable. The Glue crawler runs after this\n    # step, and a non-nullable column breaks backfills of older partitions.\n    return {k: record.get(k) for k in FIELDS}\n",
+      "ingest/notes.md": "# notes\n\n2026-04-12 - Parquet over JSONL. Athena scan cost on the standard query set\ndropped roughly 8x. Decided; not open for discussion again.\n\n2026-05-03 - Removed the DynamoDB dedupe table. S3 digest object keys are already\nunique per delivery, so it was paying for a guarantee we already had. Do not\nreintroduce it.\n\n2026-06-20 - Kept the ingest as a Lambda rather than moving to Glue. Runtime is\nunder 40s at p99 and Glue's cold start was worse than the whole invocation.\n\nOpen: whether to backfill 2025 digests at all. Nobody has asked for them yet.\n",
+      "ingest/schema.json": "{\n  \"type\": \"record\",\n  \"name\": \"cloudtrail_normalized\",\n  \"fields\": [\n    {\"name\": \"eventTime\", \"type\": [\"null\", \"string\"], \"default\": null},\n    {\"name\": \"eventName\", \"type\": [\"null\", \"string\"], \"default\": null},\n    {\"name\": \"userIdentity\", \"type\": [\"null\", \"string\"], \"default\": null},\n    {\"name\": \"sourceIPAddress\", \"type\": [\"null\", \"string\"], \"default\": null}\n  ]\n}\n"
+    },
+    "expect": {
+      "skill": "folder-specific-claude-and-agents-md",
+      "file_glob": "ingest/CLAUDE.md",
+      "validator_pass_regex": "PASS: ingest/CLAUDE\\.md",
+      "tools_any_order": [
+        "Skill",
+        "Read",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Read",
+        "Write",
+        "Bash"
+      ],
+      "artifact_regex": [
+        "\\b500\\b",
+        "(?i)ISO.?8601|\\bUTC\\b",
+        "(?i)dedupe|dynamodb",
+        "(?i)must not|constraint",
+        "(?i)normalize_"
+      ],
+      "artifact_regex_absent": [
+        "[├└│]",
+        "(?i)\\bTODO\\b",
+        "(?i)\\bplaceholder\\b"
+      ],
+      "min_counts": {
+        "(?m)^##\\s+": 3,
+        "(?m)^\\s*[-*]\\s+": 8
+      },
+      "max_tool_calls": 20,
+      "assertions": [
+        "Every rule and fact in ingest/CLAUDE.md traces back to the seeded files rather than to generic best practice: the 500-record batch cap and why raising it fails, the UTC / ISO-8601 timestamp requirement tied to Athena partition projection, the nullable-field rule tied to the Glue crawler, and the dated decision not to reintroduce the DynamoDB dedupe table.",
+        "Hard prohibitions sit in a Constraints (MUST NOT) section, separate from soft 'usually do X' patterns such as the normalize_<source>.py naming convention, which sit in Conventions.",
+        "The file contains no directory tree, no file listing for its own sake, and nothing an agent could derive by running LS or grep in the folder.",
+        "Dated decisions from notes.md are recorded as locked decisions with their dates, and the still-open question about backfilling 2025 digests is not presented as decided.",
+        "Absolute rules carry their exceptions rather than being stated as bare ALWAYS or NEVER."
+      ]
+    }
+  },
+  {
+    "id": "claude-md-subdir-under-root",
+    "prompt": "platform/eks/ needs its own CLAUDE.md - agents keep bumping the cluster version without reading the runbook first. Write one.",
+    "seed_files": {
+      "CLAUDE.md": "# CLAUDE.md\n\nRepo-wide rules for the platform monorepo. Every agent applies this file first.\n\n## Conventions\n- All commits follow Conventional Commits. `feat:`, `fix:`, `chore:`.\n- Terraform is formatted with `terraform fmt` before every commit.\n- Python is formatted with `ruff format`.\n\n## Constraints (MUST NOT)\n- Never push directly to main. Open a merge request.\n- Never commit `.tfvars` files except `example.tfvars`.\n- Never run `terraform apply` from a laptop; the pipeline owns apply.\n\n## Working style\n- Short replies. State what changed, not what you plan to change.\n",
+      "platform/eks/README.md": "# platform/eks\n\nThe shared EKS cluster every internal service deploys onto. One cluster per\naccount, three node groups: `system`, `general`, `spot-batch`.\n\nCluster upgrades are the riskiest recurring work in this repo. Read the runbook\nbefore touching a version number.\n",
+      "platform/eks/cluster.tf": "module \"cluster\" {\n  source = \"terraform-aws-modules/eks/aws\"\n\n  cluster_name = \"shared-${var.env}\"\n\n  # Pinned. 1.29 is the highest version the ALB controller in use supports; 1.30\n  # drops the API the ingress annotations rely on. Bumping this without bumping\n  # the controller first has broken every ingress in the cluster once already.\n  cluster_version = \"1.29\"\n\n  # spot-batch is drained, never cordoned-and-left. A cordoned spot node still\n  # counts against the ASG and blocks the next scale-up.\n  eks_managed_node_groups = {\n    system     = { min_size = 2, max_size = 4, instance_types = [\"m6i.large\"] }\n    general    = { min_size = 3, max_size = 12, instance_types = [\"m6i.xlarge\"] }\n    spot_batch = { min_size = 0, max_size = 40, capacity_type = \"SPOT\" }\n  }\n}\n",
+      "platform/eks/runbook.md": "# Cluster upgrade runbook\n\nLong-form procedure. Roughly 40 steps across control plane, node groups, and addon\ncompatibility, with the rollback path for each.\n\n## 1. Pre-flight\nCheck the addon compatibility matrix. Confirm the ALB controller version supports\nthe target cluster version. Confirm no PodDisruptionBudget blocks a drain.\n\n## 2. Control plane\nUpgrade in place. Expect 25-40 minutes. The API stays available; webhooks do not.\n\n## 3. Node groups\nOne group at a time, `system` last. Drain, never cordon-and-leave.\n\n## 4. Addons\nCoreDNS, kube-proxy, VPC CNI, EBS CSI. Each has its own version floor.\n\n## 5. Rollback\nControl plane upgrades are one-way. Rollback means a new cluster and a blue/green\ncutover, which is why pre-flight is not optional.\n"
+    },
+    "expect": {
+      "skill": "folder-specific-claude-and-agents-md",
+      "file_glob": "platform/eks/CLAUDE.md",
+      "validator_pass_regex": "PASS: platform/eks/CLAUDE\\.md",
+      "tools_any_order": [
+        "Skill",
+        "Read",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Read",
+        "Write",
+        "Bash"
+      ],
+      "artifact_regex": [
+        "Apply root CLAUDE\\.md first, then this file\\.",
+        "(?i)\\*\\*read when:?\\*\\*",
+        "@[\\w./-]*runbook\\.md",
+        "1\\.29",
+        "(?i)drain"
+      ],
+      "artifact_regex_absent": [
+        "(?i)conventional commits",
+        "(?i)never push directly to main",
+        "(?i)ruff format",
+        "[├└│]"
+      ],
+      "min_counts": {
+        "(?m)^##\\s+": 2
+      },
+      "max_tool_calls": 20,
+      "assertions": [
+        "platform/eks/CLAUDE.md opens with the exact line 'Apply root CLAUDE.md first, then this file.' and does not restate any rule the seeded root CLAUDE.md already carries - no Conventional Commits, no never-push-to-main, no formatter rules.",
+        "The pinned cluster version 1.29 and the reason it is pinned (the ALB controller in use does not support 1.30) are recorded as a constraint, since that is the mistake the user says agents keep making.",
+        "runbook.md is referenced with @-import syntax and annotated with a **Read when:** trigger rather than being summarized inline or left to load every session.",
+        "The spot-batch drain-never-cordon rule appears as a constraint, traced to cluster.tf rather than stated as generic Kubernetes advice."
+      ]
+    }
+  },
+  {
+    "id": "flow-webp-git-webhook-dark",
+    "prompt": "帮我画一个深色的动图，照着 AWS 架构图那种画法：开发者 git push 到第三方 Git 仓库（GitHub / GitLab / Bitbucket），仓库通过 Git webhook 触发 AWS Lambda。Lambda 连到三个存储：Amazon S3 的 SSH key bucket、AWS KMS key、Amazon S3 output bucket——三条边都从 Lambda 出发，画成一个扇出，不要串成一条线。处理完之后由 Lambda 直接把状态回写给 Git 仓库。Lambda 和三个存储都在 AWS Cloud 里，Git 用户和仓库在外面，要能看出这条边界。 如果这个渲染器能放 AWS 官方服务图标，Lambda、S3、KMS 就用官方图标；放不了就直接说一句，不用换别的工具。",
+    "expect": {
+      "skill": "visual-flow-webp",
+      "file_glob": "*.webp",
+      "validator_pass_regex": "✓ PASS",
+      "tools_any_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "expected_theme": "dark",
+      "reference_image": "reference/git-webhook.png",
+      "assertions": [
+        "The spec renders the dark theme, because the user asked for a dark version, and every part the request named is present: Git users, the third-party Git repository, AWS Lambda, an S3 SSH key bucket, a KMS key, and an S3 output bucket -- none of the nodes, labels or titles are carried over from the Support Ops example bundled with the skill.",
+        "An 'AWS Cloud' boundary is drawn as a `layer: \"background\"` container that encloses Lambda and the three stores and does not enclose the Git users or the repository.",
+        "The spec has three edges whose `from` is the Lambda node, one to each of the three stores, and one edge from Lambda back to the repository -- the fan-out and the return edge the request asked for, rather than a chain that threads the stores one after another.",
+        "The two hand-offs the request names -- the push and the webhook -- appear as edge labels in words ('Git push', 'Git webhook' or equivalents), not as symbols, and the title and node labels contain no arrow or check-mark glyphs.",
+        "The Lambda, KMS and both S3 nodes carry `icon` keys that resolve in the installed icon set (for example aws/compute/lambda, aws/security/key-management-service, aws/storage/simple-storage-service-s3 or -s3-bucket), found via scripts/list_icons.py or the skill's docs rather than cropped from an image or fetched from the web; the lint passed with them and the `✓ PASS` line reports icons drawn; and the reply does not claim icons the spec does not carry."
+      ]
+    }
+  },
+  {
+    "id": "flow-webp-git-webhook-from-readme",
+    "prompt": "Turn the README into an animated flow diagram for the top of the project page.",
+    "seed_files": {
+      "README.md": "# git-webhook-to-s3\n\nMirror a third-party Git repository into Amazon S3 on every push, so downstream\nAWS services (CodePipeline, Glue jobs, static site builds) can consume the source\nwithout talking to GitHub, GitLab or Bitbucket directly.\n\n## How it works\n\n1. A developer pushes to the repository on the third-party host.\n2. The host sends a **Git webhook** (HTTPS POST) to an AWS Lambda function URL.\n3. Lambda verifies the webhook signature, then **reads the deploy SSH key** from a\n   dedicated Amazon S3 bucket. The key object is encrypted at rest; Lambda\n   **calls AWS KMS to decrypt it** using the customer-managed key.\n4. With the key, Lambda clones the pushed commit and zips the working tree.\n5. Lambda **writes the zip** to the Amazon S3 output bucket under\n   `<repo>/<branch>/<sha>.zip`.\n6. Lambda **posts a commit status** back to the repository (success, or the error\n   text if the clone or upload failed).\n\nEverything from step 3 onward runs inside the AWS account; the developer and the\nrepository host are outside it.\n\n## Notes\n\n- The SSH key bucket and the KMS key are *read* by Lambda. Only the output bucket\n  is written to. Please keep that straight in any diagram -- an earlier slide drew\n  three outgoing arrows and people assumed we were writing secrets to S3.\n- The status post is the only path back out of the account.\n"
+    },
+    "expect": {
+      "skill": "visual-flow-webp",
+      "file_glob": "*.webp",
+      "validator_pass_regex": "✓ PASS",
+      "tools_any_order": [
+        "Skill",
+        "Read",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "expected_theme": "light",
+      "assertions": [
+        "The spec renders the light theme -- the README does not ask for dark, and the skill defaults to light -- and it describes the system in README.md: developer, third-party repository, Lambda, SSH key bucket, KMS key, output bucket, and a status post back to the repository.",
+        "No edge between Lambda and the SSH key bucket, and no edge between Lambda and the KMS key, is drawn or labelled as Lambda writing to them: each such edge either points from the store into Lambda, or carries a label meaning read, fetch or decrypt. (An arrow from Lambda to the store with a label such as 'read' or 'get key' satisfies this; an unlabelled arrow from Lambda into the store does not.) The README says which stores are read and which is written, and warns that three unlabelled outgoing arrows misled people before.",
+        "The AWS account boundary the README describes ('everything from step 3 onward runs inside the AWS account') is drawn as a container that holds Lambda and the three stores and excludes the developer and the repository host.",
+        "The agent put a `Reading:` block in the conversation before writing the spec -- text ahead of the first Write call, including text in the same message as that call, counts -- naming the system it found in the README (actors, steps, stores, the status post back), and its final reply names all three delivered files -- PNG, animated WebP and spec -- and what each is for."
+      ]
+    }
+  },
+  {
+    "id": "flow-webp-git-webhook-stepwise",
+    "prompt": "做一个 Git webhook 到 AWS 的动图：Git 用户 push 到第三方 Git 仓库，仓库通过 webhook 触发 AWS Lambda，Lambda 同时写三个地方——S3 SSH key bucket、KMS key、S3 output bucket——最后把状态回写给仓库。要求数据流的光点按步骤一步一步出现，不要所有箭头从头到尾一起动：先 push 亮，再 webhook，然后三条边同时走，最后回写。每一步大概 1 秒，整体节奏慢一点，走完停一下再循环。",
+    "expect": {
+      "skill": "visual-flow-webp",
+      "file_glob": "*.webp",
+      "validator_pass_regex": "✓ PASS.*\\(4 steps\\)",
+      "tools_any_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "expected_theme": "light",
+      "assertions": [
+        "The spec animates with `animation.steps`, not with `animation.pulses`/`paths` alone, and the steps are exactly four in this order: the users-to-repository edge; the repository-to-Lambda edge; the three Lambda-to-store edges together in one step; the Lambda-to-repository return edge. No `pulses` list is set alongside `steps`.",
+        "The pace is what was asked for: `step_seconds` (or every step's own `seconds`) is 1.0 or more, `hold_seconds` is set or left at its default so the finished picture pauses before looping, `canvas.fps` is 12 or higher, and `canvas.frames` is not hand-set to pace the animation -- the spec slows down by longer steps, not by a lower frame rate or fewer frames.",
+        "The agent ran `lint_spec.py` before rendering and rendered with `--verify --check`; the renderer's `✓ PASS` line reports 4 steps and a loop length, and the reply quotes that loop length (in seconds) rather than describing the pace impressionistically. Nothing in the reply claims a step order or timing beyond what the lint, the `✓ PASS` line and the `steps_confined` check established.",
+        "The agent put a `Reading:` block in the conversation before writing the spec -- text ahead of the first Write call, including text in the same message as that call, counts; a block that only appears after the spec was written does not -- and the block lists the four beats in the user's order and names the pace it chose (about 1 s per step, with a hold), so the user could correct the schedule before anything was rendered."
+      ]
+    }
+  },
+  {
+    "id": "flow-webp-git-webhook-extend",
+    "prompt": "We already have git-webhook.spec.json in this folder from last time. Two changes: (1) add one more step -- after Lambda writes the output bucket, the bucket event starts AWS CodePipeline; (2) the animation is too fast, slow it to about half speed and hold a bit longer at the end before it loops. Keep everything else as it is and re-render.",
+    "seed_files": {
+      "git-webhook.spec.json": "{\n  \"canvas\": {\n    \"width\": 1400,\n    \"height\": 720,\n    \"fps\": 20\n  },\n  \"theme\": {\n    \"name\": \"dark\"\n  },\n  \"title\": {\n    \"text\": \"Git Webhook\",\n    \"highlight\": \"to AWS\",\n    \"subtitle\": \"A push to a third-party repo fires a webhook; Lambda clones it and lands the code in S3\"\n  },\n  \"nodes\": [\n    {\n      \"id\": \"cloud\",\n      \"type\": \"box\",\n      \"layer\": \"background\",\n      \"label\": \"AWS Cloud\",\n      \"body\": \"\",\n      \"x\": 620,\n      \"y\": 160,\n      \"w\": 720,\n      \"h\": 500,\n      \"color\": \"blue\",\n      \"label_size\": 18\n    },\n    {\n      \"id\": \"users\",\n      \"type\": \"box\",\n      \"label\": \"Git Users\",\n      \"body\": \"Developers\\ncommit and push\",\n      \"x\": 40,\n      \"y\": 340,\n      \"w\": 180,\n      \"h\": 110,\n      \"label_h\": 36,\n      \"label_size\": 21,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"green\"\n    },\n    {\n      \"id\": \"repo\",\n      \"type\": \"box\",\n      \"label\": \"Git Repository\",\n      \"body\": \"Third-party host\\nGitHub, GitLab, Bitbucket\",\n      \"x\": 320,\n      \"y\": 340,\n      \"w\": 230,\n      \"h\": 110,\n      \"label_h\": 36,\n      \"label_size\": 21,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"purple\"\n    },\n    {\n      \"id\": \"lambda\",\n      \"type\": \"box\",\n      \"label\": \"AWS Lambda\",\n      \"body\": \"Receives the webhook\\nclones, zips, uploads\",\n      \"x\": 680,\n      \"y\": 340,\n      \"w\": 210,\n      \"h\": 110,\n      \"label_h\": 36,\n      \"label_size\": 21,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"blue\"\n    },\n    {\n      \"id\": \"ssh\",\n      \"type\": \"box\",\n      \"label\": \"SSH Key Bucket\",\n      \"body\": \"Amazon S3\\nprivate key for the clone\",\n      \"x\": 1060,\n      \"y\": 200,\n      \"w\": 240,\n      \"h\": 100,\n      \"label_h\": 34,\n      \"label_size\": 19,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"purple\"\n    },\n    {\n      \"id\": \"kms\",\n      \"type\": \"box\",\n      \"label\": \"KMS Key\",\n      \"body\": \"AWS KMS\\ndecrypts the SSH key\",\n      \"x\": 1060,\n      \"y\": 345,\n      \"w\": 240,\n      \"h\": 100,\n      \"label_h\": 34,\n      \"label_size\": 19,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"green\"\n    },\n    {\n      \"id\": \"out\",\n      \"type\": \"box\",\n      \"label\": \"Output Bucket\",\n      \"body\": \"Amazon S3\\nzipped source per push\",\n      \"x\": 1060,\n      \"y\": 490,\n      \"w\": 240,\n      \"h\": 100,\n      \"label_h\": 34,\n      \"label_size\": 19,\n      \"body_size\": 13,\n      \"label_bold\": true,\n      \"color\": \"purple\"\n    }\n  ],\n  \"edges\": [\n    {\n      \"from\": \"users\",\n      \"to\": \"repo\",\n      \"label\": \"Git push\"\n    },\n    {\n      \"from\": \"repo\",\n      \"to\": \"lambda\",\n      \"label\": \"Git webhook\"\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"ssh\",\n      \"points\": [\n        [\n          890,\n          395\n        ],\n        [\n          970,\n          395\n        ],\n        [\n          970,\n          250\n        ],\n        [\n          1060,\n          250\n        ]\n      ]\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"kms\"\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"out\",\n      \"points\": [\n        [\n          890,\n          395\n        ],\n        [\n          970,\n          395\n        ],\n        [\n          970,\n          540\n        ],\n        [\n          1060,\n          540\n        ]\n      ]\n    },\n    {\n      \"from\": \"lambda\",\n      \"to\": \"repo\",\n      \"label\": \"status\",\n      \"points\": [\n        [\n          785,\n          450\n        ],\n        [\n          785,\n          570\n        ],\n        [\n          435,\n          570\n        ],\n        [\n          435,\n          450\n        ]\n      ]\n    }\n  ],\n  \"animation\": {\n    \"step_seconds\": 1.2,\n    \"hold_seconds\": 0.8,\n    \"steps\": [\n      {\n        \"edges\": [\n          0\n        ],\n        \"label\": \"git push\"\n      },\n      {\n        \"edges\": [\n          1\n        ],\n        \"label\": \"webhook\"\n      },\n      {\n        \"edges\": [\n          2,\n          3,\n          4\n        ],\n        \"label\": \"three stores at once\"\n      },\n      {\n        \"edges\": [\n          5\n        ],\n        \"label\": \"status back\"\n      }\n    ]\n  }\n}\n"
+    },
+    "expect": {
+      "skill": "visual-flow-webp",
+      "file_glob": "*.webp",
+      "validator_pass_regex": "✓ PASS.*\\(5 steps\\)",
+      "tools_any_order": [
+        "Skill",
+        "Read",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Bash"
+      ],
+      "max_tool_calls": 20,
+      "text_artifacts": [
+        ".json"
+      ],
+      "expected_theme": "dark",
+      "assertions": [
+        "The agent read the existing git-webhook.spec.json and edited it rather than writing a new spec from scratch: the original node ids (users, repo, lambda, ssh, kms, out, cloud), the coordinates of the six foreground nodes, the dark theme and the title are unchanged in the delivered spec, and the seed's four steps still travel the same edges in the same order. Growing the canvas and the `cloud` container to make room for the new node is fine; moving the existing nodes is not. Reading the skill's bundled asset specs was not needed and is not held against the run either way.",
+        "A CodePipeline node was added inside the AWS Cloud container, connected by an edge from the output bucket to it -- not from Lambda -- because the request says the bucket event starts the pipeline; and that edge travels in a step placed after the step that reaches the output bucket (a fifth step, so the `✓ PASS` line reports 5 steps), not in the fan-out step and not left out of `animation.steps`.",
+        "The slowdown is done with time, not frame rate: `step_seconds` (or each step's `seconds`) is at least 2.0 -- about double the seed's 1.2 -- `hold_seconds` is larger than the seed's 0.8, `canvas.fps` is not lowered below 12, and `canvas.frames` was not hand-set (it is derived in steps mode).",
+        "The new node does not overlap any existing node or sit outside the canvas; `lint_spec.py` was run on the edited spec before rendering; and the reply states the new loop length in seconds as read from the `✓ PASS` line -- roughly double the seed's 5.6 s plus the new step -- rather than saying it 'feels slower'."
+      ]
+    }
+  },
+  {
+    "id": "flow-webp-git-webhook-slide-mp4",
+    "prompt": "同一套 Git webhook 到 AWS 的流程，画成动图：Git 用户 push 到第三方 Git 仓库，仓库通过 webhook 触发 AWS Lambda，Lambda 扇出到三个存储——S3 SSH key bucket、KMS key、S3 output bucket——最后把状态回写给仓库。光点要一步一步走，不要所有箭头一起动。这个是要放到下周给客户讲的 PowerPoint 里的，讲到某一步我需要停在那里讲两句，所以必须能暂停、能拖回去重看。",
+    "expect": {
+      "skill": "visual-flow-webp",
+      "file_glob": "*.mp4",
+      "validator_pass_regex": "✓ PASS.*\\.mp4",
+      "tools_any_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "tools_in_order": [
+        "Skill",
+        "Write",
+        "Bash"
+      ],
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "artifact_regex_absent": [
+        "\"format\"\\s*:"
+      ],
+      "expected_theme": "light",
+      "assertions": [
+        "The delivered animation is an MP4, and the run chose it from what the user said the file is for -- a PowerPoint slide, and pausing and scrubbing on a particular step -- rather than because the user named a format. The user never said 'mp4', 'video' or 'H.264'.",
+        "The reply states that the MP4 does not loop on its own and names the setting that makes it loop (PowerPoint's 'Loop until Stopped', or `loop` on an HTML video tag). A run that hands over an MP4 while describing it as a looping animation is wrong about the file it just delivered.",
+        "The spec animates with `animation.steps`, not `pulses`, and the steps are the four beats in the user's order: the users-to-repository edge; the repository-to-Lambda edge; the three Lambda-to-store edges together in one step; the Lambda-to-repository return edge. The three fan-out edges are one step, not three.",
+        "The container was chosen with the renderer's `--format` flag and is not a field in the JSON spec -- the spec describes the diagram, not its delivery -- and one spec is what produced whatever was delivered.",
+        "The agent ran `lint_spec.py` before rendering and rendered with `--verify --check`; the `✓ PASS` line names the `.mp4` file, and the reply quotes the loop length in seconds and the file size read off that line rather than estimating either."
+      ]
+    }
+  },
+  {
+    "id": "flow-webp-reference-overlay-mp4",
+    "prompt": "请用 visual-flow-webp 目录中 assets/overlay-reference.png 作为我给定的原始架构图，在原图上叠加数据流动画并导出可暂停的 MP4，不重画任何框、文字、图标和箭头。流程为 Client 到 Order API，然后 API 同时写 Database 和 Queue，两段各 1.5 秒，最后停留 1.5 秒。为没有图片查看工具的环境提供精确坐标（无需再问我）：原图960×540，Client框[x=60,y=225,w=160,h=90]，API框[370,225,170,90]，Database框[740,110,160,90]，Queue框[740,350,160,90]。第一条箭头折线[[220,270],[370,270]]，API到Database为[[540,270],[630,270],[630,155],[740,155]]，API到Queue为[[540,270],[630,270],[630,395],[740,395]]。请保留原图上的直角，不留已走过的轨迹；结束时给我视频、静态图、可编辑spec及它需要的背景文件。如果没有图片查看工具，请明确说明是根据我给的坐标做的。",
+    "expect": {
+      "skill": "visual-flow-webp",
+      "file_glob": "*.mp4",
+      "validator_pass_regex": "✓ PASS.*\\.mp4",
+      "tools_any_order": [
+        "Skill",
+        "Read",
+        "Bash",
+        "Write"
+      ],
+      "max_tool_calls": 25,
+      "text_artifacts": [
+        ".json"
+      ],
+      "assertions": [
+        "Before authoring the geometry the agent explains the source using a Reading: block, choosing overlay mode with 1.5 seconds per step and a 1.5 second hold, and uses the supplied reference image instead of generating a replacement diagram.",
+        "The delivered spec has background.image resolving to a companion image beside the spec, canvas 960x540, and four invisible type: anchor nodes at the supplied bounds. The original image bytes are copied, with no redrawn title, boxes, text or icons and no visible static paths.",
+        "All three explicit edge point lists follow the supplied coordinates with exact corners (default radius 0 in overlay mode, or explicit 0). animation.steps first travels client-to-API, then both fan-out edges together, with trail false. The original arrows are neither replaced nor rounded.",
+        "The initializer, lint and renderer were used, the render included --format mp4 --verify --check, and background_pixels_preserved plus background_file_unchanged both passed in the renderer report. The reply reports the 4.5-second duration and names the video, PNG, editable spec and companion background.",
+        "The reply explains that MP4 needs the player's repeat setting to loop. It does not falsely claim visual inspection if no image-viewing tool was available, and in that case states that the supplied coordinates were used."
+      ]
+    }
+  }
+]

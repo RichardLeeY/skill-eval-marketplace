@@ -1,0 +1,793 @@
+
+=== coinbase-low-latency ===
+
+Tool #1: Skill
+
+Tool #2: Read
+
+Tool #3: Bash
+
+Tool #4: Write
+
+Tool #5: Bash
+架构图已生成：`coinbase-low-latency-trading.drawio`（用 draw.io / diagrams.net，或 VS Code 的 Draw.io 扩展打开）。
+
+内容按你的要求组织，并遵循 AWS 参考架构规范（标题块 + 编号说明 + 官方图标/分层容器）：
+
+- **边缘 DNS 入口**：Amazon Route 53（延迟路由）→ AWS Global Accelerator（anycast、静态入口 IP、走 AWS 骨干网）；另有 AWS Direct Connect 供 co-lo 客户接入
+- **负载均衡**：Elastic Load Balancing（Network Load Balancer，L4 直通，适配 FIX 长连接），每个 AZ 一个，位于公有子网
+- **撮合引擎计算层**：Matching engine on Amazon EC2（cluster placement group，单写者，私有子网），前置 order gateway
+- **内存缓存**：Amazon ElastiCache for Redis 承载实时订单簿，Amazon MSK 作为可重放事件日志提供持久化
+- **跨两个可用区**：AZ A 为 active，AZ B 为 warm standby + 缓存副本，含跨 AZ 复制连线
+
+工具链：自写 spec（`coinbase-low-latency.spec.json`）→ `generate.ts` → `validate.ts`，校验结果 **✓ PASS**（13 个资源、9 个容器、15 条连线、6 条编号说明，图标名全部命中官方 stencil）。唯一提示是 `dx` 节点多写了一个会被忽略的 `category` 字段，不影响渲染。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['aws-drawio-diagram'] want=aws-drawio-diagram
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.drawio hits=['coinbase-low-latency-trading.drawio']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       hand-written via Write: []
+  PASS  tool_budget                                  5 calls (cap 25)
+  PASS  regex:shape=mxgraph\.aws4\.resourceIcon      13 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.                13 match(es)
+  PASS  regex:container=1                            9 match(es)
+  PASS  regex:edgeStyle=orthogonalEdgeStyle          15 match(es)
+  PASS  absent:<mxCell[^>]*value=""[^>]*resourceIcon 0 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Bash'] matched=['Skill', 'Bash']
+  PASS  count>=8:shape=mxgraph\.aws4\.resourceI      found 13
+  PASS  count>=3:mxgraph\.aws4\.group                found 14
+  -> deterministic 17/17  (100%)
+
+=== three-tier-web ===
+I'll load the AWS draw.io diagram skill first.
+Tool #1: Skill
+
+Tool #2: Read
+
+Tool #3: Bash
+
+Tool #4: Write
+
+Tool #5: Bash
+Diagram generated and validated.
+
+**Output:** `three-tier-web-app.drawio` (spec kept alongside it as `three-tier-web-app.spec.json`)
+
+It opens in draw.io / diagrams.net or the VS Code Draw.io extension.
+
+What's in it:
+- **Edge tier** — Amazon Route 53 → Amazon CloudFront with AWS WAF attached at the distribution, plus S3 for static assets
+- **Ingress** — Elastic Load Balancing (Application Load Balancer) as the only component in the public subnets
+- **Compute tier** — separate Amazon ECS on AWS Fargate web and API services in private application subnets in two Availability Zones, with a NAT gateway per zone for egress
+- **Data tier** — Amazon RDS for PostgreSQL primary with a Multi-AZ standby in isolated private data subnets
+- Full AWS Cloud → Region → VPC → AZ → Subnet nesting, and 6 numbered callouts carrying design rationale (why WAF sits at CloudFront, why the ALB is drawn once, Fargate vs EC2, per-zone NAT cost, standby vs read replicas)
+
+Skill validation: **PASS** — 15 resources, 12 groups, 16 edges, 6 annotations, all stencil names known, no warnings.  PASS  completed                                    
+  PASS  skill_selected                               loaded=['aws-drawio-diagram'] want=aws-drawio-diagram
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.drawio hits=['three-tier-web-app.drawio']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       hand-written via Write: []
+  PASS  tool_budget                                  5 calls (cap 20)
+  PASS  regex:resIcon=mxgraph\.aws4\.cloudfront      1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.(elastic_load_b 1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.rds             2 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  count>=4:shape=mxgraph\.aws4\.resourceI      found 15
+  -> deterministic 13/13  (100%)
+
+=== adversarial-inline-xml ===
+
+Tool #1: Skill
+
+Tool #2: Bash
+
+Tool #3: Read
+
+Tool #4: Write
+
+Tool #5: Bash
+
+Tool #6: Read
+XML 在下面，直接复制到 draw.io 里即可（我也把它存成了 `s3-lambda-dynamodb.drawio`，配套的 spec 是 `s3-lambda-dynamodb.spec.json`）。
+
+```xml
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="aws-diagram" name="Event-Driven Object Processing on AWS">
+    <mxGraphModel dx="900" dy="640" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1574" pageHeight="1180" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="doc-title" value="Event-Driven Object Processing on AWS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=30;fontStyle=1;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="40" y="26" width="1100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-subtitle" value="S3 event notifications, Lambda processing, DynamoDB metadata" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=19;fontStyle=0;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="40" y="66" width="1100" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-intent" value="Object uploads drive the pipeline directly through Amazon S3 event notifications, so no component polls for work and capacity scales with the arrival rate rather than with a provisioned fleet." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=0;fontColor=#545B64;" vertex="1" parent="1">
+          <mxGeometry x="40" y="98" width="1000" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-panel" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F2F3F3;strokeColor=#D5DBDB;verticalAlign=top;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1204" y="160" width="330" height="920" as="geometry" />
+        </mxCell>
+        <mxCell id="note-badge-1" value="1" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="176" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="note-text-1" value="The landing bucket is the only entry point; clients get pre-signed URLs rather than a compute front door, so there is no API tier to scale or defend. Writes are the trigger, which is why the derived output goes to a &lt;b&gt;second&lt;/b&gt; bucket — emitting results into the source bucket would re-trigger the same notification and loop." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1256" y="176" width="262" height="111" as="geometry" />
+        </mxCell>
+        <mxCell id="note-badge-2" value="2" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="303" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="note-text-2" value="&lt;b&gt;Amazon EventBridge&lt;/b&gt; sits between the bucket and the function so more than one consumer can subscribe to the same upload later without editing the bucket. Where exactly one consumer is certain, a direct &lt;b&gt;Amazon S3&lt;/b&gt; notification to &lt;b&gt;AWS Lambda&lt;/b&gt; removes this hop and its cost." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1256" y="303" width="262" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="note-badge-3" value="3" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="415" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="note-text-3" value="&lt;b&gt;AWS Lambda&lt;/b&gt; runs outside a VPC here because it reaches only &lt;b&gt;Amazon DynamoDB&lt;/b&gt; and &lt;b&gt;Amazon S3&lt;/b&gt; over their public endpoints with &lt;b&gt;AWS Identity and Access Management (IAM)&lt;/b&gt; authorisation. Attach it to private subnets with gateway endpoints only when it must reach a VPC-bound resource such as &lt;b&gt;Amazon RDS&lt;/b&gt;." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1256" y="415" width="262" height="111" as="geometry" />
+        </mxCell>
+        <mxCell id="note-badge-4" value="4" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="542" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="note-text-4" value="Retries are automatic and idempotency is the function&apos;s responsibility: the same object can be delivered more than once. Events that exhaust retries land in the dead-letter queue instead of being dropped, which makes poison objects a queue depth alarm rather than silent data loss." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1256" y="542" width="262" height="111" as="geometry" />
+        </mxCell>
+        <mxCell id="note-badge-5" value="5" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="669" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="note-text-5" value="&lt;b&gt;Amazon DynamoDB&lt;/b&gt; holds metadata keyed by object key, sized on-demand so it tracks the same bursty arrival pattern as the function. Bulk content stays in &lt;b&gt;Amazon S3&lt;/b&gt;; the table is deliberately an index, not a document store." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1256" y="669" width="262" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="note-badge-6" value="6" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="766" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="note-text-6" value="This view shows the synchronous processing path only. Reprocessing history, lifecycle transitions to &lt;b&gt;Amazon S3 Glacier&lt;/b&gt;, and downstream analytics over the derived bucket are out of scope and drawn separately." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1256" y="766" width="262" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-rule" value="" style="line;strokeWidth=1;html=1;strokeColor=#879196;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="134" width="1494" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-footer-rule" value="" style="line;strokeWidth=1;html=1;strokeColor=#879196;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1110" width="1494" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-footer-left" value="Reviewed for technical accuracy 2026-08-26&lt;br&gt;© 2026 Amazon Web Services, Inc. or its affiliates. All rights reserved." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#545B64;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1120" width="460" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="doc-footer-centre" value="AWS Reference Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#ED7100;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1120" width="1494" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="producer" value="upload clients" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#545B64;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;shape=mxgraph.aws4.users;" vertex="1" parent="1">
+          <mxGeometry x="52" y="160" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;verticalAlign=top;align=left;spacingLeft=30;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="233" y="160" width="925" height="920" as="geometry" />
+        </mxCell>
+        <mxCell id="region" value="Region: us-east-1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;verticalAlign=top;align=left;spacingLeft=30;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#00A4A6;fillColor=none;fontColor=#00A4A6;dashed=1;" vertex="1" parent="cloud">
+          <mxGeometry x="30" y="44" width="865" height="846" as="geometry" />
+        </mxCell>
+        <mxCell id="ingest" value="Ingest layer" style="rounded=0;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;align=left;spacingLeft=8;fillColor=#F2F3F3;strokeColor=none;fontColor=#5A6B86;dashed=0;" vertex="1" parent="region">
+          <mxGeometry x="30" y="190" width="565" height="186" as="geometry" />
+        </mxCell>
+        <mxCell id="raw" value="Amazon Simple Storage Service (S3) landing bucket" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="ingest">
+          <mxGeometry x="157" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="events" value="Amazon EventBridge" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" vertex="1" parent="ingest">
+          <mxGeometry x="433" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="process" value="Processing layer" style="rounded=0;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;align=left;spacingLeft=8;fillColor=#F2F3F3;strokeColor=none;fontColor=#5A6B86;dashed=0;" vertex="1" parent="region">
+          <mxGeometry x="30" y="410" width="805" height="186" as="geometry" />
+        </mxCell>
+        <mxCell id="fn" value="AWS Lambda object processor" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="process">
+          <mxGeometry x="85" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="dlq" value="Amazon Simple Queue Service (SQS) dead-letter queue" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs;" vertex="1" parent="process">
+          <mxGeometry x="397" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="logs" value="Amazon CloudWatch" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch;" vertex="1" parent="process">
+          <mxGeometry x="676" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="data" value="Data layer" style="rounded=0;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;align=left;spacingLeft=8;fillColor=#F2F3F3;strokeColor=none;fontColor=#5A6B86;dashed=0;" vertex="1" parent="region">
+          <mxGeometry x="30" y="630" width="690" height="186" as="geometry" />
+        </mxCell>
+        <mxCell id="table" value="Amazon DynamoDB metadata table" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;" vertex="1" parent="data">
+          <mxGeometry x="94" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="derived" value="Amazon Simple Storage Service (S3) derived-output bucket" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="data">
+          <mxGeometry x="432" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="role" value="AWS Identity and Access Management (IAM)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;" vertex="1" parent="region">
+          <mxGeometry x="127" y="44" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="producer" target="raw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="raw" target="events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="events" target="fn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fn" target="table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fn" target="derived">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;dashed=1;" edge="1" parent="1" source="fn" target="dlq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;dashed=1;" edge="1" parent="1" source="fn" target="logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=none;strokeWidth=1;strokeColor=#545B64;fontColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;dashed=1;" edge="1" parent="1" source="role" target="fn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-1" value="1" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="437" y="425" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-2" value="2" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="713" y="425" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-3" value="3" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="365" y="645" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-4" value="4" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="677" y="645" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-5" value="5" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="374" y="865" width="26" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="badge-6" value="6" style="rounded=1;arcSize=30;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#FFFFFF;strokeWidth=2;fontColor=#FFFFFF;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="601" width="26" height="26" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+```
+
+架构要点：上传客户端 → S3 落地桶 → EventBridge → Lambda → DynamoDB 元数据表 + S3 派生输出桶，旁挂 SQS 死信队列、CloudWatch 与 IAM。右侧 6 条编号注释解释了为什么派生结果写到第二个桶（避免自触发循环）、EventBridge 这一跳何时可以省掉、Lambda 为何不放 VPC、幂等与死信处理，以及本图刻意未画的范围。
+
+说明：XML 不是手写的，而是按 skill 要求先写 spec（`s3-lambda-dynamodb.spec.json`）再用 `generate.ts` 生成——这样才有 AWS 官方图标、分组容器、标题块和注释面板。`validate.ts` 校验结果：**PASS**（8 个资源 / 5 个分组 / 8 条连线 / 6 条注释，图标名全部命中官方 stencil 列表，无边标签遮挡）。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['aws-drawio-diagram'] want=aws-drawio-diagram
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.drawio hits=['s3-lambda-dynamodb.drawio']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       hand-written via Write: []
+  PASS  tool_budget                                  6 calls (cap 20)
+  PASS  regex:shape=mxgraph\.aws4\.resourceIcon      8 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Write', 'Bash', 'Read']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Write', 'Bash', 'Read']
+  PASS  count>=3:shape=mxgraph\.aws4\.resourceI      found 8
+  -> deterministic 11/11  (100%)
+
+=== log-pipeline-streaming ===
+I'll load the AWS diagram skill first.
+Tool #1: Skill
+
+Tool #2: Bash
+
+Tool #3: Write
+
+Tool #4: Bash
+架构图已生成：**`application-log-pipeline.drawio`**（用 draw.io / diagrams.net 或 VS Code 的 Draw.io 插件打开）。
+
+图中内容：
+
+- **AWS Cloud → Region → Amazon VPC → Availability Zone → 两个私有子网**的标准 AWS 分组
+- 采集层：Application workload on Amazon EC2 → **Amazon FSx for OpenZFS**（共享 NFS 日志盘）→ **Vector log shipper on sidecar Amazon EC2 instance**
+- 流式层：**Amazon MSK** → **Amazon Managed Service for Apache Flink** → **Amazon Redshift**
+- 6 条编号批注，说明 sidecar 隔离、MSK 作为可重放缓冲、Flink 相对 Lambda/Firehose 的取舍、Redshift 微批写入、以及单 AZ 只是绘图简化
+
+技能自带的校验通过：`resources=6 groups=6 edges=6 annotations=6 → ✓ PASS`。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['aws-drawio-diagram'] want=aws-drawio-diagram
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.drawio hits=['application-log-pipeline.drawio']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       hand-written via Write: []
+  PASS  tool_budget                                  4 calls (cap 25)
+  PASS  regex:shape=mxgraph\.aws4\.resourceIcon      6 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.fsx_for_openzfs 1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.managed_streami 1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.(kinesis_data_a 1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.redshift        1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.ec2             2 match(es)
+  PASS  regex:container=1                            6 match(es)
+  PASS  absent:<mxCell[^>]*value=""[^>]*resourceIcon 0 match(es)
+  PASS  absent:managed_streaming_for_apache_kafka    0 match(es)
+  PASS  absent:mxgraph\.aws4\.openzfs\b              0 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Write                              trace=['Skill', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Bash', 'Write', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Write', 'Bash'] matched=['Skill', 'Write', 'Bash']
+  PASS  count>=5:shape=mxgraph\.aws4\.resourceI      found 6
+  PASS  count>=3:mxgraph\.aws4\.group                found 10
+  PASS  count>=3:id="note-badge-                     found 6
+  -> deterministic 24/24  (100%)
+
+=== drawio-diagram-only-reply ===
+
+Tool #1: Skill
+
+Tool #2: Write
+
+Tool #3: Bash
+[event-flow.drawio](event-flow.drawio)  PASS  completed                                    
+  PASS  skill_selected                               loaded=['aws-drawio-diagram'] want=aws-drawio-diagram
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=event-flow.drawio hits=['event-flow.drawio']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       hand-written via Write: []
+  PASS  tool_budget                                  3 calls (cap 20)
+  PASS  regex:resIcon=mxgraph\.aws4\.s3              1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.lambda          1 match(es)
+  PASS  regex:resIcon=mxgraph\.aws4\.dynamodb        1 match(es)
+  PASS  regex:edgeStyle=orthogonalEdgeStyle          6 match(es)
+  PASS  absent:<mxCell[^>]*value=""[^>]*resourceIcon 0 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'Write', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Write', 'Bash']
+  PASS  count>=3:shape=mxgraph\.aws4\.resourceI      found 6
+  -> deterministic 15/15  (100%)
+
+=== claude-md-ingest-folder ===
+I'll start by loading the relevant skill.
+Tool #1: Skill
+
+Tool #2: LS
+
+Tool #3: Read
+
+Tool #4: Read
+
+Tool #5: Read
+
+Tool #6: Read
+
+Tool #7: Read
+
+Tool #8: Bash
+
+Tool #9: Write
+
+Tool #10: Bash
+Produced `ingest/CLAUDE.md` plus `ingest/AGENTS.md` as a symlink to it (created by the skill's verify script).
+
+**Files read in full:** `README.md`, `handler.py`, `normalize_cloudtrail.py`, `notes.md`, `schema.json`. No parent `CLAUDE.md` exists, so no root-first marker line was added.
+
+**Sections chosen:** Purpose, Essential Files, Constraints (MUST NOT), Conventions, Locked Decisions, Context. Every bullet traces to a source named inline — code comments in `handler.py` / `normalize_cloudtrail.py`, and dated entries in `notes.md`.
+
+**Left out:** Working style (nothing in the folder indicates collaboration norms specific to it), and any file tree or stack description, which the skill forbids as derivable from `LS`.
+
+**Notable framing choice:** the "keep `FIELDS` and `schema.json` in step" rule sits in Conventions, not Constraints — it's a *must always happen* step, and this file can only make an agent aware of it. If you want it actually guarded, that belongs in a CI check comparing the two, not in a prompt file. Flagged so you don't assume it's enforced.
+
+**Validation:** `scripts/verify.sh ingest` → `PASS: ingest/CLAUDE.md (6 sections, AGENTS.md -> CLAUDE.md)`. Files left uncommitted for you to review.  PASS  completed                                    
+  PASS  skill_selected                               loaded=['folder-specific-claude-and-agents-md'] want=folder-specific-claude-and-agents-md
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=ingest/CLAUDE.md hits=['ingest/CLAUDE.md']
+  PASS  validator_passed                             PASS: ingest/CLAUDE.md
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  10 calls (cap 20)
+  PASS  regex:\b500\b                                1 match(es)
+  PASS  regex:(?i)ISO.?8601|\bUTC\b                  1 match(es)
+  PASS  regex:(?i)dedupe|dynamodb                    2 match(es)
+  PASS  regex:(?i)must not|constraint                6 match(es)
+  PASS  regex:(?i)normalize_                         6 match(es)
+  PASS  absent:[├└│]                                 0 match(es)
+  PASS  absent:(?i)\bTODO\b                          0 match(es)
+  PASS  absent:(?i)\bplaceholder\b                   0 match(es)
+  PASS  tool_used:Skill                              trace=['LS', 'Skill', 'Read', 'Read', 'Read', 'Read', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Read                               trace=['LS', 'Skill', 'Read', 'Read', 'Read', 'Read', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Write                              trace=['LS', 'Skill', 'Read', 'Read', 'Read', 'Read', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tool_used:Bash                               trace=['LS', 'Skill', 'Read', 'Read', 'Read', 'Read', 'Read', 'Bash', 'Write', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Read', 'Write', 'Bash'] matched=['Skill', 'Read', 'Write', 'Bash']
+  PASS  count>=3:(?m)^##\s+                          found 6
+  PASS  count>=8:(?m)^\s*[-*]\s+                     found 14
+  -> deterministic 22/22  (100%)
+
+=== claude-md-subdir-under-root ===
+I'll load the skill for folder-scoped CLAUDE.md files first.
+Tool #1: Skill
+
+Tool #2: LS
+
+Tool #3: LS
+
+Tool #4: Read
+
+Tool #5: Read
+
+Tool #6: Read
+
+Tool #7: Read
+
+Tool #8: Write
+
+Tool #9: Bash
+Done.
+
+**Produced**
+- `platform/eks/CLAUDE.md`
+- `platform/eks/AGENTS.md` → symlink to `CLAUDE.md` (created by the skill's verify script)
+
+**Files read:** root `CLAUDE.md`, `platform/eks/README.md`, `cluster.tf`, `runbook.md` (the whole folder).
+
+**Sections chosen:** Purpose, Essential Files, Constraints (MUST NOT), Conventions, Context. Left out Locked Decisions (the 1.29 pin is already a constraint with its source; nothing else is dated/agreed) and Working style (root file already sets it — no duplication).
+
+**Key point on your actual complaint:** "read the runbook before bumping the version" is a step-that-must-run, not knowledge, so a prompt file can only make it probable. I encoded what an agent can comply with just by having read it — the 1.29 ceiling, the ALB-controller ordering, the one-way rollback — with `@runbook.md` given a `**Read when:** changing cluster_version` trigger. The last line names the gap honestly: only a CI check on diffs touching `cluster_version` would actually block the bump. Worth adding if you want it guarded rather than merely documented.
+
+**Validation:** `PASS: platform/eks/CLAUDE.md (5 sections, AGENTS.md -> CLAUDE.md)`. Files left uncommitted.  PASS  completed                                    
+  PASS  skill_selected                               loaded=['folder-specific-claude-and-agents-md'] want=folder-specific-claude-and-agents-md
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=platform/eks/CLAUDE.md hits=['platform/eks/CLAUDE.md']
+  PASS  validator_passed                             PASS: platform/eks/CLAUDE.md
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  9 calls (cap 20)
+  PASS  regex:Apply root CLAUDE\.md first, then this 1 match(es)
+  PASS  regex:(?i)\*\*read when:?\*\*                1 match(es)
+  PASS  regex:@[\w./-]*runbook\.md                   2 match(es)
+  PASS  regex:1\.29                                  1 match(es)
+  PASS  regex:(?i)drain                              2 match(es)
+  PASS  absent:(?i)conventional commits              0 match(es)
+  PASS  absent:(?i)never push directly to main       0 match(es)
+  PASS  absent:(?i)ruff format                       0 match(es)
+  PASS  absent:[├└│]                                 0 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'LS', 'LS', 'Read', 'Read', 'Read', 'Read', 'Write', 'Bash']
+  PASS  tool_used:Read                               trace=['Skill', 'LS', 'LS', 'Read', 'Read', 'Read', 'Read', 'Write', 'Bash']
+  PASS  tool_used:Write                              trace=['Skill', 'LS', 'LS', 'Read', 'Read', 'Read', 'Read', 'Write', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'LS', 'LS', 'Read', 'Read', 'Read', 'Read', 'Write', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Read', 'Write', 'Bash'] matched=['Skill', 'Read', 'Write', 'Bash']
+  PASS  count>=2:(?m)^##\s+                          found 5
+  -> deterministic 22/22  (100%)
+
+=== flow-webp-git-webhook-dark ===
+
+Tool #1: Skill
+
+Tool #2: Read
+
+Tool #3: Bash
+
+Tool #4: Bash
+
+Tool #5: Bash
+
+Tool #6: Read
+Reading:
+- **Source mode**: generated (no image supplied). **Theme**: dark, as asked. **Container**: WebP — it is a 动图 for viewing, no slide or pause/scrub requirement was mentioned. **Pacing**: `step_seconds` 1.5, `hold_seconds` 2.0, fps 20 → 4 steps, about 8.0 s per loop.
+- **Actors / nodes** (only what the source names): Developer; Git Repository (GitHub / GitLab / Bitbucket); AWS Lambda; Amazon S3 SSH key bucket; AWS KMS key; Amazon S3 output bucket. No helper boxes — "webhook" and "status" are edge labels, not nodes.
+- **Boundary**: one background container `AWS Cloud` holding Lambda and the three stores; a second, separate container on the left holds the developer and the repo, so the trust boundary is visible and the two webhook/status edges visibly cross it.
+- **Steps in order**: (1) Developer git push to repo. (2) Repo Git webhook triggers Lambda. (3) **Fan-out, one single step**: Lambda to SSH key bucket, Lambda to KMS key, Lambda to output bucket — three edges all leaving Lambda, three dots at once, never chained. (4) Lambda writes build status straight back to the repo, which closes the loop.
+- **Icons**: the renderer does support the official architecture icon set, so Lambda = `aws/compute/lambda`, both buckets = `aws/storage/simple-storage-service-s3`, KMS = `aws/security/key-management-service`, plus `aws/general/user` and `onprem/vcs/git` for the two external actors.
+Tool #7: Write
+
+Tool #8: Bash
+
+Tool #9: Bash
+
+Tool #10: Bash
+做好了，三个文件都在工作目录：
+
+- **`git-webhook-lambda.webp`** — 深色动图，1440x880，一圈 8.0 秒自动循环（约 709 KB）。
+- **`git-webhook-lambda.png`** — 同一张图的静态版本，1440x880。
+- **`git-webhook-lambda.spec.json`** — 生成这两个文件的 JSON 源文件；以后要挪个框、改条边、调快慢，改这里再重跑渲染就行。
+
+关于官方图标：**这个渲染器支持官方 AWS 架构图标集**，所以 Lambda 用了 `aws/compute/lambda`，两个桶用 `aws/storage/simple-storage-service-s3`，KMS 用 `aws/security/key-management-service`，另外开发者用 `aws/general/user`、仓库用官方 Git 图标 —— 6 个图标全部解析成功（`icons_resolved: 6`）。
+
+结构与动画顺序（4 步，每步 1.5 秒，结尾停 2 秒）：
+1. Developer → Git Repository，`git push`
+2. Git Repository → Lambda，`git webhook`
+3. **扇出，同一步三个点同时出发**：Lambda → S3 SSH Key Bucket、Lambda → KMS Key、Lambda → S3 Output Bucket（不是串成一条线）
+4. Lambda → Git Repository（虚线，`build status`），闭环
+
+边界：右侧 `AWS Cloud` 背景容器装 Lambda 和三个存储，左侧单独一个 `Outside AWS` 容器装开发者和 Git 仓库，webhook 和 status 两条边明显穿过这条边界。
+
+校验：`lint_spec.py` 输出 `✓ LINT PASS`，渲染 `✓ PASS`，`--check` 全绿，包括 `steps_confined`（第 3 步在中点帧确实是 3/3 条边同时有光点，后续边未被触碰）。我没有查看图片本身；`--check` 只证明了尺寸、帧数、帧间有变化以及分步动画确实分步，其余（标签是否被遮挡、字号观感）请你自己看一眼 PNG。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['visual-flow-webp'] want=visual-flow-webp
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.webp hits=['git-webhook-lambda.webp']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  10 calls (cap 25)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tool_used:Write                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Write', 'Bash'] matched=['Skill', 'Write', 'Bash']
+  -> deterministic 11/11  (100%)
+
+=== flow-webp-git-webhook-from-readme ===
+I'll start by looking at the workspace to find the README.
+Tool #1: LS
+
+Tool #2: Skill
+
+Tool #3: Read
+
+Tool #4: Read
+
+Tool #5: Bash
+
+Tool #6: Bash
+
+Tool #7: Read
+**Reading:** `README.md` — *git-webhook-to-s3*, a mirror of a third-party Git repo into S3 on every push.
+
+- **Actors, outside the account:** the developer, and the third-party Git host (GitHub/GitLab/Bitbucket).
+- **Inside the AWS account:** the Lambda function (function URL, signature verify, clone, zip), the SSH-key bucket (S3), the customer-managed KMS key, and the output bucket (S3).
+- **Steps, in order:** (1) developer pushes; (2) host POSTs the webhook to the Lambda function URL; (3) Lambda reads the encrypted deploy key from the key bucket; (4) Lambda calls KMS to decrypt it; (5) Lambda writes the zip to the output bucket under `<repo>/<branch>/<sha>.zip`; (6) Lambda posts the commit status back to the repo.
+- **Direction, per the README note:** key bucket and KMS are *read* — arrows go out from Lambda labelled `read key` / `decrypt`, and only the output bucket edge is labelled `write zip`. The commit status is the **only** edge crossing back out of the account, so no clone arrow leaves the account; clone+zip lives inside the Lambda node's body instead. Six edges, no fan-out (each read must finish before the next), so six sequential steps; no decision point, and the "loop" closes at the Git host with the status post.
+- **Source mode:** generated (no architecture image supplied). **Container:** WebP — a README/project-page hero, no pause, scrub or slide requirement, and it loops by itself. **Pacing:** `step_seconds` 1.3, `hold_seconds` 1.6 → about 9.4 s per loop, slow enough to read the edge labels as each dot passes.
+Tool #8: Write
+
+Tool #9: Bash
+
+Tool #10: Bash
+
+Tool #11: Bash
+Three files in the workspace:
+
+- **`git-webhook-to-s3.webp`** (587 KB) — the animated hero for the top of the project page. 1500×740, 6 steps at 1.3 s plus a 1.6 s hold = **9.4 s per loop**, and it loops on its own in browsers, GitHub, VS Code and chat clients — no player settings needed.
+- **`git-webhook-to-s3.png`** (147 KB) — the same diagram as a static still, for contexts that won't play an animation.
+- **`git-webhook-to-s3.spec.json`** — the editable source. A later "move that box" or "make it slower" is a line of JSON plus a re-render, not a re-draw.
+
+Step order, read off the spec: push → webhook POST → read key (key bucket) → decrypt (KMS) → write zip (output bucket) → commit status back to the host. The developer and Git host sit outside a blue *AWS Account* container holding Lambda, the key bucket, the KMS key and the output bucket. Per your README note, the two secret-side resources carry outbound `read key` and `decrypt` labels from Lambda and nothing else, `write zip` is the single arrow into the output bucket, and the commit status is the only edge crossing back out of the account — the clone/zip work is body text inside the Lambda node rather than an arrow leaving the account.
+
+Validation: `lint_spec.py` printed `✓ LINT PASS`, and the render printed `✓ PASS` with `--verify --check` — all checks ok, including canvas size, frame count (175 written, 13 identical hold frames merged by the encoder, which the check allows), motion on 6/6 sampled pairs, `steps_confined` on all six steps, and `icons_resolved` for all 6 icons.
+
+I did not view the image; `--check` proves the size, the frame count and that the frames differ, and nothing else — worth a quick look at the PNG for label readability before it goes on the page.  PASS  completed                                    
+  PASS  skill_selected                               loaded=['visual-flow-webp'] want=visual-flow-webp
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.webp hits=['git-webhook-to-s3.webp']
+  PASS  validator_passed                             ✓ PASS
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  11 calls (cap 25)
+  PASS  tool_used:Skill                              trace=['LS', 'Skill', 'Read', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Ba
+  PASS  tool_used:Read                               trace=['LS', 'Skill', 'Read', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Ba
+  PASS  tool_used:Write                              trace=['LS', 'Skill', 'Read', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Ba
+  PASS  tool_used:Bash                               trace=['LS', 'Skill', 'Read', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Ba
+  PASS  tools_in_order                               want=['Skill', 'Write', 'Bash'] matched=['Skill', 'Write', 'Bash']
+  -> deterministic 12/12  (100%)
+
+=== flow-webp-git-webhook-stepwise ===
+I'll start by loading the skill that covers animated flow diagrams.
+Tool #1: Skill
+
+Tool #2: Read
+
+Tool #3: Bash
+
+Tool #4: Bash
+
+Tool #5: Read
+**Reading:** 源材料是一条 Git webhook 触发的 AWS 流程。
+
+- **参与者 / 节点（5 个 + 1 个用户）**：Git 用户（actor）、第三方 Git 仓库、AWS Lambda、S3 SSH key bucket、KMS key、S3 output bucket。源材料没有提到别的中间件，所以不画 "Webhook POST"、"Process" 这类补位盒子——webhook 和状态回写都是**边**上的标签。
+- **步骤顺序**：① 用户 push 到仓库 → ② 仓库通过 webhook 调用 Lambda → ③ Lambda **同时** 写 S3 SSH key bucket、KMS key、S3 output bucket（三条边并行，放在同一个 step 里）→ ④ Lambda 把状态回写给仓库，闭环。
+- **共享存储**：三个被写入的目标就是共享存储；仓库既是起点也是终点（回环边）。
+- **无判定分支**，无互斥分支。
+- **源模式**：generated（没有提供架构图）。
+- **容器**：WebP —— 用户要"动图"，没有要求暂停/逐帧或放进 PPT，WebP 自带循环。
+- **节奏**：4 个 step，`step_seconds` = 1.3，`hold_seconds` = 2.0，`fps` = 20 → 一轮约 7.2 秒，走完停 2 秒再循环。
+
+现在写 spec。
+Tool #6: Write
+
+Tool #7: Bash
+
+Tool #8: Bash
+
+Tool #9: Bash
+三个文件都在工作目录里：
+
+| 文件 | 用途 |
+|---|---|
+| `git-webhook-aws.webp` | 动图本体，1360×800，一轮 7.2 秒，自带循环（约 606 KB） |
+| `git-webhook-aws.png` | 静态版，放文档/幻灯片当插图用 |
+| `git-webhook-aws.spec.json` | 生成上面两个文件的可编辑源。以后想改节奏或挪盒子，改这里的一行 JSON 再重渲染即可，不用重画 |
+
+**动画顺序**（正是你要的一步一步，不是全部箭头一起动）：
+
+1. `Git User → Git Repo`（push）
+2. `Git Repo → Lambda`（webhook）
+3. `Lambda → S3 SSH Keys` + `Lambda → KMS Key` + `Lambda → S3 Output` —— 三个光点**同一步**同时出发同时到达，表示并发写入
+4. `Lambda → Git Repo`（status，虚线走底部回环），仓库高亮，闭环
+
+每步 1.3 秒（比 1 秒稍慢一点，符合"节奏慢一点"），走完在完整画面上停 2.0 秒再循环。已走过的边保留淡色轨迹，所以能看出流程走到哪一步了。
+
+校验：`lint_spec.py` 输出 `✓ LINT PASS`；渲染 `✓ PASS`，其中 `steps_confined` 逐步确认了在每一步的中点帧上，该步的边都有光点、后续步骤的边一个都还没被点亮（step 2 是 3/3 条边同时有光点）——也就是"分步出现"是文件里的事实，不只是 spec 里的意图。`icons_resolved` 确认 6 个官方图标（Lambda、KMS、两个 S3、Git、user）全部画出。
+
+我没有查看图片本身；`--check` 只证明了尺寸、帧数、帧间有变化以及上述分步约束，其余（文字有没有被裁、标签有没有压线）留给你自己看一眼 PNG。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['visual-flow-webp'] want=visual-flow-webp
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.webp hits=['git-webhook-aws.webp']
+  PASS  validator_passed                             ✓ PASS git-webhook-aws.png + git-webhook-aws.webp 1360x800 frames=129 7.2s (4 steps)
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  9 calls (cap 25)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tool_used:Write                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Write', 'Bash'] matched=['Skill', 'Write', 'Bash']
+  -> deterministic 11/11  (100%)
+
+=== flow-webp-git-webhook-extend ===
+I'll start by loading the relevant skill and checking the existing spec.
+Tool #1: Skill
+
+Tool #2: LS
+
+Tool #3: Read
+**Reading:** editing the existing `git-webhook.spec.json`, not redrawing it.
+
+- Actors/steps already in the spec, unchanged: Git Users → push → Git Repository (third-party host) → webhook → AWS Lambda; Lambda then reaches three stores in parallel (SSH Key Bucket, KMS Key, Output Bucket) and reports `status` back to the repo, which closes the loop.
+- **Change 1 — new step:** one new node, `AWS CodePipeline`, and one new edge `Output Bucket → CodePipeline` labelled "S3 event", because the bucket event starts the pipeline. It goes below the Output Bucket at x 1060, y 650; the AWS Cloud background container grows from h 500 to 640 and the canvas from 720 to 860 to make room. No existing node moves. New animation order: push → webhook → three stores at once → S3 event starts CodePipeline → status back to repo (5 steps; status stays last so the loop still closes at the repo).
+- **Change 2 — pacing:** `step_seconds` 1.2 → **2.4** (half speed) and `hold_seconds` 0.8 → **2.0** (longer hold before looping). `fps` stays 20 — never slow by lowering fps.
+- Everything else kept: dark theme, title/subtitle, all coordinates, colours, edge routes, labels. Container stays the default **WebP** (no slide/pause/GIF requirement stated).
+Tool #4: Write
+
+Tool #5: Bash
+
+Tool #6: Bash
+
+Tool #7: Bash
+Re-rendered from the edited spec.
+
+**Files (all in the workspace root):**
+- `git-webhook.png` — static diagram, 1400×860 (187 KB)
+- `git-webhook.webp` — animated loop, 1400×860, 266 frames, **14.0 s per loop**, loops by itself (872 KB)
+- `git-webhook.spec.json` — the editable source, updated in place
+
+**What changed:**
+1. New node `CodePipeline` ("AWS CodePipeline / started by the bucket event") below the Output Bucket at x 1060, y 650, plus one new edge `Output Bucket → CodePipeline` labelled "S3 event". To make room, the AWS Cloud background container grew from h 500 to 640 and the canvas from 720 to 860. No existing node moved.
+2. Pacing halved: `step_seconds` 1.2 → 2.4, `hold_seconds` 0.8 → 2.0. `fps` stays 20, so the dots still travel smoothly rather than jumping.
+
+**Step order now (5 steps, 2.4 s each, then a 2.0 s hold):** git push → webhook → three stores at once (SSH key bucket, KMS key, output bucket, in parallel) → bucket event starts CodePipeline → status back to the repo, which closes the loop.
+
+Theme, title, subtitle, colours, all other coordinates and edge routes are untouched. `✓ LINT PASS` and the render's `✓ PASS` both passed, including `steps_confined` for all 5 steps.
+
+I did not view the image; `--check` proves the size (1400×860), the frame count (266, with 14 identical hold frames merged by the encoder as allowed), that the sampled frames differ, and that each step's dots are confined to that step — and nothing else.  PASS  completed                                    
+  PASS  skill_selected                               loaded=['visual-flow-webp'] want=visual-flow-webp
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.webp hits=['git-webhook.webp']
+  PASS  validator_passed                             ✓ PASS git-webhook.png + git-webhook.webp 1400x860 frames=266 14.0s (5 steps)
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  7 calls (cap 20)
+  PASS  tool_used:Skill                              trace=['LS', 'Skill', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tool_used:Read                               trace=['LS', 'Skill', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tool_used:Bash                               trace=['LS', 'Skill', 'Read', 'Write', 'Bash', 'Bash', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Bash'] matched=['Skill', 'Bash']
+  -> deterministic 11/11  (100%)
+
+=== flow-webp-git-webhook-slide-mp4 ===
+
+Tool #1: Skill
+
+Tool #2: Read
+
+Tool #3: Bash
+
+Tool #4: Bash
+
+Tool #5: Read
+**Reading:** 一条有序的 Git webhook 流水线，不是一个自由循环。
+
+- **参与者/组件（全部来自你的描述，不多加）**：Git 用户；第三方 Git 仓库；AWS Lambda；三个存储 —— S3 SSH key bucket、KMS key、S3 output bucket。
+- **步骤顺序**：① 用户 push 到仓库 → ② 仓库通过 webhook 触发 Lambda → ③ Lambda 同时扇出到三个存储 → ④ Lambda 把状态回写给仓库，回到起点闭环。
+- **并行 vs 串行**：只有第 ③ 步是并行的（“扇出”＝三个点同时出发，一步之内完成）；其余每步一个光点，绝不所有箭头一起动。这样共 **4 个 step**，逐步点亮，走过的线留淡淡轨迹。
+- **没有判断节点**；"webhook"、"status" 是边上的标签，不画成额外的方框。
+- **模式**：generated（你没有给底图），light 主题，图标用官方 AWS / on-prem 图标集。
+- **容器**：`--format mp4` —— 因为要放进下周的 PowerPoint 并且必须能暂停、能拖回去重看；WebP/GIF 在任何播放器里都没有播放控制条。
+- **节奏**：`step_seconds 1.5`，`hold_seconds 2.0` → 一圈约 8 秒，讲解时每步有足够时间停下来说两句。
+Tool #6: Write
+
+Tool #7: Bash
+
+Tool #8: Bash
+三个文件都在工作目录里：
+
+| 文件 | 用途 |
+|---|---|
+| `git-webhook-aws.mp4` | 放进 PowerPoint 的动画（1400×820，H.264 / yuv420p，160 帧，一圈 8.0 秒，262 KB） |
+| `git-webhook-aws.png` | 同一张图的静帧，用于讲义、邮件或备用页 |
+| `git-webhook-aws.spec.json` | 生成这两个文件的 JSON 源文件；以后要挪一个框、改一句标签、调快慢，改这里再重渲染即可 |
+
+**动画顺序（4 步，逐步走，不是全部箭头一起动）**，每步 1.5 秒，最后停在完整画面上 2.0 秒再循环：
+
+1. Git User → Git Repo（`push`）
+2. Git Repo → Lambda（`webhook`）
+3. Lambda 同时扇出到 SSH Key Bucket、KMS Key、Output Bucket —— 这三条是一个 step 里的三个光点，因为“扇出”本来就是并行；如果拆成三步，客户会以为是串行依赖
+4. Lambda → Git Repo（`status`，虚线，从下方绕回）闭环
+
+走过的线会留下淡淡轨迹，所以讲到第 3 步时，前两步的路径仍然可见。
+
+**关于暂停：**MP4 本身不会自动循环。在 PowerPoint 里插入后，用「播放 / Playback → 循环播放，直到停止 (Loop until Stopped)」打开循环；播放时点击视频即可暂停、拖动进度条回到任意一步讲解。我选 MP4 就是为了这一点 —— WebP/GIF 在幻灯片里既播不了也停不下来。
+
+技能自带的校验都通过了：`✓ LINT PASS`（节点无重叠、step 顺序沿着边走、节奏可跟随），渲染 `✓ PASS`，其中 `steps_confined` 逐帧证明了每一步只有该步的箭头有光点、后续箭头未被触发，`video_codec / pix_fmt / audio_track / faststart` 四项确认这个文件能在 PowerPoint 里播。
+
+我没有用看图工具查看图片；`--check` 证明的是尺寸、帧数、帧间确有变化以及上述几项，除此之外的视觉判断（标签是否美观、箭头是否遮挡）请你打开 PNG 自己扫一眼。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['visual-flow-webp'] want=visual-flow-webp
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.mp4 hits=['git-webhook-aws.mp4']
+  PASS  validator_passed                             ✓ PASS git-webhook-aws.png + git-webhook-aws.mp4
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  8 calls (cap 25)
+  PASS  absent:"format"\s*:                          0 match(es)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash']
+  PASS  tool_used:Write                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Bash', 'Read', 'Write', 'Bash', 'Bash']
+  PASS  tools_in_order                               want=['Skill', 'Write', 'Bash'] matched=['Skill', 'Write', 'Bash']
+  -> deterministic 12/12  (100%)
+
+=== flow-webp-reference-overlay-mp4 ===
+I'll start by loading the skill that covers this task.
+Tool #1: Skill
+
+Tool #2: Read
+
+Tool #3: Bash
+**Reading:** 源模式为 overlay（用户提供的原始架构图 `assets/overlay-reference.png`，960×540，不重画任何框/文字/图标/箭头）。
+
+- 参与者：Client [60,225,160,90] → Order API [370,225,170,90]；API 并行写 Database [740,110,160,90] 与 Queue [740,350,160,90]。
+- 顺序：第 1 步 Client→API（折线 [[220,270],[370,270]]）；第 2 步 fan-out，API→Database 与 API→Queue 同一步一起走（两条折线共享 [540,270]→[630,270] 后分叉到 [630,155]→[740,155] 和 [630,395]→[740,395]）。无判定点、无回环。
+- 容器：MP4（用户要求可暂停）。节奏：`step_seconds` 1.5、`hold_seconds` 1.5 → 2 步共约 4.5 秒一轮。
+- 叠加：`trail: false`（不留已走过轨迹）、`radius: 0` 保持原图直角、`draw_path: false` 不重画箭头，anchor 只做到达时的轮廓高亮。
+- **我没有图片查看工具**，以下几何完全按你给的坐标构建，未对图片做视觉核对。
+Tool #4: Bash
+
+Tool #5: Write
+
+Tool #6: Bash
+
+Tool #7: Bash
+
+Tool #8: LS
+已完成。四个交付文件都在工作目录：
+
+| 文件 | 用途 |
+|---|---|
+| `order-flow.mp4` | 可暂停/可拖动进度的视频，960×540，H.264/yuv420p + 静音音轨 + faststart，101 KB |
+| `order-flow.png` | 静态图（与原图解码像素完全一致，`background_pixels_preserved` 通过） |
+| `order-flow.spec.json` | 可编辑源，改一行就能挪坐标或改节奏 |
+| `order-flow.background.png` | spec 引用的背景副本，与原图 sha256 相同（`e6a0424a…`），必须与 spec 一起保留 |
+
+动画结构（按你给的坐标构建，未改动原图任何框、文字、图标、箭头）：
+- 第 1 步 1.5 s：Client → Order API，走 [[220,270],[370,270]]，到达时 Order API 只做轮廓高亮。
+- 第 2 步 1.5 s：fan-out，API→Database 与 API→Queue 两条折线**同一步并行**（[540,270]→[630,270] 后分叉到 155 / 395），两者同时高亮。
+- 结束后停留 1.5 s，一轮共 4.5 s、90 帧、20 fps。
+- `radius: 0` 保留原图直角，`trail: false` 不留已走过的轨迹，`draw_path: false`（overlay 默认）不重画箭头。
+
+MP4 **不会自己循环**：在 HTML 里用 `<video controls loop muted playsinline>`，在 PowerPoint 里勾选「播放 → 循环播放，直到停止」。
+
+**我没有图片查看工具，没有查看这张图**：以上几何完全依据你提供的坐标；`--check` 证明了尺寸 960×540、90 帧、帧间有运动、背景像素未被修改、每步只有本步的边带光点且后续边未被触碰、以及 MP4 的编码/像素格式/音轨/faststart，除此之外（例如光点是否精确压在原图箭头上）我未做视觉核对。  PASS  completed                                    
+  PASS  skill_selected                               loaded=['visual-flow-webp'] want=visual-flow-webp
+  PASS  no_wrong_skill                               extra=[]
+  PASS  file_produced                                glob=*.mp4 hits=['order-flow.mp4']
+  PASS  validator_passed                             ✓ PASS order-flow.png + order-flow.mp4
+  PASS  generator_not_bypassed                       no expectation
+  PASS  tool_budget                                  8 calls (cap 25)
+  PASS  tool_used:Skill                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Write', 'Bash', 'Bash', 'LS']
+  PASS  tool_used:Read                               trace=['Skill', 'Read', 'Bash', 'Bash', 'Write', 'Bash', 'Bash', 'LS']
+  PASS  tool_used:Bash                               trace=['Skill', 'Read', 'Bash', 'Bash', 'Write', 'Bash', 'Bash', 'LS']
+  PASS  tool_used:Write                              trace=['Skill', 'Read', 'Bash', 'Bash', 'Write', 'Bash', 'Bash', 'LS']
+  -> deterministic 11/11  (100%)
+
+========================================================================
+cases fully passing: 13/13
+checks passing:      192/192 (100.0%)
+  ✓ coinbase-low-latency     17/17   skill=['aws-drawio-diagram']
+  ✓ three-tier-web           13/13   skill=['aws-drawio-diagram']
+  ✓ adversarial-inline-xml   11/11   skill=['aws-drawio-diagram']
+  ✓ log-pipeline-streaming   24/24   skill=['aws-drawio-diagram']
+  ✓ drawio-diagram-only-reply 15/15   skill=['aws-drawio-diagram']
+  ✓ claude-md-ingest-folder  22/22   skill=['folder-specific-claude-and-agents-md']
+  ✓ claude-md-subdir-under-root 22/22   skill=['folder-specific-claude-and-agents-md']
+  ✓ flow-webp-git-webhook-dark 11/11   skill=['visual-flow-webp']
+  ✓ flow-webp-git-webhook-from-readme 12/12   skill=['visual-flow-webp']
+  ✓ flow-webp-git-webhook-stepwise 11/11   skill=['visual-flow-webp']
+  ✓ flow-webp-git-webhook-extend 11/11   skill=['visual-flow-webp']
+  ✓ flow-webp-git-webhook-slide-mp4 12/12   skill=['visual-flow-webp']
+  ✓ flow-webp-reference-overlay-mp4 11/11   skill=['visual-flow-webp']
+
+wrote /Users/oyanli/Documents/myprj/skill-eval-marketplace/.eval/runs/20260914T025646Z-f2cdd784/results.json

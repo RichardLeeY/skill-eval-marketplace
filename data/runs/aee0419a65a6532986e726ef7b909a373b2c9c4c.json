@@ -1,0 +1,200 @@
+{
+  "status": "PASS",
+  "generated_at": "2026-09-14T03:22:56.652687+00:00",
+  "pipeline": "",
+  "job": "",
+  "commit": "aee0419a65a6532986e726ef7b909a373b2c9c4c",
+  "selection": {
+    "mode": "local",
+    "source": "local",
+    "exit_code": 0,
+    "plan_only": false,
+    "skills": [
+      "aws-drawio-diagram",
+      "folder-specific-claude-and-agents-md",
+      "visual-flow-webp"
+    ],
+    "shared_changes": [],
+    "removed_skills": []
+  },
+  "failed_rows": 0,
+  "cases": [
+    {
+      "case": "coinbase-low-latency",
+      "skill": "aws-drawio-diagram",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "three-tier-web",
+      "skill": "aws-drawio-diagram",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "adversarial-inline-xml",
+      "skill": "aws-drawio-diagram",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "log-pipeline-streaming",
+      "skill": "aws-drawio-diagram",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "drawio-diagram-only-reply",
+      "skill": "aws-drawio-diagram",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "claude-md-ingest-folder",
+      "skill": "folder-specific-claude-and-agents-md",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "claude-md-subdir-under-root",
+      "skill": "folder-specific-claude-and-agents-md",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "flow-webp-git-webhook-dark",
+      "skill": "visual-flow-webp",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "+0.047; legacy profile unknown; rubric changed",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "flow-webp-git-webhook-from-readme",
+      "skill": "visual-flow-webp",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "+0.017; legacy profile unknown; rubric changed",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "flow-webp-git-webhook-stepwise",
+      "skill": "visual-flow-webp",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "+0.047; legacy profile unknown; rubric changed",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "flow-webp-git-webhook-extend",
+      "skill": "visual-flow-webp",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "+0.043; legacy profile unknown; rubric changed",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "flow-webp-git-webhook-slide-mp4",
+      "skill": "visual-flow-webp",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "+0.067; legacy profile unknown; rubric changed",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    },
+    {
+      "case": "flow-webp-reference-overlay-mp4",
+      "skill": "visual-flow-webp",
+      "score": 1.0,
+      "failures": [],
+      "status": "PASS",
+      "baseline": "No baseline",
+      "profile": "core",
+      "agent": "us.anthropic.claude-opus-5",
+      "judge": "global.anthropic.claude-sonnet-4-6",
+      "report": "runs/20260914T025646Z-f2cdd784/scores/20260914T031320Z-d9996ab7/report.json"
+    }
+  ],
+  "runs": [
+    {
+      "run": "runs/20260914T025646Z-f2cdd784",
+      "passed": true
+    }
+  ],
+  "controls": [
+    {
+      "skill": "aws-drawio-diagram",
+      "status": "not provided"
+    },
+    {
+      "skill": "folder-specific-claude-and-agents-md",
+      "status": "not provided"
+    },
+    {
+      "skill": "visual-flow-webp",
+      "exit_code": 0
+    }
+  ],
+  "errors": []
+}
