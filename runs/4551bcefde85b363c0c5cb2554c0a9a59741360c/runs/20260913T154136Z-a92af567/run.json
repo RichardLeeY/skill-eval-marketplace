@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-09-13T15:41:36.464144+00:00",
+  "status": "failed",
+  "skills_root": "/Users/oyanli/Documents/myprj/skill-eval-marketplace/skills",
+  "skills": [
+    "aws-drawio-diagram",
+    "folder-specific-claude-and-agents-md",
+    "visual-flow-webp"
+  ],
+  "profile": "core",
+  "agent": {
+    "model_provider": "bedrock",
+    "model_id": "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+  },
+  "judge": {
+    "model_provider": "bedrock",
+    "model_id": "global.anthropic.claude-sonnet-4-6"
+  },
+  "datasets": {
+    "/Users/oyanli/Documents/myprj/skill-eval-marketplace/skills/visual-flow-webp/eval/dataset.jsonl": "39c85966e9e6ff5ec024fba9442741d83d8e6a3b9d3d519780eb326e32c0593c",
+    "/Users/oyanli/Documents/myprj/skill-eval-marketplace/skills/aws-drawio-diagram/eval/dataset.jsonl": "1b2770fc1318aaedcdcd415ba67e92467d22ab2c71e5c8e6f6e87a0736c66994",
+    "/Users/oyanli/Documents/myprj/skill-eval-marketplace/skills/folder-specific-claude-and-agents-md/eval/dataset.jsonl": "ed3f8a88cf6de85118342edb4d1e8026203a62d01329fabb465e985be617e9dc"
+  },
+  "cases_sha256": "4a363618958d5ab79e2cc8c184e97928658b73d632e0617afda0722926c178a0",
+  "lock_sha256": "5f9c0e760fbff4d5476f19791a9bc3f24d1ceddd188656f497893e96d3c44f94",
+  "aws_region": "us-east-1",
+  "execution_exit_code": 1,
+  "results_sha256": "13d40fe5d94798c91bc0fda2b8fc390409dc922f30c25a7a5efc41c3606d6a4c",
+  "scoring_exit_code": 1
+}
