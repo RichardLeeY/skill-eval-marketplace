@@ -5,6 +5,11 @@ commit subjects since the previous release; edit before pushing if they need tid
 
 ## Unreleased
 
+- Rename the plugin from the template placeholder `my-anycompany-skills` to
+  `aws-sa-skills`. Existing installs need `/plugin uninstall my-anycompany-skills`
+  and a fresh `/plugin install aws-sa-skills@skill-marketplace`.
+- README opens with the one-line install from GitHub, the live scoreboard, and a
+  comparison with a plain skill repository.
 - Public scoreboard on GitHub Pages: `.github/workflows/publish-dashboard.yml` runs
   the full evaluation on every push to `main` (and weekly), appends the run to the
   `gh-pages` history with `evalkit/pages.py`, and deploys `index.html`, per-run

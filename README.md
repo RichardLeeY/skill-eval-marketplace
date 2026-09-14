@@ -7,11 +7,28 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![python](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
 
+**Agent skills that ship with their own evals.** Every skill here carries its test
+cases. An LLM judge scores each pull request against them, CI blocks the merge below
+0.90, and every result is published. You can see a skill's score before you install it.
+
+```text
+/plugin marketplace add RichardLeeY/skill-eval-marketplace
+/plugin install aws-sa-skills@skill-marketplace
+```
+
+[![Scoreboard: three skills at 1.000, latest run PASS, run history with a dashboard link per commit](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
+
 **Live scoreboard:** every evaluation of `main` is published at
 [richardleey.github.io/skill-eval-marketplace](https://richardleey.github.io/skill-eval-marketplace/) with per-skill scores,
 the accepted baseline, trend lines and the full evidence dashboard for each run.
 
-[![Scoreboard: three skills at 1.000, latest run PASS, run history with a dashboard link per commit](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
+| | A typical skill repository | This marketplace |
+|---|---|---|
+| What a skill ships with | `SKILL.md` | `SKILL.md` plus `eval/dataset.jsonl`: prompts, seed files, assertions |
+| How a change is reviewed | Someone reads the diff | CI runs the skill's cases through an agent and an LLM judge; below 0.90 or any failed assertion blocks the merge |
+| What the score measures | Text output | Also the files a run produces: draw.io XML structure, image dimensions, frame count, geometry against a reference image, vision review of rendered frames |
+| How you know the judge still works | You don't | A negative control runs a deliberately bad deliverable through the same rubric and must score low (shipped for visual-flow-webp; `skill-eval check` warns where it is missing) |
+| Where results live | Nowhere | A [public scoreboard](https://richardleey.github.io/skill-eval-marketplace/) with the evidence for every run |
 
 Three agent skills packaged with their evaluation cases. Use the skills in your agent,
 or run the evaluation kit to check skill selection, instruction following, artifacts,
@@ -55,15 +72,16 @@ and [docs/gitlab-ci.md](docs/gitlab-ci.md).
 
 ## Use the skills
 
-Clone this repository, then add the local directory in Claude Code:
+In Claude Code, add the marketplace from GitHub and install the plugin:
 
 ```text
-/plugin marketplace add /absolute/path/to/skill-marketplace
-/plugin install my-anycompany-skills@skill-marketplace
+/plugin marketplace add RichardLeeY/skill-eval-marketplace
+/plugin install aws-sa-skills@skill-marketplace
 ```
 
-The marketplace currently distributes one plugin, `my-anycompany-skills`, containing all
-three skills. Python evaluation dependencies are only needed if you run the eval kit.
+For a local checkout, use the absolute path of the clone in place of
+`RichardLeeY/skill-eval-marketplace`. The marketplace currently distributes one
+plugin, `aws-sa-skills`, containing all three skills. Python evaluation dependencies are only needed if you run the eval kit.
 Each skill's own scripts may still need dependencies described in its `SKILL.md`.
 
 | Skill | Deliverable | Cases | Latest score |

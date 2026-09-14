@@ -7,11 +7,27 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![python](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
 
+**自带评测的 agent skill。** 这里的每个技能都带着自己的测试用例。每个 pull request 都由
+LLM judge 按用例打分，低于 0.90 就被 CI 拦下，结果全部公开。安装之前就能看到技能的得分。
+
+```text
+/plugin marketplace add RichardLeeY/skill-eval-marketplace
+/plugin install aws-sa-skills@skill-marketplace
+```
+
+[![评分看板：三个技能均为 1.000，最新运行 PASS，每次提交一行运行记录并附看板链接](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
+
 **在线评分看板：** `main` 分支的每次评估结果都会发布到
 [richardleey.github.io/skill-eval-marketplace](https://richardleey.github.io/skill-eval-marketplace/)，包含每个技能的得分、
 已接受的基线、趋势线，以及每次运行的完整证据看板。
 
-[![评分看板：三个技能均为 1.000，最新运行 PASS，每次提交一行运行记录并附看板链接](docs/assets/scoreboard.png)](https://richardleey.github.io/skill-eval-marketplace/)
+| | 一般的 skill 仓库 | 这个 marketplace |
+|---|---|---|
+| 技能附带什么 | `SKILL.md` | `SKILL.md` 加 `eval/dataset.jsonl`：提示词、种子文件、断言 |
+| 改动如何评审 | 有人看 diff | CI 用 agent 跑技能用例、由 LLM judge 打分；低于 0.90 或任一断言失败即禁止合并 |
+| 分数衡量什么 | 文本输出 | 还包括运行产出的文件：draw.io XML 结构、图片尺寸、帧数、对照参考图的几何位置、对渲染帧的视觉审阅 |
+| 怎么知道 judge 没有失灵 | 不知道 | 负控制把一份故意做坏的交付物送进同一套评分标准，必须得低分（visual-flow-webp 已提供；缺少的技能会被 `skill-eval check` 警告） |
+| 结果放在哪 | 没有 | [公开评分看板](https://richardleey.github.io/skill-eval-marketplace/)，附每次运行的证据 |
 
 三个 agent skill，和各自的评估用例一起维护。可以直接在 agent 中使用 skill，也可以运行
 评估工具，检查技能选择、指令遵循、交付物和回归。评估通过 Strands 执行，结果反映的是
@@ -50,14 +66,15 @@ PNG、WebP 或 MP4 帧。这里的三个技能中有两个输出图片或视频�
 
 ## 使用技能
 
-克隆仓库后，在 Claude Code 中添加本地目录：
+在 Claude Code 中从 GitHub 添加 marketplace 并安装插件：
 
 ```text
-/plugin marketplace add /absolute/path/to/skill-marketplace
-/plugin install my-anycompany-skills@skill-marketplace
+/plugin marketplace add RichardLeeY/skill-eval-marketplace
+/plugin install aws-sa-skills@skill-marketplace
 ```
 
-目前 marketplace 分发一个插件 `my-anycompany-skills`，包含全部三个技能。仅使用技能无需安装
+本地克隆时，把 `RichardLeeY/skill-eval-marketplace` 换成克隆目录的绝对路径即可。目前
+marketplace 分发一个插件 `aws-sa-skills`，包含全部三个技能。仅使用技能无需安装
 Python 评估依赖；技能自己的脚本依赖仍按各自的 `SKILL.md` 安装。
 
 | 技能 | 交付物 | 评估用例 |
